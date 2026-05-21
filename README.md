@@ -54,3 +54,4 @@ export GRB_LICENSEID="..."
 
 I grafici e gli esperimenti A/C/D/E/NNE sono stati esclusi dalla versione
 pulita per ridurre il codice al percorso effettivamente usato.
+Per slavare quanot prodotto, prova_neur.py ha dentro tutti gli esperimenti che sono stati scartati.
