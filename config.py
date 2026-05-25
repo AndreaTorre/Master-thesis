@@ -75,4 +75,24 @@ UTSP2_TEMP_FIXED = 1.0
 UTSP2_DIST_SCALE_MODE = "mean_positive"
 
 # Decodifica politica UTSP
-UTSP2_THRESHOLD = 0.5
+UTSP2_TAU = 0.09
+
+# Modalità UTSP eseguibili dal main
+# "policy"       = x_utsp + secondo stadio Gurobi
+# "local_search" = H_avg + decodifica + local search UTSP
+# "both"         = entrambe le valutazioni con un solo training
+UTSP_RUN_MODE = "both"
+
+# Local search UTSP da unionev3.py
+UTSP_TRAINING_SEED = GLOBAL_SEED
+N_TRAINING_SCENARIOS_UTSP = 300
+UTSP_LS_MAX_ACTIONS = 2500
+UTSP_LS_ACTIONS_PER_ROUND = 120
+UTSP_LS_MAX_RESTARTS = 40
+UTSP_LS_M = 8
+UTSP_LS_K = 10
+UTSP_LS_ALPHA = 0.0
+UTSP_LS_BETA = 10.0
+UTSP_LS_RANDOM_SEED = 12345
+UTSP_LS_APPLY_INITIAL_2OPT = True
+

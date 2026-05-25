@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+import math
+import random
 import numpy as np
 import torch
 import torch.nn as nn
@@ -13,12 +15,16 @@ from config import (
     UTSP2_HIDDEN, UTSP2_NLAYERS, UTSP2_EPOCHS, UTSP2_LR,
     UTSP2_STEP_LR, UTSP2_LOG_FREQ, UTSP2_LAMBDA1, UTSP2_LAMBDA2,
     UTSP2_LAMBDA_E, UTSP2_GAMMA, UTSP2_TEMP_MODE, UTSP2_TEMP_SCALE,
-    UTSP2_TEMP_FIXED, UTSP2_DIST_SCALE_MODE, UTSP2_THRESHOLD,
+    UTSP2_TEMP_FIXED, UTSP2_DIST_SCALE_MODE,
+    UTSP_LS_MAX_ACTIONS, UTSP_LS_ACTIONS_PER_ROUND,
+    UTSP_LS_MAX_RESTARTS, UTSP_LS_M, UTSP_LS_K,
+    UTSP_LS_ALPHA, UTSP_LS_BETA, UTSP_LS_RANDOM_SEED,
+    UTSP_LS_APPLY_INITIAL_2OPT,UTSP2_TAU,N_TRAINING_SCENARIOS_UTSP, UTSP_TRAINING_SEED,
 )
 from tsp_utils import get_edge_value
-from gurobi_models import solve_reservation_tsp
+from gurobi_models import solve_reservation_tsp, solve_exact_tsp
 from scenarios import generate_scenarios
-from evaluation import validate_policies
+from evaluation import validate_policies, genera_grafici_utsp
 from two_stage_utsp_loss import (
     two_stage_utsp_loss,
     build_I_tensors,
@@ -221,6 +227,7 @@ def _train_utsp_2stage(
         loss, comps = two_stage_utsp_loss(
             T_list, dist_list, I_mask, p_mat, C_mat, probs_t,
             gamma=UTSP2_GAMMA,
+            tau=UTSP2_TAU,
             lambda1=UTSP2_LAMBDA1,
             lambda2=UTSP2_LAMBDA2,
             lambda_e=UTSP2_LAMBDA_E,
@@ -266,8 +273,10 @@ def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device)
     H_list = [compute_heatmap(T_batch[k:k+1]) for k in range(K)]
 
     x_reserved, x_scores = decode_booking_policy(
-        H_list, I, nodes, I_mask, probs_t,
-        gamma=UTSP2_GAMMA, threshold=UTSP2_THRESHOLD
+      H_list, I, nodes, I_mask, probs_t,
+      gamma=UTSP2_GAMMA,
+      tau=UTSP2_TAU,
+      threshold=0.09,
     )
     return x_reserved, x_scores, H_list, T_batch
 
@@ -314,113 +323,756 @@ def _evaluate_policy_oos(
     mean = sum(costs.values()) / len(costs)
     return costs, tc_dict, pc_dict, mean, results_val
 
-def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B):
+
+# ═══════════════════════════════════════════════════════════════════
+# DIPENDENZE E LOCAL SEARCH DA unionev3.py
+# ═══════════════════════════════════════════════════════════════════
+
+def tour_cost(tour, dist):
+    """Costo di un tour su una matrice/dizionario di distanze orientate."""
+    n = len(tour)
+    return sum(dist[tour[k]][tour[(k + 1) % n]] for k in range(n))
+
+
+def _decode_tour_gurobi(H, nodes, E, root, env):
+    """
+    Decodifica il tour dalla heatmap direzionale H.
+
+    Risolve un TSP con costi = -H[i,j], quindi Gurobi cerca il tour
+    con massima verosimiglianza secondo la heatmap.
+
+    H non viene simmetrizzata perché il problema è orientato:
+    il costo i→j può essere diverso dal costo j→i.
+    """
+    node_idx = {v: k for k, v in enumerate(nodes)}
+    dist_neg = {
+        i: {j: -float(H[node_idx[i], node_idx[j]])
+            for j in nodes if j != i}
+        for i in nodes
+    }
+    return solve_exact_tsp(nodes, E, dist_neg, root, env)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# LOCAL SEARCH STILE UTSP PAPER, ADATTATA AL CASO ORIENTATO
+# ═══════════════════════════════════════════════════════════════════
+
+def _rotate_tour_to_start(tour, start):
+    """Ruota un tour senza ripetizione finale in modo che inizi da start."""
+    if not tour or start not in tour:
+        return list(tour)
+    k = tour.index(start)
+    return list(tour[k:] + tour[:k])
+
+
+def _rotate_tour_to_root(tour, root):
+    """Mantiene una rappresentazione canonica del tour con root in prima posizione."""
+    return _rotate_tour_to_start(list(tour), root)
+
+
+def _tour_edges(tour):
+    """Archi orientati del tour, incluso l'arco di ritorno all'inizio."""
+    n = len(tour)
+    return [(tour[i], tour[(i + 1) % n]) for i in range(n)]
+
+
+def _tour_cost_on_dist(tour, dist):
+    """Costo di un tour su una matrice/dizionario di distanze orientate."""
+    return tour_cost(tour, dist)
+
+
+def _two_opt_descent_directed(tour, dist, root, max_passes=50):
+    """
+    2-opt con ricalcolo completo del costo, quindi valido anche con costi orientati.
+    Nel TSP asimmetrico l'inversione cambia i versi degli archi: non uso formule
+    incrementali simmetriche, ma rivaluto tutto il tour.
+    """
+    if not tour or len(tour) <= 3:
+        return list(tour), float("inf")
+
+    best = _rotate_tour_to_root(tour, root)
+    best_cost = _tour_cost_on_dist(best, dist)
+    n = len(best)
+
+    for _ in range(max_passes):
+        improved = False
+        for i in range(1, n - 2):
+            for j in range(i + 2, n + 1):
+                if i == 1 and j == n:
+                    continue
+                cand = best[:i] + list(reversed(best[i:j])) + best[j:]
+                cand = _rotate_tour_to_root(cand, root)
+                cand_cost = _tour_cost_on_dist(cand, dist)
+                if cand_cost + 1e-9 < best_cost:
+                    best, best_cost = cand, cand_cost
+                    improved = True
+                    break
+            if improved:
+                break
+        if not improved:
+            break
+
+    return best, best_cost
+
+
+def _or_opt_descent_directed(tour, dist, root, max_passes=50):
+    """
+    Or-opt (single-node relocation) per ATSP.
+    Sposta un nodo alla volta nella posizione che riduce il costo.
+    Non inverte segmenti: valida per grafi orientati.
+    """
+    if not tour or len(tour) <= 3:
+        return list(tour), float("inf")
+
+    best = _rotate_tour_to_root(list(tour), root)
+    best_cost = _tour_cost_on_dist(best, dist)
+    n = len(best)
+
+    for _ in range(max_passes):
+        improved = False
+        for i in range(n):
+            node = best[i]
+            remaining = best[:i] + best[i + 1:]
+            for j in range(len(remaining)):
+                cand = remaining[:j + 1] + [node] + remaining[j + 1:]
+                cand = _rotate_tour_to_root(cand, root)
+                cand_cost = _tour_cost_on_dist(cand, dist)
+                if cand_cost + 1e-9 < best_cost:
+                    best, best_cost = cand, cand_cost
+                    improved = True
+                    break
+            if improved:
+                break
+        if not improved:
+            break
+
+    return best, best_cost
+
+
+def _build_heatmap_candidates(H, nodes, M, avg_dist=None):
+    """
+    Per ogni nodo i costruisce i candidati j da provare nella local search.
+    Priorità: top-M valori di H[i,j]. Se la riga è tutta nulla, fallback sui nodi
+    più vicini secondo la distanza media reale.
+    """
+    idx = {v: k for k, v in enumerate(nodes)}
+    candidates = {}
+
+    for i in nodes:
+        ii = idx[i]
+        vals = []
+        for j in nodes:
+            if i == j:
+                continue
+            jj = idx[j]
+            vals.append((float(H[ii, jj]), j))
+
+        vals_sorted = sorted(vals, key=lambda x: x[0], reverse=True)
+        top = [j for val, j in vals_sorted[:max(1, min(M, len(vals_sorted)))] if val > 0]
+
+        if not top and avg_dist is not None:
+            near = sorted(
+                [(avg_dist[i][j], j) for j in nodes if j != i],
+                key=lambda x: x[0]
+            )
+            top = [j for _, j in near[:max(1, min(M, len(near)))]]
+
+        if not top:
+            top = [j for _, j in vals_sorted[:max(1, min(M, len(vals_sorted)))]]
+
+        candidates[i] = top
+
+    return candidates
+
+
+def _select_heatmap_candidate(a, candidates, H_work, chosen_times, idx, rng, alpha, total_actions):
+    """
+    Selezione stocastica guidata dalla heatmap, coerente con il criterio del paper:
+    valore heatmap + termine di esplorazione alpha * sqrt(log(S+1)/(N+1)).
+    """
+    cand = [b for b in candidates.get(a, []) if b != a]
+    if not cand:
+        return None
+
+    ia = idx[a]
+    scores = []
+    for b in cand:
+        ib = idx[b]
+        explore = 0.0
+        if alpha > 0:
+            explore = alpha * math.sqrt(math.log(total_actions + 2.0) / (chosen_times[ia, ib] + 1.0))
+        score = max(float(H_work[ia, ib]) + explore, 1e-12)
+        scores.append(score)
+
+    ssum = sum(scores)
+    r = rng.random() * ssum
+    acc = 0.0
+    for b, sc in zip(cand, scores):
+        acc += sc
+        if r <= acc:
+            chosen_times[ia, idx[b]] += 1
+            return b
+
+    b = cand[-1]
+    chosen_times[ia, idx[b]] += 1
+    return b
+
+
+def _move_relocate_after(tour, a, b, root):
+    """Sposta b immediatamente dopo a."""
+    if a == b or a not in tour or b not in tour:
+        return list(tour)
+    t = list(tour)
+    t.remove(b)
+    pos_a = t.index(a)
+    t.insert(pos_a + 1, b)
+    return _rotate_tour_to_root(t, root)
+
+
+def _move_two_opt_make_edge(tour, a, b, root):
+    """
+    Mossa tipo 2-opt che prova a rendere a→b un arco del tour.
+    È una versione orientata/adattata: rivaluto sempre il costo completo.
+    """
+    if a == b or a not in tour or b not in tour:
+        return list(tour)
+
+    rot = _rotate_tour_to_start(list(tour), a)
+    pos_b = rot.index(b)
+    if pos_b == 1:
+        return _rotate_tour_to_root(rot, root)
+    if pos_b <= 0:
+        return _rotate_tour_to_root(rot, root)
+
+    cand = rot[:1] + list(reversed(rot[1:pos_b + 1])) + rot[pos_b + 1:]
+    return _rotate_tour_to_root(cand, root)
+
+
+def _move_swap_nodes(tour, a, b, root):
+    """Scambia due nodi, lasciando poi root in prima posizione."""
+    if a == b or a not in tour or b not in tour:
+        return list(tour)
+    t = list(tour)
+    ia, ib = t.index(a), t.index(b)
+    t[ia], t[ib] = t[ib], t[ia]
+    return _rotate_tour_to_root(t, root)
+
+
+def _random_tour(nodes, root, rng):
+    rest = [v for v in nodes if v != root]
+    rng.shuffle(rest)
+    return [root] + rest
+
+
+def _utsp_paper_style_local_search(tour_seed, H_decode, nodes, root, avg_dist):
+    """
+    Ricerca locale guidata dalla heatmap, nello spirito del codice Search/ del paper UTSP.
+
+    Corrispondenze con il paper/repository:
+      - usa una soluzione iniziale e una fase 2-opt;
+      - usa una candidate list di dimensione M derivata dalla heatmap;
+      - usa selezione stocastica con H + alpha * sqrt(log(S+1)/(N+1));
+      - usa una forma di backpropagation/update della heatmap con beta quando trova
+        una mossa migliorativa;
+      - usa restart casuali quando non trova azioni migliorative.
+
+    Adattamento necessario:
+      - il repository originale è per TSP simmetrico euclideo;
+      - qui le distanze sono orientate/asimmetriche, quindi ogni candidato viene
+        valutato ricalcolando il costo completo sul costo medio reale di training.
+    """
+    if not tour_seed or len(tour_seed) <= 3:
+        return list(tour_seed), float("inf"), {"actions": 0, "restarts": 0, "improvements": 0}
+
+    rng = random.Random(UTSP_LS_RANDOM_SEED)
+    idx = {v: k for k, v in enumerate(nodes)}
+    n = len(nodes)
+    M = max(1, min(UTSP_LS_M, n - 1))
+
+    H_work = np.array(H_decode, dtype=float, copy=True)
+    np.fill_diagonal(H_work, 0.0)
+    chosen_times = np.zeros_like(H_work, dtype=float)
+    candidates = _build_heatmap_candidates(H_work, nodes, M, avg_dist=avg_dist)
+
+    current = _rotate_tour_to_root(tour_seed, root)
+    current_cost = _tour_cost_on_dist(current, avg_dist)
+
+    if UTSP_LS_APPLY_INITIAL_2OPT:
+      current, current_cost = _or_opt_descent_directed(current, avg_dist, root)
+
+    best = list(current)
+    best_cost = current_cost
+
+    total_actions = 0
+    restarts = 0
+    improvements = 0
+    t0 = time.time()
+
+    while total_actions < UTSP_LS_MAX_ACTIONS and restarts <= UTSP_LS_MAX_RESTARTS:
+        best_round = None
+        best_round_cost = current_cost
+        best_round_added_edges = []
+
+        for _ in range(UTSP_LS_ACTIONS_PER_ROUND):
+            total_actions += 1
+            if total_actions > UTSP_LS_MAX_ACTIONS:
+                break
+
+            a = rng.choice(nodes)
+            b = _select_heatmap_candidate(
+                a, candidates, H_work, chosen_times, idx, rng,
+                UTSP_LS_ALPHA, total_actions
+            )
+            if b is None:
+                continue
+
+            # Piccolo insieme di mosse locali. La candidate list da H decide cosa provare;
+            # la bontà viene misurata sul costo medio reale.
+            proposals = [
+                _move_relocate_after(current, a, b, root),
+                _move_two_opt_make_edge(current, a, b, root),
+                _move_swap_nodes(current, a, b, root),
+            ]
+
+            # Profondità K: per n piccoli uso mosse composte relocate-after ripetute,
+            # guidate da candidati successivi della heatmap.
+            if UTSP_LS_K > 2:
+                comp = list(current)
+                aa = a
+                for _depth in range(min(UTSP_LS_K, 4)):
+                    bb = _select_heatmap_candidate(
+                        aa, candidates, H_work, chosen_times, idx, rng,
+                        UTSP_LS_ALPHA, total_actions
+                    )
+                    if bb is None:
+                        break
+                    comp = _move_relocate_after(comp, aa, bb, root)
+                    aa = bb
+                proposals.append(comp)
+
+            cur_edges = set(_tour_edges(current))
+            for cand in proposals:
+                if len(set(cand)) != n:
+                    continue
+                cand = _rotate_tour_to_root(cand, root)
+                cand_cost = _tour_cost_on_dist(cand, avg_dist)
+                if cand_cost + 1e-9 < best_round_cost:
+                    cand_edges = set(_tour_edges(cand))
+                    added = list(cand_edges - cur_edges)
+                    best_round = cand
+                    best_round_cost = cand_cost
+                    best_round_added_edges = added
+
+        if best_round is not None:
+            before = max(current_cost, 1e-9)
+            gain = current_cost - best_round_cost
+            current = best_round
+            current_cost = best_round_cost
+            improvements += 1
+
+            # Backpropagation/update stile paper: aumenta peso degli archi che hanno
+            # prodotto miglioramento.
+            inc = UTSP_LS_BETA * (math.exp(max(gain, 0.0) / before) - 1.0)
+            if inc > 0 and best_round_added_edges:
+                for i, j in best_round_added_edges:
+                    if i in idx and j in idx and i != j:
+                        H_work[idx[i], idx[j]] += inc
+                np.fill_diagonal(H_work, 0.0)
+                candidates = _build_heatmap_candidates(H_work, nodes, M, avg_dist=avg_dist)
+
+            if current_cost + 1e-9 < best_cost:
+                best = list(current)
+                best_cost = current_cost
+        else:
+            restarts += 1
+            current = _random_tour(nodes, root, rng)
+            current_cost = _tour_cost_on_dist(current, avg_dist)
+            if UTSP_LS_APPLY_INITIAL_2OPT:
+               current, current_cost = _or_opt_descent_directed(current, avg_dist, root)
+            if current_cost + 1e-9 < best_cost:
+                best = list(current)
+                best_cost = current_cost
+
+    info = {
+        "actions": total_actions,
+        "restarts": restarts,
+        "improvements": improvements,
+        "seconds": time.time() - t0,
+        "final_heatmap_max": float(H_work.max()) if H_work.size else 0.0,
+    }
+    return best, best_cost, info
+
+
+def _matrix_asymmetry_stats(A, name):
+    """Stampa quanto A è diversa dalla sua trasposta."""
+    A = np.array(A, dtype=float)
+    if A.ndim != 2 or A.shape[0] != A.shape[1]:
+        print(f"  Asimmetria {name}: matrice non quadrata, salto diagnostica.")
+        return
+
+    n = A.shape[0]
+    mask = ~np.eye(n, dtype=bool)
+    diff = A - A.T
+    abs_diff = np.abs(diff[mask])
+    abs_vals = np.abs(A[mask])
+
+    denom = float(np.mean(abs_vals)) + 1e-12
+    print(
+        f"  Asimmetria {name}: "
+        f"mean|A-A.T|={float(np.mean(abs_diff)):.6e}  "
+        f"p90={float(np.percentile(abs_diff, 90)):.6e}  "
+        f"max={float(np.max(abs_diff)):.6e}  "
+        f"rel_mean={float(np.mean(abs_diff))/denom:.6f}"
+    )
+
+
+def _build_mean_dist_from_results(results, scenario_ids, nodes):
+    avg = {i: {} for i in nodes}
+    for i in nodes:
+        for j in nodes:
+            if i == j:
+                avg[i][j] = 0.0
+            else:
+                avg[i][j] = float(np.mean([results[sid]["scenario_dist"][i][j] for sid in scenario_ids]))
+    return avg
+
+
+def _heatmap_numpy_from_H_list(H_list):
+    H_sum = None
+    for H in H_list:
+        arr = H.detach().squeeze(0).cpu().numpy()
+        H_sum = arr.copy() if H_sum is None else H_sum + arr
+    return H_sum / max(len(H_list), 1)
+    
+def _heatmap_bar_from_H_list(H_list, scenario_ids, scenario_probs):
+    """
+    Costruisce la heatmap aggregata pesata:
+
+        H_bar_ij = Σ_{ω∈Ω} p_ω H^ω_ij
+
+    dove:
+      - H_list[k] è la heatmap dello scenario scenario_ids[k];
+      - scenario_probs[sid] è la probabilità p_ω dello scenario sid.
+
+    Ritorna
+    -------
+    H_bar : np.ndarray, shape (n, n)
+        Heatmap aggregata pesata sugli scenari.
+    """
+    H_bar = None
+
+    for sid, H in zip(scenario_ids, H_list):
+        p_omega = float(scenario_probs[sid])
+        H_omega = H.detach().squeeze(0).cpu().numpy()
+
+        if H_bar is None:
+            H_bar = p_omega * H_omega
+        else:
+            H_bar += p_omega * H_omega
+
+    return H_bar
+
+
+def _evaluate_fixed_tour_on_scenarios(tour, results, scenario_ids):
+    costs = {}
+    arcs = _tour_edges(tour) if tour else []
+    solutions = {}
+    for sid in scenario_ids:
+        dist = results[sid]["scenario_dist"]
+        cost = tour_cost(tour, dist) if tour else None
+        costs[sid] = cost
+        solutions[sid] = {
+            "arcs": arcs,
+            "y_used": arcs,
+            "tour": list(tour),
+            "tour_cost": cost,
+            "total_cost": cost,
+            "penalty_paid": 0.0,
+            "reservation_paid": 0.0,
+            "x_used": [],
+        }
+    mean_cost = float(np.mean([c for c in costs.values() if c is not None])) if costs else None
+    return costs, solutions, mean_cost
+
+
+def _run_heatmap_local_search(nodes, E, root, env, results, scenario_ids, H_list):
+    H_raw = _heatmap_numpy_from_H_list(H_list)
+    H_decode = H_raw.copy()
+    np.fill_diagonal(H_decode, 0.0)
+
+    _matrix_asymmetry_stats(H_raw, "H_raw UTSP 2-stage")
+    _matrix_asymmetry_stats(H_decode, "H_decode UTSP 2-stage")
+
+    avg_dist = _build_mean_dist_from_results(results, scenario_ids, nodes)
+
+    print("\n  Decodifica tour da heatmap con Gurobi ...")
+    decoded = _decode_tour_gurobi(H_decode, nodes, E, root, env)
+    if isinstance(decoded, dict):
+        tour_seed = decoded.get("tour", [])
+        arcs_seed = decoded.get("arcs", [])
+        seed_cost = tour_cost(tour_seed, avg_dist) if tour_seed else None
+    else:
+        seed_cost, arcs_seed = decoded
+        tour_seed = []
+
+    if not tour_seed and arcs_seed:
+        # In questa versione solve_exact_tsp ritorna già il tour. Questo ramo resta solo
+        # come protezione nel caso si usi una funzione compatibile con unionev3.py.
+        succ = {i: j for (i, j) in arcs_seed}
+        tour_seed = [root]
+        cur = root
+        for _ in range(len(nodes)):
+            nxt = succ.get(cur)
+            if nxt is None or nxt == root:
+                break
+            tour_seed.append(nxt)
+            cur = nxt
+        seed_cost = tour_cost(tour_seed, avg_dist) if tour_seed else None
+
+    print(f"  Tour iniziale heatmap: {tour_seed}")
+    print(f"  Costo su distanza media training: {seed_cost if seed_cost is not None else 'N/A'}")
+
+    print("\n  Local search UTSP guidata da H ...")
+    tour_ls, ls_cost_avg, ls_info = _utsp_paper_style_local_search(
+        tour_seed, H_decode, nodes, root, avg_dist
+    )
+    arcs_ls = _tour_edges(tour_ls) if tour_ls else []
+
+    print(f"  Tour UTSP-LS: {tour_ls}")
+    print(f"  Costo UTSP-LS su distanza media training: {ls_cost_avg:.4f}")
+    print(f"  Info local search: {ls_info}")
+
+    return {
+        "H_raw": H_raw,
+        "H_decode": H_decode,
+        "avg_dist": avg_dist,
+        "tour_seed": tour_seed,
+        "arcs_seed": arcs_seed,
+        "seed_cost_avg": seed_cost,
+        "tour_ls": tour_ls,
+        "arcs_ls": arcs_ls,
+        "ls_cost_avg": ls_cost_avg,
+        "ls_info": ls_info,
+    }
+
+
+def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="both"):
     """
     Esperimento B — UTSP 2-stadi.
 
-    Parametri
-    ---------
-    nodes, coords, base_dist, E, root, env : output di load_data() / load_env()
-    res_B : dict restituito da run_esperimento_B  (deve contenere I, p, C,
-            results, scenario_probs, frequent_arcs, PI, STO, EEV, ...)
+    mode:
+      - "policy"       : x_utsp + secondo stadio Gurobi;
+      - "local_search" : H_avg + decodifica + local search UTSP;
+      - "both"         : entrambe le valutazioni con un solo training.
     """
-    print("\n" + "=" * 70)
-    print("ESPERIMENTO B — UTSP 2-STADI")
+    mode = (mode or "both").lower()
+    if mode not in {"policy", "local_search", "both"}:
+        raise ValueError("mode deve essere 'policy', 'local_search' oppure 'both'.")
 
-    # ── Controllo chiavi necessarie ────────────────────────────────────
+    do_policy = mode in {"policy", "both"}
+    do_ls = mode in {"local_search", "both"}
+
+    print("\n" + "=" * 70)
+    print(f"ESPERIMENTO B — UTSP 2-STADI | mode={mode}")
+
     needed = ["I", "p", "C", "b", "results", "scenario_probs",
               "frequent_arcs", "PI", "STO", "EEV",
-              "stoch_costs", "eev_costs", "x_ev", "x_used_sto"]
+              "stoch_costs", "eev_costs", "x_ev", "x_used_sto",
+              "eev_solutions", "stoch_solutions"]
     missing = [k for k in needed if k not in res_B]
     if missing:
         raise KeyError(f"res_B manca delle chiavi: {missing}")
 
-    # ── Recupero dati da res_B  ────────────────────────────────────────
-    I              = res_B["I"]
-    p              = res_B["p"]
-    C              = res_B["C"]
-    b              = res_B["b"]
-    results        = res_B["results"]          # 8 scenari di training
-    scenario_probs = res_B["scenario_probs"]
-    scenario_ids   = list(results.keys())
-    frequent_arcs  = res_B["frequent_arcs"]
-    PI_train       = res_B["PI"]
-    STO_train      = res_B["STO"]
-    EEV_train      = res_B["EEV"]
+        I = res_B["I"]
+    p = res_B["p"]
+    C = res_B["C"]
+    b = res_B["b"]
+    frequent_arcs = res_B["frequent_arcs"]
+
+    # Scenari piccoli già generati da Esperimento B:
+    # servono per benchmark, grafici e riepilogo.
+    results_B = res_B["results"]
+    scenario_probs_B = res_B["scenario_probs"]
+    scenario_ids_B = list(results_B.keys())
+
+    # Alias di compatibilità, così il codice sotto che usa ancora
+    # results / scenario_probs / scenario_ids non si rompe.
+    results = results_B
+    scenario_probs = scenario_probs_B
+    scenario_ids = scenario_ids_B
+
+    PI_train = res_B["PI"]
+    STO_train = res_B["STO"]
+    EEV_train = res_B["EEV"]
+
+    # Scenari grandi usati solo per addestrare UTSP.
+    scenario_ids_utsp = list(range(1, N_TRAINING_SCENARIOS_UTSP + 1))
+
+    results_utsp, _, _ = generate_scenarios(
+        scenario_ids_utsp,
+        nodes,
+        E,
+        base_dist,
+        I,
+        frequent_arcs,
+        N_EXTRA_ARCS,
+        MEAN_FRAC,
+        SIGMA_FRAC,
+        UTSP_TRAINING_SEED,
+        root=root,
+        env=env,
+        p=p,
+        C=C,
+    )
+
+    scenario_probs_utsp = {
+        sid: 1.0 / N_TRAINING_SCENARIOS_UTSP
+        for sid in scenario_ids_utsp
+    }
+    
+    
+    frequent_arcs = res_B["frequent_arcs"]
+    PI_train = res_B["PI"]
+    STO_train = res_B["STO"]
+    EEV_train = res_B["EEV"]
 
     n = len(nodes)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # ── Maschere e costi per la loss ───────────────────────────────────
     I_mask, p_mat, C_mat, node_idx = build_I_tensors(I, nodes, p, C, device)
 
-    print(f"\n  Setup: |I|={len(I)}  n_nodi={n}  "
-          f"K_train={len(scenario_ids)}  device={device}")
+    print(f"\n  Setup: |I|={len(I)}  n_nodi={n}  K_train_UTSP={len(scenario_ids_utsp)}  device={device}")
+    print(f"  Scenari B per grafici/benchmark = {len(scenario_ids_B)}")
     print(f"  I = {I}")
 
-    # ── Training ───────────────────────────────────────────────────────
     (model, history, adj_stack, dist_model,
      xy_tile, probs_t, temperature) = _train_utsp_2stage(
-        nodes, coords, scenario_ids, results, scenario_probs,
-        I_mask, p_mat, C_mat, device
+        nodes,
+        coords,
+        scenario_ids_utsp,
+        results_utsp,
+        scenario_probs_utsp,
+        I_mask,
+        p_mat,
+        C_mat,
+        device,
     )
 
-    # ── Decodifica politica x_utsp ─────────────────────────────────────
     x_utsp, x_scores, H_list, T_batch = _decode_policy(
         model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device
     )
-
     reservation_utsp = sum(get_edge_value(p, i, j) for (i, j) in x_utsp)
 
-    print(f"\n{check_booking_coverage(x_scores, I, UTSP2_THRESHOLD)}")
+    print(f"\n{check_booking_coverage(x_scores, I, UTSP2_TAU)}")
     print(f"\n  Costo prenotazione UTSP : {reservation_utsp:.4f}")
 
-    # ── Valutazione training (same 8 scenari, per confronto diretto) ──
+    output = {
+        "model": model,
+        "history": history,
+        "x_utsp": x_utsp,
+        "x_scores": x_scores,
+        "I_mask": I_mask,
+    }
+
+    if do_policy:
+        policy_out = _run_policy_branch(
+            nodes,
+            coords,
+            E,
+            base_dist,
+            root,
+            env,
+            res_B,
+            I,
+            p,
+            C,
+            b,
+            results_B,
+            scenario_ids_B,
+            scenario_probs_B,
+            frequent_arcs,
+            PI_train,
+            STO_train,
+            EEV_train,
+            x_utsp,
+            x_scores,
+            reservation_utsp,
+            history,
+            temperature,
+        )
+        output.update(policy_out)
+
+    if do_ls:
+        ls_out = _run_local_search_branch(
+            nodes,
+            coords,
+            E,
+            base_dist,
+            root,
+            env,
+            res_B,
+            results_B,
+            scenario_ids_B,
+            results_utsp,
+            scenario_ids_utsp,
+            H_list,
+            PI_train,
+            STO_train,
+            EEV_train,
+            history,
+            temperature,
+        )
+        output.update({"local_search": ls_out})
+
+    return output
+
+
+def _run_policy_branch(
+    nodes, coords, E, base_dist, root, env, res_B,
+    I, p, C, b, results, scenario_ids, scenario_probs,
+    frequent_arcs, PI_train, STO_train, EEV_train,
+    x_utsp, x_scores, reservation_utsp,
+    history, temperature,
+):
     utsp_costs_train, utsp_tc_train, utsp_pc_train = {}, {}, {}
+    utsp_solutions_train = {}
+
     for sid in scenario_ids:
-        sd  = results[sid]["scenario_dist"]
+        sd = results[sid]["scenario_dist"]
         sol = solve_reservation_tsp(
             nodes, E, I, sd, root, p, C, env,
             fixed_reservations=x_utsp, output_flag=0
         )
-        tc  = sol["tour_cost"]    or 0.0
-        pc  = sol["penalty_paid"] or 0.0
-        utsp_costs_train[sid]  = reservation_utsp + tc + pc
-        utsp_tc_train[sid]     = tc
-        utsp_pc_train[sid]     = pc
+        tc = sol["tour_cost"] or 0.0
+        pc = sol["penalty_paid"] or 0.0
+        utsp_costs_train[sid] = reservation_utsp + tc + pc
+        utsp_tc_train[sid] = tc
+        utsp_pc_train[sid] = pc
+        utsp_solutions_train[sid] = sol
 
-    UTSP_train = sum(
-        scenario_probs[sid] * utsp_costs_train[sid] for sid in scenario_ids
+    UTSP_train = sum(scenario_probs[sid] * utsp_costs_train[sid] for sid in scenario_ids)
+
+    print(f"\n  Validazione out-of-sample ({N_VALIDATION_SCENARIOS} scenari, seme={VALIDATION_SEED}) ...")
+    utsp_val, utsp_tc_val, utsp_pc_val, UTSP_val, results_val = _evaluate_policy_oos(
+        "utsp", x_utsp, nodes, E, base_dist, root, env,
+        I, p, C, frequent_arcs,
+        N_VALIDATION_SCENARIOS, N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC
     )
 
-    # ── Validazione out-of-sample (30 scenari, VALIDATION_SEED=99) ────
-    print(f"\n  Validazione out-of-sample ({N_VALIDATION_SCENARIOS} scenari, "
-          f"seme={VALIDATION_SEED}) ...")
-
-    utsp_val, utsp_tc_val, utsp_pc_val, UTSP_val, results_val = \
-        _evaluate_policy_oos(
-            "utsp", x_utsp, nodes, E, base_dist, root, env,
-            I, p, C, frequent_arcs,
-            N_VALIDATION_SCENARIOS, N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC
-        )
-
-    # PI, STO, EEV sugli stessi 30 scenari di validazione
-    # (chiamiamo validate_policies che li rigenera con lo stesso seme)
     val_results = validate_policies(
         nodes, E, base_dist, root, env, I, p, C,
         res_B["x_used_sto"], res_B["x_ev"],
         frequent_arcs, N_VALIDATION_SCENARIOS,
         N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC,
-        exp_name="espB"     # appende al txt esistente di B
+        exp_name="espB"
     )
-    PI_val  = val_results["PI_val"]
+    PI_val = val_results["PI_val"]
     STO_val = val_results["STO_val"]
     EEV_val = val_results["EEV_val"]
 
-    # ── Riepilogo numerico ─────────────────────────────────────────────
     gap_utsp_sto = (UTSP_val - STO_val) / abs(STO_val) * 100 if STO_val else float("nan")
     gap_utsp_eev = (UTSP_val - EEV_val) / abs(EEV_val) * 100 if EEV_val else float("nan")
-    gap_utsp_pi  = (UTSP_val - PI_val)  / abs(PI_val)  * 100 if PI_val  else float("nan")
+    gap_utsp_pi = (UTSP_val - PI_val) / abs(PI_val) * 100 if PI_val else float("nan")
 
     print("\n" + "─" * 65)
     print("RIEPILOGO ESPERIMENTO B — UTSP 2-STADI")
@@ -444,7 +1096,6 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B):
     print(f"  Gap UTSP vs PI  (val) = {gap_utsp_pi:+.2f}%")
     print("─" * 65)
 
-    # ── Salva txt ──────────────────────────────────────────────────────
     _save_utsp_summary(
         exp_name="espB_UTSP",
         scenario_ids=scenario_ids,
@@ -473,23 +1124,113 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B):
         temperature=temperature,
     )
 
+    genera_grafici_utsp(
+        exp_name="espB_UTSP",
+        nodes=nodes,
+        coords=coords,
+        scenario_ids=scenario_ids,
+        results=results,
+        eev_costs=res_B["eev_costs"],
+        eev_solutions=res_B["eev_solutions"],
+        stoch_costs=res_B["stoch_costs"],
+        stoch_solutions=res_B["stoch_solutions"],
+        utsp_costs=utsp_costs_train,
+        utsp_solutions=utsp_solutions_train,
+        x_ev=res_B["x_ev"],
+        x_sto=res_B["x_used_sto"],
+        x_utsp=x_utsp,
+        utsp_label="UTSP two-stage",
+        save=True,
+    )
+
     return {
-        "model":              model,
-        "history":            history,
-        "x_utsp":             x_utsp,
-        "x_scores":           x_scores,
-        "I_mask":             I_mask,
-        "utsp_costs_train":   utsp_costs_train,
-        "UTSP_train":         UTSP_train,
-        "utsp_val":           utsp_val,
-        "UTSP_val":           UTSP_val,
-        "PI_val":             PI_val,
-        "STO_val":            STO_val,
-        "EEV_val":            EEV_val,
-        "gap_utsp_sto":       gap_utsp_sto,
-        "gap_utsp_eev":       gap_utsp_eev,
-        "gap_utsp_pi":        gap_utsp_pi,
+        "utsp_costs_train": utsp_costs_train,
+        "utsp_tc_train": utsp_tc_train,
+        "utsp_pc_train": utsp_pc_train,
+        "utsp_solutions_train": utsp_solutions_train,
+        "UTSP_train": UTSP_train,
+        "utsp_val": utsp_val,
+        "UTSP_val": UTSP_val,
+        "PI_val": PI_val,
+        "STO_val": STO_val,
+        "EEV_val": EEV_val,
+        "gap_utsp_sto": gap_utsp_sto,
+        "gap_utsp_eev": gap_utsp_eev,
+        "gap_utsp_pi": gap_utsp_pi,
     }
+
+
+def _run_local_search_branch(
+    nodes, coords, E, root, env, res_B,
+    results, scenario_ids, H_list,
+    PI_train, STO_train, EEV_train,
+    history, temperature,
+):
+    print("\n" + "=" * 70)
+    print("ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH")
+
+    ls = _run_heatmap_local_search(nodes, E, root, env, results, scenario_ids, H_list)
+    costs_train, solutions_train, UTSP_LS_train = _evaluate_fixed_tour_on_scenarios(
+        ls["tour_ls"], results, scenario_ids
+    )
+
+    print("\n" + "─" * 65)
+    print("RIEPILOGO ESPERIMENTO B — UTSP LOCAL SEARCH")
+    print(f"  Tour LS: {ls['tour_ls']}")
+    print(f"  PI train      = {PI_train:.4f}")
+    print(f"  STO train     = {STO_train:.4f}")
+    print(f"  EEV train     = {EEV_train:.4f}")
+    print(f"  UTSP_LS train = {UTSP_LS_train:.4f}")
+    print(f"  Info LS       = {ls['ls_info']}")
+    print("─" * 65)
+
+    _save_utsp_ls_summary(
+        exp_name="espB_UTSP_LS",
+        scenario_ids=scenario_ids,
+        results=results,
+        tour_seed=ls["tour_seed"],
+        tour_ls=ls["tour_ls"],
+        costs_train=costs_train,
+        UTSP_LS_train=UTSP_LS_train,
+        PI_train=PI_train,
+        STO_train=STO_train,
+        EEV_train=EEV_train,
+        ls_info=ls["ls_info"],
+        history=history,
+        temperature=temperature,
+    )
+
+    genera_grafici_utsp(
+        exp_name="espB_UTSP_LS",
+        nodes=nodes,
+        coords=coords,
+        scenario_ids=scenario_ids,
+        results=results,
+        eev_costs=res_B["eev_costs"],
+        eev_solutions=res_B["eev_solutions"],
+        stoch_costs=res_B["stoch_costs"],
+        stoch_solutions=res_B["stoch_solutions"],
+        utsp_costs=costs_train,
+        utsp_solutions=solutions_train,
+        x_ev=res_B["x_ev"],
+        x_sto=res_B["x_used_sto"],
+        x_utsp=[],
+        utsp_label="UTSP local search",
+        save=True,
+    )
+
+    return {
+        "tour_seed": ls["tour_seed"],
+        "tour_ls": ls["tour_ls"],
+        "arcs_ls": ls["arcs_ls"],
+        "costs_train": costs_train,
+        "solutions_train": solutions_train,
+        "UTSP_LS_train": UTSP_LS_train,
+        "ls_info": ls["ls_info"],
+        "H_raw": ls["H_raw"],
+        "H_decode": ls["H_decode"],
+    }
+
 
 def _save_utsp_summary(
     exp_name, scenario_ids, results,
@@ -516,10 +1257,10 @@ def _save_utsp_summary(
         f"  N prenotazioni   : {len(x_utsp)}/{len(I)}",
         f"  Costo prenotazione: {fmt(reservation)}",
         "",
-        "SCORE CONTINUI x̃_ij  (soglia={:.2f})".format(UTSP2_THRESHOLD),
+        "SCORE CONTINUI x̃_ij  (soglia={:.2f})".format(UTSP2_TAU),
     ]
     for edge, score in sorted(x_scores.items()):
-        flag = "✓" if score >= UTSP2_THRESHOLD else "✗"
+        flag = "✓" if score >= UTSP2_TAU else "✗"
         lines.append(f"  {{{edge[0]},{edge[1]}}}  x̃={score:.4f}  {flag}")
 
     lines += [
@@ -569,8 +1310,7 @@ def _save_utsp_summary(
         f"  Temperatura T  = {temperature:.6f}",
         f"  Loss iniziale  = {history['loss'][0]:.5f}",
         f"  Loss finale    = {history['loss'][-1]:.5f}",
-        f"  Loss minima    = {min(history['loss']):.5f} "
-        f"(ep {int(np.argmin(history['loss'])) + 1})",
+        f"  Loss minima    = {min(history['loss']):.5f} (ep {int(np.argmin(history['loss'])) + 1})",
         "",
         "TRATTE I",
     ]
@@ -578,11 +1318,58 @@ def _save_utsp_summary(
         p_val = get_edge_value(p, i, j)
         C_val = get_edge_value(C, i, j)
         b_val = get_edge_value(b, i, j)
-        lines.append(
-            f"  {{{i},{j}}}  b={fmt(b_val)}  p={fmt(p_val)}  C={fmt(C_val)}"
-        )
+        lines.append(f"  {{{i},{j}}}  b={fmt(b_val)}  p={fmt(p_val)}  C={fmt(C_val)}")
 
     lines.append("=" * 65)
+    text = "\n".join(lines)
+    print("\n" + text)
+
+    fname = os.path.join(OUTPUT_DIR, f"risultati_{exp_name}.txt")
+    with open(fname, "w", encoding="utf-8") as f:
+        f.write(text + "\n")
+    print(f"\n  → Salvato: {fname}")
+
+
+def _save_utsp_ls_summary(
+    exp_name, scenario_ids, results,
+    tour_seed, tour_ls, costs_train,
+    UTSP_LS_train, PI_train, STO_train, EEV_train,
+    ls_info, history, temperature,
+):
+    def fmt(x): return f"{x:.4f}" if x is not None else "N/A"
+
+    lines = [
+        "=" * 65,
+        "ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH",
+        "=" * 65,
+        "",
+        f"Tour iniziale heatmap: {tour_seed}",
+        f"Tour dopo local search: {tour_ls}",
+        f"Info local search     : {ls_info}",
+        "",
+        "TRAINING (8 scenari)",
+        f"  {'Scen':>4} | {'PI':>10} | {'UTSP_LS':>10}",
+    ]
+    for sid in scenario_ids:
+        pi = results[sid]["exact_free"]["length"]
+        lines.append(f"  {sid:>4} | {fmt(pi):>10} | {fmt(costs_train[sid]):>10}")
+
+    lines += [
+        "",
+        f"  PI      (train) = {fmt(PI_train)}",
+        f"  STO     (train) = {fmt(STO_train)}",
+        f"  EEV     (train) = {fmt(EEV_train)}",
+        f"  UTSP_LS (train) = {fmt(UTSP_LS_train)}",
+        "",
+        "TRAINING GNN",
+        f"  Epoche         = {UTSP2_EPOCHS}",
+        f"  Temperatura T  = {temperature:.6f}",
+        f"  Loss iniziale  = {history['loss'][0]:.5f}",
+        f"  Loss finale    = {history['loss'][-1]:.5f}",
+        f"  Loss minima    = {min(history['loss']):.5f} (ep {int(np.argmin(history['loss'])) + 1})",
+        "=" * 65,
+    ]
+
     text = "\n".join(lines)
     print("\n" + text)
 

@@ -174,54 +174,79 @@ def compute_heatmap(T_omega):
     """
     return torch.bmm(T_omega, torch.roll(T_omega.transpose(1, 2), -1, 1))
 
+def compute_H_bar(H_list, scenario_probs):
+    """
+    H_bar_ij = Σ_{ω∈Ω} p_ω H^ω_ij
 
+    Parametri
+    ---------
+    H_list         : lista di K tensori (B, n, n)
+    scenario_probs : tensore (K,) con probabilità p_ω
+
+    Ritorna
+    -------
+    H_bar : (B, n, n)
+        Heatmap aggregata pesata sugli scenari.
+    """
+    H_bar = torch.zeros_like(H_list[0])
+
+    for H_omega, p_w in zip(H_list, scenario_probs):
+        H_bar = H_bar + p_w * H_omega
+
+    return H_bar
 # ═══════════════════════════════════════════════════════════════════════════
 # DECISIONE RILASSATA DI PRENOTAZIONE
 # ═══════════════════════════════════════════════════════════════════════════
 
-def compute_booking_decision(H_list, I_mask, scenario_probs, gamma):
+def compute_booking_decision(H_bar, I_mask, gamma, tau):
     """
-    x̃_ij = σ_γ( Σ_ω p_ω · (H^ω_ij + H^ω_ji) )   ∀ {i,j} ∈ I
+    x̃_ij = σ_γ(H_bar_I_ij - τ)
 
-    La somma delle due direzioni riflette la struttura non orientata di I
-    (un arco viene prenotato se è usato in qualunque direzione).
+    dove:
+      H_bar_ij = Σ_ω p_ω H^ω_ij
+
+    Nel codice attuale I è non orientato: ogni arco {i,j} è rappresentato
+    sia da (i,j) sia da (j,i). Per questo costruisco:
+
+        H_bar_I = H_bar + H_bar^T
+
+    così la decisione di prenotazione è unica per la tratta non orientata.
 
     Parametri
     ---------
-    H_list         : lista di K tensori (B, n, n) — heatmap per ogni scenario
-    I_mask         : (n, n) BoolTensor — True nelle celle di I
-    scenario_probs : (K,) FloatTensor  — p_ω per ogni scenario
-    gamma          : float — steepness della sigmoide
+    H_bar : (B, n, n)
+        Heatmap aggregata pesata sugli scenari.
+
+    I_mask : (n, n)
+        Maschera degli archi importanti, con entrambe le direzioni.
+
+    gamma : float
+        Pendenza della sigmoide.
+
+    tau : float
+        Soglia interna della sigmoide.
 
     Ritorna
     -------
-    x_tilde : (B, n, n) FloatTensor — decisione in [0,1], nonzero solo su I (entrambe direzioni)
-              Il valore è lo stesso in (i,j) e (j,i) perché I è non orientato.
-    H_sum   : (B, n, n) FloatTensor — Σ_ω p_ω (H^ω_ij + H^ω_ji), usato nella penalty
+    x_tilde : (B, n, n)
+        Decisione rilassata di prenotazione.
+
+    H_bar_I : (B, n, n)
+        Heatmap aggregata usata sui termini di first stage.
     """
-    B, n, _ = H_list[0].shape
-    device  = H_list[0].device
+    I_float = I_mask.float().unsqueeze(0)
 
-    # Somma pesata delle heatmap direzionali su tutti gli scenari
-    H_weighted_sum = torch.zeros(B, n, n, device=device)
-    for H_omega, p_w in zip(H_list, scenario_probs):
-        H_weighted_sum += p_w * H_omega          # accumula Σ_ω p_ω H^ω_ij
+    # Aggregazione coerente con I non orientato.
+    H_bar_I = H_bar + H_bar.transpose(1, 2)
 
-    # Per ogni edge {i,j} ∈ I aggiungo entrambe le direzioni (arco non orientato)
-    H_sym_sum = H_weighted_sum + H_weighted_sum.transpose(1, 2)
-    # → H_sym_sum[b, ii, jj] = Σ_ω p_ω (H^ω_ij + H^ω_ji)
+    # Sigmoide con soglia interna.
+    x_tilde = torch.sigmoid(gamma * (H_bar_I - tau))
 
-    # Sigmoide: σ_γ(x) = 1 / (1 + exp(-γ·x))
-    arg       = H_sym_sum                        # shape (B, n, n)
-    x_tilde   = torch.sigmoid(gamma * arg)       # ∈ (0, 1)
-
-    # Azzero fuori da I_mask (non serve la prenotazione per altri archi)
-    I_float = I_mask.float().unsqueeze(0)        # (1, n, n)
+    # Fuori da I non esistono decisioni di prenotazione.
     x_tilde = x_tilde * I_float
-    H_sum   = H_sym_sum * I_float
+    H_bar_I = H_bar_I * I_float
 
-    return x_tilde, H_sum
-
+    return x_tilde, H_bar_I
 
 # ═══════════════════════════════════════════════════════════════════════════
 # LOSS COMPONENTS
@@ -274,59 +299,58 @@ def _loss_distance(H_list, dist_list, scenario_probs):
 
 def _loss_booking(x_tilde, p_mat):
     """
-    Σ_{(i,j)∈I} c_ij · x̃_ij
+    Σ_{(i,j)∈I} c_ij · σ_γ(H_bar_ij - τ)
 
-    Costo atteso di prenotazione degli archi importanti.
-    c_ij = p_ij in prova_neur.py (= PRENOTAZIONE_FRAC * b_ij).
+    Nel codice:
+      x_tilde = σ_γ(H_bar_I - τ)
 
-    Poiché x_tilde e p_mat sono già simmetrici su I e nulli fuori da I,
-    divido per 2 per non contare ogni arco due volte (sia (i,j) che (j,i)).
+    Poiché I è rappresentato in entrambe le direzioni, divido per 2.
     """
-    # p_mat : (n, n),  x_tilde : (B, n, n)
-    cost = (p_mat.unsqueeze(0) * x_tilde).sum(dim=(1, 2))  # (B,)
+    cost = (p_mat.unsqueeze(0) * x_tilde).sum(dim=(1, 2))
     return (cost / 2.0).mean()
 
 
 def _loss_penalty(H_list, x_tilde, C_mat, I_mask, scenario_probs):
     """
-    Σ_ω p_ω Σ_{(i,j)∈I} C_ij · H^ω_ij · (1 - x̃_ij)
+    Σ_ω p_ω Σ_{(i,j)∈I} C_ij H^ω_ij · (1 - σ_γ(H_bar_ij - τ))
 
-    Multa per gli archi in I che vengono usati (H^ω_ij > 0) ma non prenotati
-    (1 - x̃_ij ≈ 1).
+    dove:
+      x_tilde = σ_γ(H_bar_I - τ)
 
-    La moltiplicazione H^ω_ij · (1 - x̃_ij) è differenziabile: quando x̃_ij → 1
-    il termine si annulla, quando x̃_ij → 0 pago tutta la multa.
+    H^ω resta scenario-specifica.
+    x_tilde dipende invece da H_bar.
     """
-    loss    = torch.tensor(0.0, device=H_list[0].device)
-    C_broad = C_mat.unsqueeze(0)      # (1, n, n)
+    loss = torch.tensor(0.0, device=H_list[0].device)
+
+    C_broad = C_mat.unsqueeze(0)
     I_float = I_mask.float().unsqueeze(0)
 
     for H_omega, p_w in zip(H_list, scenario_probs):
-        # Restringo a I (già zero fuori da I_mask grazie a I_float)
-        penalty = C_broad * H_omega * (1.0 - x_tilde) * I_float  # (B, n, n)
-        loss    = loss + p_w * penalty.sum(dim=(1, 2)).mean()
+        penalty = C_broad * H_omega * (1.0 - x_tilde) * I_float
+        loss = loss + p_w * penalty.sum(dim=(1, 2)).mean()
 
-    return loss / 2.0   # ÷ 2 per doppio conteggio direzioni (I non orientato)
+    return loss / 2.0
 
 
-def _loss_entropy(x_tilde, I_mask):
+def _loss_entropy(H_bar_I, I_mask):
     """
-    λₑ · Σ_{(i,j)∈I} H(x̃_ij)
-       = λₑ · Σ_{(i,j)∈I} [-x̃_ij log(x̃_ij) - (1-x̃_ij) log(1-x̃_ij)]
+    λₑ · Σ_{(i,j)∈I} H_bar_ij (1 - H_bar_ij)
 
-    Regolarizzazione: spinge x̃_ij verso 0 o 1 (decisioni nette).
-    Un'entropia alta indica incertezza nella decisione di prenotazione.
+    Regolarizzazione della formulazione aggiornata.
 
-    Nota: x̃_ij = x̃_ji per costruzione (I non orientato),
-    per cui divido per 2 per non contare ogni arco due volte.
+    Nota:
+    - H_bar_I è già aggregata sugli scenari;
+    - I_mask contiene entrambe le direzioni;
+    - divido per 2 per non contare due volte la stessa tratta non orientata.
     """
-    eps  = 1e-9
-    x    = x_tilde.clamp(eps, 1.0 - eps)
-    ent  = -x * torch.log(x) - (1.0 - x) * torch.log(1.0 - x)   # (B, n, n)
-
     I_float = I_mask.float().unsqueeze(0)
-    ent_I   = (ent * I_float).sum(dim=(1, 2))   # (B,)
-    return (ent_I / 2.0).mean()
+
+    h = H_bar_I.clamp(0.0, 1.0)
+    reg = h * (1.0 - h)
+
+    reg_I = (reg * I_float).sum(dim=(1, 2))
+
+    return (reg_I / 2.0).mean()
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -341,6 +365,7 @@ def two_stage_utsp_loss(
     C_mat,
     scenario_probs,
     gamma     = DEFAULT_GAMMA,
+    tau       = 0.5,
     lambda1   = DEFAULT_LAMBDA1,
     lambda2   = DEFAULT_LAMBDA2,
     lambda_e  = DEFAULT_LAMBDA_E,
@@ -377,41 +402,51 @@ def two_stage_utsp_loss(
     """
     # ── Heatmap H^ω da T^ω ────────────────────────────────────────────
     H_list = [compute_heatmap(T_omega) for T_omega in T_list]
-
+    
+    # ── Heatmap aggregata pesata sugli scenari ─────────────────────────
+    # H_bar_ij = Σ_ω p_ω H^ω_ij
+    H_bar = compute_H_bar(H_list, scenario_probs)
+    
     # ── Decisione rilassata di prenotazione x̃ ─────────────────────────
-    x_tilde, H_sym_sum = compute_booking_decision(
-        H_list, I_mask, scenario_probs, gamma
+    # x̃_ij = σ_γ(H_bar_I_ij - τ)
+    x_tilde, H_bar_I = compute_booking_decision(
+        H_bar, I_mask, gamma, tau
     )
-
+    
     # ── Singoli termini della loss ──────────────────────────────────────
-    L_row    = _loss_row_wise(T_list,                   scenario_probs)
-    L_diag   = _loss_self_loop(H_list,                  scenario_probs)
-    L_dist   = _loss_distance(H_list,   dist_list,      scenario_probs)
-    L_book   = _loss_booking(x_tilde,   p_mat)
-    L_pen    = _loss_penalty(H_list, x_tilde, C_mat, I_mask, scenario_probs)
-    L_ent    = _loss_entropy(x_tilde,   I_mask)
+    # Termini scenario-specifici: usano H^ω
+    L_row  = _loss_row_wise(T_list,              scenario_probs)
+    L_diag = _loss_self_loop(H_list,             scenario_probs)
+    L_dist = _loss_distance(H_list, dist_list,   scenario_probs)
+    
+    # Termini di first stage / coerenza scenari: usano H_bar tramite x_tilde
+    L_book = _loss_booking(x_tilde, p_mat)
+    L_pen  = _loss_penalty(H_list, x_tilde, C_mat, I_mask, scenario_probs)
+    
+    # Regolarizzazione finale: usa H_bar, non H^ω e non x_tilde
+    L_ent  = _loss_entropy(H_bar_I, I_mask)
 
-    # ── Loss totale ─────────────────────────────────────────────────────
+    # ── Loss totale ────────────────────────────────────────────────────
     loss = (
-        lambda1  * L_row
-      + lambda2  * L_diag
-      + L_dist
-      + L_book
-      + L_pen
-      + lambda_e * L_ent
+        lambda1 * L_row
+        + lambda2 * L_diag
+        + L_dist
+        + L_book
+        + L_pen
+        + lambda_e * L_ent
     )
 
     if return_components:
         return loss, {
-            "row_wise"  : L_row.item(),
-            "self_loop" : L_diag.item(),
-            "distance"  : L_dist.item(),
-            "booking"   : L_book.item(),
-            "penalty"   : L_pen.item(),
-            "entropy"   : L_ent.item(),
-            "total"     : loss.item(),
+            "total": float(loss.detach().cpu().item()),
+            "row_wise": float(L_row.detach().cpu().item()),
+            "self_loop": float(L_diag.detach().cpu().item()),
+            "distance": float(L_dist.detach().cpu().item()),
+            "booking": float(L_book.detach().cpu().item()),
+            "penalty": float(L_pen.detach().cpu().item()),
+            "entropy": float(L_ent.detach().cpu().item()),
         }
-
+    
     return loss
 
 
@@ -420,7 +455,7 @@ def two_stage_utsp_loss(
 # (usata dopo il training per estrarre la politica di primo stadio)
 # ═══════════════════════════════════════════════════════════════════════════
 
-def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, gamma, threshold=0.5):
+def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, gamma, tau=0.5, threshold=0.5):    
     """
     Decodifica la decisione di prenotazione binaria dal modello addestrato.
 
@@ -444,8 +479,8 @@ def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, gamma, thres
     idx = {v: k for k, v in enumerate(nodes)}
 
     with torch.no_grad():
-        x_tilde, _ = compute_booking_decision(H_list, I_mask, scenario_probs, gamma)
-        # x_tilde : (1, n, n)
+      H_bar = compute_H_bar(H_list, scenario_probs)
+      x_tilde, _ = compute_booking_decision(H_bar, I_mask, gamma, tau)
 
     x_reserved = []
     x_scores   = {}

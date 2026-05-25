@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import math
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
 
 from config import VALIDATION_SEED
 from common import out_path
@@ -657,3 +662,238 @@ def validate_policies(
         "eev_costs":   eev_costs,
         "results_val": results_val,
     }
+
+# ═══════════════════════════════════════════════════════════════════
+# GRAFICI 4 PANNELLI: PI / EEV / STO / UTSP
+# ═══════════════════════════════════════════════════════════════════
+
+def _draw_nodes(ax, nodes, coords):
+    xs = [coords[n][0] for n in nodes]
+    ys = [coords[n][1] for n in nodes]
+    ax.scatter(xs, ys, color="#333333", s=70, zorder=5)
+    for n, (cx, cy) in coords.items():
+        ax.text(cx + 0.4, cy + 0.4, str(n), fontsize=8, zorder=6)
+
+
+def _draw_arcs(ax, arcs, coords, highlight_undir, base_color, lw_normal=1.8, lw_hi=2.8):
+    for (i, j) in arcs:
+        xi, yi = coords[i]
+        xj, yj = coords[j]
+        in_I = highlight_undir is not None and canon_edge(i, j) in highlight_undir
+        color = "crimson" if in_I else base_color
+        lw = lw_hi if in_I else lw_normal
+        ms = 16 if in_I else 13
+        ax.annotate(
+            "",
+            xy=(xj, yj),
+            xytext=(xi, yi),
+            arrowprops=dict(arrowstyle="->", color=color, lw=lw, mutation_scale=ms),
+            zorder=3,
+        )
+
+
+def _draw_reserved_not_used(ax, reserved_edges, tour_arcs, coords):
+    if not reserved_edges:
+        return
+
+    tour_edges = {canon_edge(i, j) for (i, j) in tour_arcs}
+
+    for (i, j) in sorted({canon_edge(*e) for e in reserved_edges}):
+        if canon_edge(i, j) in tour_edges:
+            continue
+        xi, yi = coords[i]
+        xj, yj = coords[j]
+        ax.plot(
+            [xi, xj], [yi, yj],
+            color="crimson",
+            linestyle="--",
+            linewidth=2.2,
+            alpha=0.55,
+            zorder=2,
+        )
+
+
+def _solution_arcs(solution):
+    if not solution:
+        return []
+    return solution.get("arcs", solution.get("y_used", []))
+
+
+def _solution_tour(solution):
+    if not solution:
+        return []
+    return solution.get("tour", [])
+
+
+def plot_scenario_comparison_utsp(
+    exp_name,
+    scenario_id,
+    nodes,
+    coords,
+    results,
+    eev_costs,
+    eev_solutions,
+    stoch_costs,
+    stoch_solutions,
+    utsp_costs,
+    utsp_solutions,
+    x_ev,
+    x_sto,
+    x_utsp,
+    utsp_label="UTSP",
+    save=True,
+):
+    fig, axes = plt.subplots(2, 2, figsize=(26, 22))
+    fig.suptitle(
+        f"Scenario {scenario_id} — confronto PI / EEV / STO / {utsp_label}",
+        fontsize=16,
+        fontweight="bold",
+        y=1.01,
+    )
+
+    pi_sol = results[scenario_id]["exact_free"]
+    eev_sol = eev_solutions[scenario_id]
+    sto_sol = stoch_solutions[scenario_id]
+    utsp_sol = utsp_solutions[scenario_id]
+
+    pi_arcs = _solution_arcs(pi_sol)
+    pi_tour = _solution_tour(pi_sol)
+    eev_arcs = _solution_arcs(eev_sol)
+    eev_tour = _solution_tour(eev_sol)
+    sto_arcs = _solution_arcs(sto_sol)
+    sto_tour = _solution_tour(sto_sol)
+    utsp_arcs = _solution_arcs(utsp_sol)
+    utsp_tour = _solution_tour(utsp_sol)
+
+    panels = [
+        {
+            "title": "PI libero",
+            "arcs": pi_arcs,
+            "tour": pi_tour,
+            "cost": pi_sol.get("length", pi_sol.get("objective", None)),
+            "color": "#01D80B",
+            "highlight": set(),
+        },
+        {
+            "title": "EEV: ricorso con x^EV fissato",
+            "arcs": eev_arcs,
+            "tour": eev_tour,
+            "cost": eev_costs[scenario_id],
+            "color": "#A500CE",
+            "highlight": set(x_ev),
+        },
+        {
+            "title": "Stocastico / STO",
+            "arcs": sto_arcs,
+            "tour": sto_tour,
+            "cost": stoch_costs[scenario_id],
+            "color": "#000000",
+            "highlight": set(x_sto),
+        },
+        {
+            "title": utsp_label,
+            "arcs": utsp_arcs,
+            "tour": utsp_tour,
+            "cost": utsp_costs[scenario_id],
+            "color": "#0055CC",
+            "highlight": set(x_utsp) if x_utsp else set(),
+        },
+    ]
+
+    positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
+
+    for panel, (r, c) in zip(panels, positions):
+        ax = axes[r][c]
+        _draw_nodes(ax, nodes, coords)
+
+        if panel["arcs"]:
+            _draw_arcs(ax, panel["arcs"], coords, panel["highlight"], panel["color"])
+            _draw_reserved_not_used(ax, panel["highlight"], panel["arcs"], coords)
+        else:
+            ax.text(
+                0.5, 0.5, "Soluzione non disponibile",
+                ha="center", va="center", transform=ax.transAxes, fontsize=12,
+            )
+
+        tour = panel["tour"]
+        if tour:
+            tour_str = " → ".join(str(n) for n in tour) + f" → {tour[0]}"
+            arc_list = [(tour[k], tour[(k + 1) % len(tour)]) for k in range(len(tour))]
+            arc_str = "  →  ".join(f"({i},{j})" for (i, j) in arc_list)
+        else:
+            tour_str = "n.d."
+            arc_str = "n.d."
+
+        cost = panel["cost"]
+        cost_str = f"{cost:.4f}" if cost is not None else "N/A"
+
+        handles = [mpatches.Patch(color=panel["color"], label="Arco percorso")]
+        if panel["highlight"]:
+            tour_edges = {canon_edge(i, j) for (i, j) in panel["arcs"]}
+            highlighted_edges = {canon_edge(*e) for e in panel["highlight"]}
+            if highlighted_edges & tour_edges:
+                handles.append(mpatches.Patch(color="crimson", label="Tratta prenotata e percorsa"))
+            if highlighted_edges - tour_edges:
+                handles.append(Line2D([0], [0], color="crimson", linestyle="--", linewidth=2.2, label="Tratta prenotata non percorsa"))
+
+        ax.legend(handles=handles, loc="upper left", fontsize=8)
+        ax.set_title(
+            f"{panel['title']}\nCosto: {cost_str}\nTour: {tour_str}\nArchi: {arc_str}",
+            fontsize=8,
+            loc="left",
+            pad=8,
+            family="monospace",
+        )
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.grid(True, linestyle="--", alpha=0.35)
+
+    plt.tight_layout()
+
+    if save:
+        fname = out_path(f"{exp_name}_scenario_{scenario_id}_confronto.png")
+        plt.savefig(fname, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"  Salvato grafico 4 pannelli: {fname}")
+    else:
+        plt.show()
+
+
+def genera_grafici_utsp(
+    exp_name,
+    nodes,
+    coords,
+    scenario_ids,
+    results,
+    eev_costs,
+    eev_solutions,
+    stoch_costs,
+    stoch_solutions,
+    utsp_costs,
+    utsp_solutions,
+    x_ev,
+    x_sto,
+    x_utsp,
+    utsp_label="UTSP",
+    save=True,
+):
+    for sid in scenario_ids:
+        plot_scenario_comparison_utsp(
+            exp_name=exp_name,
+            scenario_id=sid,
+            nodes=nodes,
+            coords=coords,
+            results=results,
+            eev_costs=eev_costs,
+            eev_solutions=eev_solutions,
+            stoch_costs=stoch_costs,
+            stoch_solutions=stoch_solutions,
+            utsp_costs=utsp_costs,
+            utsp_solutions=utsp_solutions,
+            x_ev=x_ev,
+            x_sto=x_sto,
+            x_utsp=x_utsp,
+            utsp_label=utsp_label,
+            save=save,
+        )
+

@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 import argparse
 
-from config import ESPERIMENTI_DA_ESEGUIRE
 from common import load_data, load_env, set_seed
 from experiment_B import run_esperimento_B
 from utsp import run_esperimento_B_UTSP
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Esegue Esperimento B e/o B_UTSP.")
+    parser = argparse.ArgumentParser(description="Esegue Esperimento B e le varianti UTSP.")
     parser.add_argument(
         "--only",
-        choices=["B", "B_UTSP", "ALL"],
+        choices=["B", "B_UTSP", "B_UTSP_LS", "ALL"],
         default="ALL",
-        help="Esperimento da eseguire. B_UTSP richiede prima B nella stessa esecuzione.",
+        help=(
+            "B = solo esperimento B; "
+            "B_UTSP = B + politica x_utsp + ricorso Gurobi; "
+            "B_UTSP_LS = B + heatmap UTSP + local search; "
+            "ALL = B + entrambe le varianti UTSP."
+        ),
     )
     args = parser.parse_args()
 
@@ -22,16 +26,23 @@ def main():
     nodes, coords, base_dist, E, root = load_data()
 
     risultati = {}
-    run_list = ESPERIMENTI_DA_ESEGUIRE if args.only == "ALL" else [args.only]
+    risultati["B"] = run_esperimento_B(nodes, coords, base_dist, E, root, env)
 
-    if "B" in run_list or "B_UTSP" in run_list:
-        risultati["B"] = run_esperimento_B(nodes, coords, base_dist, E, root, env)
+    if args.only == "B":
+        return risultati
 
-    if "B_UTSP" in run_list:
-        risultati["B_UTSP"] = run_esperimento_B_UTSP(
-            nodes, coords, base_dist, E, root, env,
-            res_B=risultati["B"],
-        )
+    if args.only == "B_UTSP":
+        mode = "policy"
+    elif args.only == "B_UTSP_LS":
+        mode = "local_search"
+    else:
+        mode = "both"
+
+    risultati["B_UTSP"] = run_esperimento_B_UTSP(
+        nodes, coords, base_dist, E, root, env,
+        res_B=risultati["B"],
+        mode=mode,
+    )
 
     return risultati
 
