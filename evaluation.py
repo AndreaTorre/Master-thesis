@@ -896,4 +896,120 @@ def genera_grafici_utsp(
             utsp_label=utsp_label,
             save=save,
         )
+# ═══════════════════════════════════════════════════════════════════
+# HEATMAP E GRAFO PESATO — UTSP
+# ═══════════════════════════════════════════════════════════════════
 
+def plot_utsp_heatmap(exp_name, nodes, H, title_suffix="", save=True):
+    """
+    Visualizza la matrice H (n×n) come imshow con etichette dei nodi sugli assi.
+    H è tipicamente H_decode (diagonale azzerata, media sugli scenari).
+    """
+    import numpy as np
+    n = len(nodes)
+    fig, ax = plt.subplots(figsize=(max(6, n * 0.75), max(5, n * 0.7)))
+
+    h_plot = np.array(H, dtype=float)
+    im = ax.imshow(h_plot, cmap="YlOrRd", aspect="auto", vmin=0, vmax=h_plot.max())
+    plt.colorbar(im, ax=ax, shrink=0.8, label="H[i→j]")
+
+    labels = [str(v) for v in nodes]
+    ax.set_xticks(range(n))
+    ax.set_yticks(range(n))
+    ax.set_xticklabels(labels, fontsize=9)
+    ax.set_yticklabels(labels, fontsize=9)
+    ax.set_xlabel("nodo j  (destinazione)", fontsize=10)
+    ax.set_ylabel("nodo i  (origine)", fontsize=10)
+
+    title = f"Heatmap UTSP  {title_suffix}".strip()
+    ax.set_title(title, fontsize=12, fontweight="bold")
+
+    h_max = float(h_plot.max()) if h_plot.max() > 0 else 1.0
+    for ii in range(n):
+        for jj in range(n):
+            val = float(h_plot[ii, jj])
+            if val > 1e-4:
+                txt_color = "white" if val > 0.6 * h_max else "black"
+                ax.text(jj, ii, f"{val:.2f}",
+                        ha="center", va="center",
+                        fontsize=7, color=txt_color)
+
+    plt.tight_layout()
+    if save:
+        fname = out_path(f"{exp_name}_heatmap.png")
+        plt.savefig(fname, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"  Salvato heatmap: {fname}")
+    else:
+        plt.show()
+
+
+def plot_utsp_graph_weights(exp_name, nodes, coords, H,
+                            threshold=0.01, title_suffix="", save=True):
+    """
+    Disegna il grafo con archi la cui larghezza è proporzionale a H[i→j].
+    H è tipicamente H_raw (media sugli scenari, con diagonale).
+    Gli archi con H[i,j] / H.max() < threshold vengono omessi.
+    """
+    import numpy as np
+    from matplotlib.cm import ScalarMappable
+    from matplotlib.colors import Normalize
+
+    idx = {v: k for k, v in enumerate(nodes)}
+    H = np.array(H, dtype=float)
+    h_max = float(H.max())
+    if h_max < 1e-9:
+        print("  plot_utsp_graph_weights: H è quasi nulla, grafico saltato.")
+        return
+    H_norm = H / h_max
+
+    fig, ax = plt.subplots(figsize=(10, 9))
+    _draw_nodes(ax, nodes, coords)
+
+    lw_min,    lw_max    = 0.4,  6.0
+    alpha_min, alpha_max = 0.12, 0.88
+    ms_min,    ms_max    = 6,    18
+
+    for i in nodes:
+        for j in nodes:
+            if i == j:
+                continue
+            w = float(H_norm[idx[i], idx[j]])
+            if w < threshold:
+                continue
+            xi, yi = coords[i]
+            xj, yj = coords[j]
+            lw    = lw_min    + (lw_max    - lw_min)    * w
+            alpha = alpha_min + (alpha_max - alpha_min) * w
+            ms    = ms_min    + (ms_max    - ms_min)    * w
+            color = (0.05, 0.25 + 0.45 * (1 - w), 0.85, alpha)
+            ax.annotate(
+                "",
+                xy=(xj, yj), xytext=(xi, yi),
+                arrowprops=dict(
+                    arrowstyle="->",
+                    color=color,
+                    lw=lw,
+                    mutation_scale=ms,
+                ),
+                zorder=2,
+            )
+
+    sm = ScalarMappable(cmap="Blues", norm=Normalize(vmin=0, vmax=h_max))
+    sm.set_array([])
+    plt.colorbar(sm, ax=ax, shrink=0.7, label="H[i→j]  (valore assoluto)")
+
+    title = f"Grafo pesato UTSP  {title_suffix}".strip()
+    ax.set_title(title, fontsize=12, fontweight="bold")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.grid(True, linestyle="--", alpha=0.3)
+    plt.tight_layout()
+
+    if save:
+        fname = out_path(f"{exp_name}_graph_weights.png")
+        plt.savefig(fname, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"  Salvato grafo pesato: {fname}")
+    else:
+        plt.show()

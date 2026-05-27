@@ -14,17 +14,20 @@ from config import (
     N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC,
     UTSP2_HIDDEN, UTSP2_NLAYERS, UTSP2_EPOCHS, UTSP2_LR,
     UTSP2_STEP_LR, UTSP2_LOG_FREQ, UTSP2_LAMBDA1, UTSP2_LAMBDA2,
-    UTSP2_LAMBDA_E, UTSP2_GAMMA, UTSP2_TEMP_MODE, UTSP2_TEMP_SCALE,
+    UTSP2_LAMBDA_E, UTSP2_ALPHA, UTSP2_TEMP_MODE, UTSP2_TEMP_SCALE,
     UTSP2_TEMP_FIXED, UTSP2_DIST_SCALE_MODE,
     UTSP_LS_MAX_ACTIONS, UTSP_LS_ACTIONS_PER_ROUND,
     UTSP_LS_MAX_RESTARTS, UTSP_LS_M, UTSP_LS_K,
     UTSP_LS_ALPHA, UTSP_LS_BETA, UTSP_LS_RANDOM_SEED,
-    UTSP_LS_APPLY_INITIAL_2OPT,UTSP2_TAU,N_TRAINING_SCENARIOS_UTSP, UTSP_TRAINING_SEED,
+    UTSP_LS_APPLY_INITIAL_2OPT,UTSP2_LAMBDA_D,N_TRAINING_SCENARIOS_UTSP, UTSP_TRAINING_SEED,
 )
 from tsp_utils import get_edge_value
 from gurobi_models import solve_reservation_tsp, solve_exact_tsp
 from scenarios import generate_scenarios
-from evaluation import validate_policies, genera_grafici_utsp
+from evaluation import (
+    validate_policies, genera_grafici_utsp,
+    plot_utsp_heatmap, plot_utsp_graph_weights,
+)
 from two_stage_utsp_loss import (
     two_stage_utsp_loss,
     build_I_tensors,
@@ -129,12 +132,11 @@ def _build_input_tensors(scenario_ids, results, nodes, coords, device):
     Costruisce xy e le matrici di distanza normalizzate per tutti gli scenari.
 
     Ritorna
-    -------
     xy_tile    : (K, n, 2)  — coordinate normalizzate, replicate per ogni scenario
     dist_raw   : list di K tensori (n, n) — distanze reali (non normalizzate)
     dist_model : (K, n, n)  — distanze normalizzate per GNN/loss
-    dist_scale : float      — scala usata per la normalizzazione
-    temperature: float      — temperatura T per il kernel gaussiano
+    dist_scale :   scala usata per la normalizzazione
+    temperature:  temperatura T per il kernel gaussiano
     """
     K = len(scenario_ids)
     n = len(nodes)
@@ -174,8 +176,8 @@ def _train_utsp_2stage(
 
     Strategia di training:
     - Tutti i K scenari vengono processati in un unico forward pass per epoca
-      (batch size = K).  Con K=8 è trattabile e mantiene la correlazione
-      tra scenari che la loss sfrutta per la decisione di prenotazione.
+    (batch size = K).  Con K=8 è trattabile e mantiene la correlazione
+    tra scenari che la loss sfrutta per la decisione di prenotazione.
     - Non serve DataLoader: gli scenari sono fissi e pochi.
     """
     K = len(scenario_ids)
@@ -190,7 +192,7 @@ def _train_utsp_2stage(
         dtype=torch.float32, device=device
     )
 
-    # Diagonale azzerata — stessa maschera usata in unionev3.py
+    # Diagonale azzerata   stessa maschera usata in unionev3.py
     off_diag = (1 - torch.eye(n, device=device)).unsqueeze(0)  # (1, n, n)
 
     model = UTSP_GNN(n, UTSP2_HIDDEN, UTSP2_NLAYERS).to(device)
@@ -205,7 +207,7 @@ def _train_utsp_2stage(
     print(f"  GNN({n}→{UTSP2_HIDDEN}×{UTSP2_NLAYERS}) | "
           f"K={K} scenari | T={temperature:.4f} | scale={dist_scale:.4f}")
     print(f"  Epoche={UTSP2_EPOCHS}  lr={UTSP2_LR}  "
-          f"λ1={UTSP2_LAMBDA1}  λ2={UTSP2_LAMBDA2}  λe={UTSP2_LAMBDA_E}  γ={UTSP2_GAMMA}")
+          f"λ1={UTSP2_LAMBDA1}  λ2={UTSP2_LAMBDA2}  λe={UTSP2_LAMBDA_E}  ")
 
     history = {"loss": [], "components": []}
     best_loss, best_state = float("inf"), None
@@ -217,7 +219,7 @@ def _train_utsp_2stage(
     for epoch in range(1, UTSP2_EPOCHS + 1):
         model.train()
 
-        # ── Forward: un unico batch con tutti i K scenari ──────────────
+        #   Forward: un unico batch con tutti i K scenari  
         T_batch = model(xy_tile, adj_stack, device)   # (K, n, n)
 
         # Separa in lista di K tensori (1, n, n) per la loss
@@ -226,11 +228,12 @@ def _train_utsp_2stage(
 
         loss, comps = two_stage_utsp_loss(
             T_list, dist_list, I_mask, p_mat, C_mat, probs_t,
-            gamma=UTSP2_GAMMA,
-            tau=UTSP2_TAU,
+            alpha=UTSP2_ALPHA,
             lambda1=UTSP2_LAMBDA1,
             lambda2=UTSP2_LAMBDA2,
             lambda_e=UTSP2_LAMBDA_E,
+            lambda_d=UTSP2_LAMBDA_D,
+            include_penalty=True,
             return_components=True,
         )
 
@@ -262,7 +265,6 @@ def _train_utsp_2stage(
 def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device):
     """
     Calcola x̃_ij per ogni {i,j}∈I dal modello addestrato e applica la soglia.
-
     Usa tutti i K scenari (lo stesso batch del training) per la stima di x̃.
     """
     K = adj_stack.size(0)
@@ -286,12 +288,9 @@ def _evaluate_policy_oos(
 ):
     """
     Valuta una politica di prenotazione fissa su n_val scenari out-of-sample.
-
     Genera gli scenari con VALIDATION_SEED (identico a validate_policies
     di prova_neur.py) così i numeri sono direttamente comparabili.
-
     Ritorna
-    -------
     costs   : dict {sid: costo_totale}
     tc_dict : dict {sid: tour_cost}
     pc_dict : dict {sid: penalty_paid}
@@ -324,9 +323,9 @@ def _evaluate_policy_oos(
     return costs, tc_dict, pc_dict, mean, results_val
 
 
-# ═══════════════════════════════════════════════════════════════════
+ 
 # DIPENDENZE E LOCAL SEARCH DA unionev3.py
-# ═══════════════════════════════════════════════════════════════════
+ 
 
 def tour_cost(tour, dist):
     """Costo di un tour su una matrice/dizionario di distanze orientate."""
@@ -353,40 +352,36 @@ def _decode_tour_gurobi(H, nodes, E, root, env):
     return solve_exact_tsp(nodes, E, dist_neg, root, env)
 
 
-# ═══════════════════════════════════════════════════════════════════
-# LOCAL SEARCH STILE UTSP PAPER, ADATTATA AL CASO ORIENTATO
-# ═══════════════════════════════════════════════════════════════════
-
+ 
+# LOCAL SEARCH STILE UTSP PAPER, ADATTATA AL CASO ORIENTATO 
+# Ruota un tour senza ripetizione finale in modo che inizi da start.
 def _rotate_tour_to_start(tour, start):
-    """Ruota un tour senza ripetizione finale in modo che inizi da start."""
+    
     if not tour or start not in tour:
         return list(tour)
     k = tour.index(start)
     return list(tour[k:] + tour[:k])
 
-
+# Mantiene una rappresentazione canonica del tour con root in prima posizione.
 def _rotate_tour_to_root(tour, root):
-    """Mantiene una rappresentazione canonica del tour con root in prima posizione."""
     return _rotate_tour_to_start(list(tour), root)
 
-
+# Archi orientati del tour, incluso l'arco di ritorno all'inizio
 def _tour_edges(tour):
-    """Archi orientati del tour, incluso l'arco di ritorno all'inizio."""
     n = len(tour)
     return [(tour[i], tour[(i + 1) % n]) for i in range(n)]
 
-
+# Costo di un tour su una matrice/dizionario di distanze orientate
 def _tour_cost_on_dist(tour, dist):
-    """Costo di un tour su una matrice/dizionario di distanze orientate."""
     return tour_cost(tour, dist)
 
 
+# 2-opt con ricalcolo completo del costo, quindi valido anche con costi orientati.
+# Nel TSP asimmetrico l'inversione cambia i versi degli archi: non uso formule
+# incrementali simmetriche, ma rivaluto tutto il tour.
+
 def _two_opt_descent_directed(tour, dist, root, max_passes=50):
-    """
-    2-opt con ricalcolo completo del costo, quindi valido anche con costi orientati.
-    Nel TSP asimmetrico l'inversione cambia i versi degli archi: non uso formule
-    incrementali simmetriche, ma rivaluto tutto il tour.
-    """
+    
     if not tour or len(tour) <= 3:
         return list(tour), float("inf")
 
@@ -415,12 +410,11 @@ def _two_opt_descent_directed(tour, dist, root, max_passes=50):
     return best, best_cost
 
 
+# Or-opt (single-node relocation) per ATSP.
+# Sposta un nodo alla volta nella posizione che riduce il costo.
+# Non inverte segmenti: valida per grafi orientati.
 def _or_opt_descent_directed(tour, dist, root, max_passes=50):
-    """
-    Or-opt (single-node relocation) per ATSP.
-    Sposta un nodo alla volta nella posizione che riduce il costo.
-    Non inverte segmenti: valida per grafi orientati.
-    """
+    
     if not tour or len(tour) <= 3:
         return list(tour), float("inf")
 
@@ -448,13 +442,10 @@ def _or_opt_descent_directed(tour, dist, root, max_passes=50):
 
     return best, best_cost
 
-
-def _build_heatmap_candidates(H, nodes, M, avg_dist=None):
-    """
-    Per ogni nodo i costruisce i candidati j da provare nella local search.
-    Priorità: top-M valori di H[i,j]. Se la riga è tutta nulla, fallback sui nodi
-    più vicini secondo la distanza media reale.
-    """
+#Per ogni nodo i costruisce i candidati j da provare nella local search.
+# Priorità: top-M valori di H[i,j]. Se la riga è tutta nulla, fallback sui nodi
+#più vicini secondo la distanza media reale.
+def _build_heatmap_candidates(H, nodes, M, avg_dist=None):   
     idx = {v: k for k, v in enumerate(nodes)}
     candidates = {}
 
@@ -484,12 +475,10 @@ def _build_heatmap_candidates(H, nodes, M, avg_dist=None):
 
     return candidates
 
-
+#Selezione stocastica guidata dalla heatmap, coerente con il criterio del paper:
+    # valore heatmap + termine di esplorazione alpha * sqrt(log(S+1)/(N+1)).
 def _select_heatmap_candidate(a, candidates, H_work, chosen_times, idx, rng, alpha, total_actions):
-    """
-    Selezione stocastica guidata dalla heatmap, coerente con il criterio del paper:
-    valore heatmap + termine di esplorazione alpha * sqrt(log(S+1)/(N+1)).
-    """
+    
     cand = [b for b in candidates.get(a, []) if b != a]
     if not cand:
         return None
@@ -517,9 +506,8 @@ def _select_heatmap_candidate(a, candidates, H_work, chosen_times, idx, rng, alp
     chosen_times[ia, idx[b]] += 1
     return b
 
-
+# Sposta b immediatamente dopo a
 def _move_relocate_after(tour, a, b, root):
-    """Sposta b immediatamente dopo a."""
     if a == b or a not in tour or b not in tour:
         return list(tour)
     t = list(tour)
@@ -529,11 +517,9 @@ def _move_relocate_after(tour, a, b, root):
     return _rotate_tour_to_root(t, root)
 
 
+# Mossa tipo 2-opt che prova a rendere a→b un arco del tour.
+# È una versione orientata/adattata: rivaluto sempre il costo completo
 def _move_two_opt_make_edge(tour, a, b, root):
-    """
-    Mossa tipo 2-opt che prova a rendere a→b un arco del tour.
-    È una versione orientata/adattata: rivaluto sempre il costo completo.
-    """
     if a == b or a not in tour or b not in tour:
         return list(tour)
 
@@ -547,9 +533,9 @@ def _move_two_opt_make_edge(tour, a, b, root):
     cand = rot[:1] + list(reversed(rot[1:pos_b + 1])) + rot[pos_b + 1:]
     return _rotate_tour_to_root(cand, root)
 
-
+# Scambia due nodi, lasciando poi root in prima posizione 
 def _move_swap_nodes(tour, a, b, root):
-    """Scambia due nodi, lasciando poi root in prima posizione."""
+    
     if a == b or a not in tour or b not in tour:
         return list(tour)
     t = list(tour)
@@ -702,9 +688,9 @@ def _utsp_paper_style_local_search(tour_seed, H_decode, nodes, root, avg_dist):
     }
     return best, best_cost, info
 
-
+# Stampa quanto A è diversa dalla sua trasposta
 def _matrix_asymmetry_stats(A, name):
-    """Stampa quanto A è diversa dalla sua trasposta."""
+    
     A = np.array(A, dtype=float)
     if A.ndim != 2 or A.shape[0] != A.shape[1]:
         print(f"  Asimmetria {name}: matrice non quadrata, salto diagnostica.")
@@ -883,7 +869,7 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
     if missing:
         raise KeyError(f"res_B manca delle chiavi: {missing}")
 
-        I = res_B["I"]
+    I = res_B["I"]
     p = res_B["p"]
     C = res_B["C"]
     b = res_B["b"]
@@ -962,6 +948,19 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
         model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device
     )
     reservation_utsp = sum(get_edge_value(p, i, j) for (i, j) in x_utsp)
+    # ── Visualizzazioni heatmap e grafo pesato ─────────────────────
+    _H_avg = _heatmap_numpy_from_H_list(H_list)
+    _H_decode_vis = _H_avg.copy()
+    np.fill_diagonal(_H_decode_vis, 0.0)
+    print("\n  Generazione grafici heatmap UTSP ...")
+    plot_utsp_heatmap(
+        "espB_UTSP", nodes, _H_decode_vis,
+        title_suffix=f"(media {len(H_list)} scenari — diagonale azzerata)",
+    )
+    plot_utsp_graph_weights(
+        "espB_UTSP", nodes, coords, _H_avg,
+        title_suffix=f"(media {len(H_list)} scenari)",
+    )
 
     print(f"\n{check_booking_coverage(x_scores, I, UTSP2_TAU)}")
     print(f"\n  Costo prenotazione UTSP : {reservation_utsp:.4f}")
@@ -1007,14 +1006,11 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
             nodes,
             coords,
             E,
-            base_dist,
             root,
             env,
             res_B,
             results_B,
             scenario_ids_B,
-            results_utsp,
-            scenario_ids_utsp,
             H_list,
             PI_train,
             STO_train,
