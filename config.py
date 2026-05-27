@@ -64,7 +64,8 @@ UTSP2_LOG_FREQ = 25
 UTSP2_LAMBDA1 = 20.0
 UTSP2_LAMBDA2 = 5.0
 UTSP2_LAMBDA_E = 0.1
-UTSP2_GAMMA = 5.0
+UTSP2_LAMBDA_D = 0.1
+UTSP2_ALPHA = 0.8
 
 # Temperatura kernel gaussiano adj = exp(-d/T)
 UTSP2_TEMP_MODE = "median"
@@ -74,8 +75,7 @@ UTSP2_TEMP_FIXED = 1.0
 # Normalizzazione distanze interna alla GNN/loss
 UTSP2_DIST_SCALE_MODE = "mean_positive"
 
-# Decodifica politica UTSP
-UTSP2_TAU = 0.09
+
 
 # Modalità UTSP eseguibili dal main
 # "policy"       = x_utsp + secondo stadio Gurobi

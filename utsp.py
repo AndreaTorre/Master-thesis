@@ -260,13 +260,9 @@ def _train_utsp_2stage(
 
     model.load_state_dict(best_state)
     model.eval()
-    return model, history, adj_stack, dist_model, xy_tile, probs_t, temperature
+    return model, history, adj_stack, dist_model, xy_tile, probs_t, temperature,  dist_scale
 
 def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device):
-    """
-    Calcola x̃_ij per ogni {i,j}∈I dal modello addestrato e applica la soglia.
-    Usa tutti i K scenari (lo stesso batch del training) per la stima di x̃.
-    """
     K = adj_stack.size(0)
     model.eval()
     with torch.no_grad():
@@ -275,12 +271,10 @@ def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device)
     H_list = [compute_heatmap(T_batch[k:k+1]) for k in range(K)]
 
     x_reserved, x_scores = decode_booking_policy(
-      H_list, I, nodes, I_mask, probs_t,
-      gamma=UTSP2_GAMMA,
-      tau=UTSP2_TAU,
-      threshold=0.09,
+        H_list, I, nodes, I_mask, probs_t,
+        alpha=UTSP2_LAMBDA1,   # usa il parametro alpha della tua config
     )
-    return x_reserved, x_scores, H_list, T_batch
+    return x_reserved, x_scores, H_list, T_batch 
 
 def _evaluate_policy_oos(
     policy_name, x_policy, nodes, E, base_dist, root, env,
@@ -721,7 +715,151 @@ def _build_mean_dist_from_results(results, scenario_ids, nodes):
             else:
                 avg[i][j] = float(np.mean([results[sid]["scenario_dist"][i][j] for sid in scenario_ids]))
     return avg
+def _greedy_tour(nodes, root, dist):
+    """Tour greedy nearest-neighbor come seed per la local search."""
+    unvisited = set(nodes) - {root}
+    tour, cur = [root], root
+    while unvisited:
+        nxt = min(unvisited, key=lambda j: dist[cur].get(j, float("inf")))
+        tour.append(nxt)
+        unvisited.remove(nxt)
+        cur = nxt
+    return tour
 
+
+def _build_adj_single(D, n, device, dist_scale, temperature):
+    """
+    Costruisce la matrice di adiacenza per un singolo scenario.
+    Usa la stessa normalizzazione (dist_scale, temperature) del training,
+    in modo che la GNN veda input nella stessa scala.
+    D: (n, n) tensor delle distanze reali dello scenario.
+    """
+    off_diag = (1 - torch.eye(n, device=device))
+    dist_norm = D / max(dist_scale, 1e-9)
+    return torch.exp(-dist_norm / max(temperature, 1e-9)) * off_diag  # (n, n)
+
+
+def _gnn_heatmap_single(model, xy, adj_single, device):
+    """
+    Forward pass della GNN su un singolo scenario nuovo.
+    xy         : (n, 2) — coordinate normalizzate (invarianti tra scenari)
+    adj_single : (n, n) — adiacenza scenario-specifica
+    Ritorna H  : numpy (n, n) con diagonale azzerata.
+    """
+    model.eval()
+    with torch.no_grad():
+        T_out = model(xy.unsqueeze(0), adj_single.unsqueeze(0), device)  # (1,n,n)
+        H_t   = compute_heatmap(T_out)
+    H = H_t.squeeze(0).cpu().numpy().copy()
+    np.fill_diagonal(H, 0.0)
+    return H
+
+
+def _effective_dist_for_ls(dist_s, nodes, I, x_ls, C):
+    """
+    Distanze effettive per il secondo stadio della LS.
+    Aggiunge la penale C[i,j] agli archi di I non prenotati (entrambe le direzioni),
+    così la LS evita naturalmente gli archi penalizzati o li usa solo se conviene.
+    """
+    from tsp_utils import canon_edge as _ce
+    x_set = {_ce(i, j) for (i, j) in x_ls}
+    eff   = {i: dict(dist_s[i]) for i in nodes}
+    for (i, j) in I:
+        if _ce(i, j) not in x_set:
+            pen      = get_edge_value(C, i, j)
+            eff[i][j] = dist_s[i][j] + pen
+            eff[j][i] = dist_s[j][i] + pen
+    return eff
+
+
+def _ls_cost_with_penalty(tour, dist_s, nodes, I, x_ls, C):
+    """
+    Costo reale del secondo stadio:
+      tc = percorrenza reale (distanze vere, non effettive)
+      pc = penale per archi di I usati nel tour ma non prenotati
+    """
+    from tsp_utils import canon_edge as _ce
+    x_set = {_ce(i, j) for (i, j) in x_ls}
+    I_set = {_ce(i, j) for (i, j) in I}
+    arcs  = _tour_edges(tour)
+    tc    = tour_cost(tour, dist_s)
+    pc    = sum(
+        get_edge_value(C, i, j)
+        for (i, j) in arcs
+        if _ce(i, j) in I_set and _ce(i, j) not in x_set
+    )
+    return tc, pc
+
+
+def _run_ls_on_scenarios(
+    model, xy, nodes, root, I, p, C,
+    results_scenarios, scenario_ids, scenario_probs,
+    H_list_precomputed, dist_scale, temperature, device, x_ls, label="train",
+):
+    """
+    Esegue il secondo stadio local search per ogni scenario.
+
+    Se H_list_precomputed è fornita (training): usa le heatmap già calcolate.
+    Altrimenti (validazione): fa forward GNN per ogni scenario nuovo.
+
+    Ritorna: costs, tc_dict, pc_dict, tours, solutions, mean_cost
+    """
+    n      = len(nodes)
+    reserv = sum(get_edge_value(p, i, j) for (i, j) in x_ls)
+    costs, tc_dict, pc_dict, tours, solutions = {}, {}, {}, {}, {}
+
+    for k, sid in enumerate(scenario_ids):
+        dist_s = results_scenarios[sid]["scenario_dist"]
+
+        # ── Heatmap scenario-specifica ────────────────────────────────
+        if H_list_precomputed is not None:
+            H_t = H_list_precomputed[k]             # (1, n, n) tensor training
+            H_s = H_t.detach().squeeze(0).cpu().numpy().copy()
+            np.fill_diagonal(H_s, 0.0)
+        else:
+            D = torch.zeros(n, n, device=device)
+            for ii, i in enumerate(nodes):
+                for jj, j in enumerate(nodes):
+                    if i != j:
+                        D[ii, jj] = float(dist_s[i][j])
+            adj_s = _build_adj_single(D, n, device, dist_scale, temperature)
+            H_s   = _gnn_heatmap_single(model, xy, adj_s, device)
+
+        # ── Distanze effettive + LS ───────────────────────────────────
+        dist_eff = _effective_dist_for_ls(dist_s, nodes, I, x_ls, C)
+        seed     = _greedy_tour(nodes, root, dist_eff)
+        tour_s, _, ls_info = _utsp_paper_style_local_search(
+            seed, H_s, nodes, root, dist_eff
+        )
+
+        # ── Costo reale (distanze vere + penale) ─────────────────────
+        tc, pc = _ls_cost_with_penalty(tour_s, dist_s, nodes, I, x_ls, C)
+        arcs_s = _tour_edges(tour_s)
+
+        costs[sid]   = reserv + tc + pc
+        tc_dict[sid] = tc
+        pc_dict[sid] = pc
+        tours[sid]   = tour_s
+        solutions[sid] = {
+            "arcs":             arcs_s,
+            "y_used":           arcs_s,
+            "tour":             list(tour_s),
+            "tour_cost":        tc,
+            "total_cost":       costs[sid],
+            "penalty_paid":     pc,
+            "reservation_paid": reserv,
+            "x_used":           list(x_ls),
+        }
+
+        print(f"    [{label}] s={sid}: tc={tc:.4f}  pc={pc:.4f}  "
+              f"tot={costs[sid]:.4f}  tour={tour_s}")
+
+    if scenario_probs is not None:
+        mean = sum(scenario_probs[sid] * costs[sid] for sid in scenario_ids)
+    else:
+        mean = sum(costs.values()) / len(costs)
+
+    return costs, tc_dict, pc_dict, tours, solutions, mean
 
 def _heatmap_numpy_from_H_list(H_list):
     H_sum = None
@@ -932,7 +1070,7 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
     print(f"  I = {I}")
 
     (model, history, adj_stack, dist_model,
-     xy_tile, probs_t, temperature) = _train_utsp_2stage(
+     xy_tile, probs_t, temperature, dist_scale) = _train_utsp_2stage(
         nodes,
         coords,
         scenario_ids_utsp,
@@ -1003,20 +1141,16 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
 
     if do_ls:
         ls_out = _run_local_search_branch(
-            nodes,
-            coords,
-            E,
-            root,
-            env,
-            res_B,
-            results_B,
-            scenario_ids_B,
-            H_list,
-            PI_train,
-            STO_train,
-            EEV_train,
-            history,
-            temperature,
+            nodes, coords, E, root, env, res_B,
+            results, scenario_ids, H_list,
+            PI_train, STO_train, EEV_train,
+            history, temperature,
+            model=model,
+            xy=xy_tile[0],        # (n, 2) — coordinate normalizzate
+            dist_scale=dist_scale,
+            device=device,
+            x_utsp=x_utsp,
+            base_dist=base_dist,
         )
         output.update({"local_search": ls_out})
 
@@ -1155,45 +1289,108 @@ def _run_policy_branch(
         "gap_utsp_pi": gap_utsp_pi,
     }
 
-
 def _run_local_search_branch(
     nodes, coords, E, root, env, res_B,
     results, scenario_ids, H_list,
     PI_train, STO_train, EEV_train,
     history, temperature,
+    model, xy, dist_scale, device, x_utsp, base_dist,
 ):
     print("\n" + "=" * 70)
-    print("ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH")
+    print("ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH (2-stadi, per-scenario)")
 
-    ls = _run_heatmap_local_search(nodes, E, root, env, results, scenario_ids, H_list)
-    costs_train, solutions_train, UTSP_LS_train = _evaluate_fixed_tour_on_scenarios(
-        ls["tour_ls"], results, scenario_ids
+    I              = res_B["I"]
+    p              = res_B["p"]
+    C              = res_B["C"]
+    scenario_probs = res_B["scenario_probs"]
+    frequent_arcs  = res_B["frequent_arcs"]
+
+    x_ls   = list(x_utsp)
+    reserv = sum(get_edge_value(p, i, j) for (i, j) in x_ls)
+    print(f"\n  Primo stadio x_ls (= x_utsp) : {sorted(x_ls)}")
+    print(f"  Costo prenotazione            : {reserv:.4f}")
+
+    # ── Secondo stadio LS su scenari di training ──────────────────────
+    print(f"\n  LS su {len(scenario_ids)} scenari di training ...")
+    (costs_train, tc_train, pc_train,
+     tours_train, solutions_train, UTSP_LS_train) = _run_ls_on_scenarios(
+        model, xy, nodes, root, I, p, C,
+        results, scenario_ids, scenario_probs,
+        H_list_precomputed=H_list,
+        dist_scale=dist_scale, temperature=temperature,
+        device=device, x_ls=x_ls, label="train",
     )
+
+    # ── Validazione: genera scenari nuovi, forward GNN, LS ────────────
+    print(f"\n  LS out-of-sample ({N_VALIDATION_SCENARIOS} scenari, seme={VALIDATION_SEED}) ...")
+    scenario_ids_val = list(range(1, N_VALIDATION_SCENARIOS + 1))
+    results_val, _, _ = generate_scenarios(
+        scenario_ids_val, nodes, E, base_dist, I, frequent_arcs,
+        N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC, VALIDATION_SEED,
+        root=root, env=env, p=p, C=C
+    )
+
+    (costs_val, tc_val, pc_val,
+     tours_val, solutions_val, UTSP_LS_val) = _run_ls_on_scenarios(
+        model, xy, nodes, root, I, p, C,
+        results_val, scenario_ids_val, None,
+        H_list_precomputed=None,
+        dist_scale=dist_scale, temperature=temperature,
+        device=device, x_ls=x_ls, label="val",
+    )
+
+    # ── Benchmark PI/STO/EEV di validazione ──────────────────────────
+    val_bench = validate_policies(
+        nodes, E, base_dist, root, env, I, p, C,
+        res_B["x_used_sto"], res_B["x_ev"],
+        frequent_arcs, N_VALIDATION_SCENARIOS,
+        N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC,
+        exp_name="espB"
+    )
+    PI_val  = val_bench["PI_val"]
+    STO_val = val_bench["STO_val"]
+    EEV_val = val_bench["EEV_val"]
+
+    gap_ls_sto = (UTSP_LS_val - STO_val) / abs(STO_val) * 100 if STO_val else float("nan")
+    gap_ls_eev = (UTSP_LS_val - EEV_val) / abs(EEV_val) * 100 if EEV_val else float("nan")
+    gap_ls_pi  = (UTSP_LS_val - PI_val)  / abs(PI_val)  * 100 if PI_val  else float("nan")
 
     print("\n" + "─" * 65)
     print("RIEPILOGO ESPERIMENTO B — UTSP LOCAL SEARCH")
-    print(f"  Tour LS: {ls['tour_ls']}")
-    print(f"  PI train      = {PI_train:.4f}")
-    print(f"  STO train     = {STO_train:.4f}")
-    print(f"  EEV train     = {EEV_train:.4f}")
-    print(f"  UTSP_LS train = {UTSP_LS_train:.4f}")
-    print(f"  Info LS       = {ls['ls_info']}")
+    print(f"  x_ls = {sorted(x_ls)}")
+    print()
+    print(f"  TRAINING ({len(scenario_ids)} scenari)")
+    print(f"    PI      = {PI_train:.4f}")
+    print(f"    STO     = {STO_train:.4f}")
+    print(f"    EEV     = {EEV_train:.4f}")
+    print(f"    UTSP_LS = {UTSP_LS_train:.4f}")
+    print()
+    print(f"  VALIDAZIONE ({N_VALIDATION_SCENARIOS} scenari, seme={VALIDATION_SEED})")
+    print(f"    PI_val      = {PI_val:.4f}")
+    print(f"    STO_val     = {STO_val:.4f}")
+    print(f"    EEV_val     = {EEV_val:.4f}")
+    print(f"    UTSP_LS_val = {UTSP_LS_val:.4f}")
+    print()
+    print(f"  Gap LS vs STO (val) = {gap_ls_sto:+.2f}%")
+    print(f"  Gap LS vs EEV (val) = {gap_ls_eev:+.2f}%")
+    print(f"  Gap LS vs PI  (val) = {gap_ls_pi:+.2f}%")
     print("─" * 65)
 
     _save_utsp_ls_summary(
         exp_name="espB_UTSP_LS",
         scenario_ids=scenario_ids,
         results=results,
-        tour_seed=ls["tour_seed"],
-        tour_ls=ls["tour_ls"],
+        x_ls=x_ls,
         costs_train=costs_train,
+        tc_train=tc_train,
+        pc_train=pc_train,
+        tours_train=tours_train,
         UTSP_LS_train=UTSP_LS_train,
-        PI_train=PI_train,
-        STO_train=STO_train,
-        EEV_train=EEV_train,
-        ls_info=ls["ls_info"],
-        history=history,
-        temperature=temperature,
+        UTSP_LS_val=UTSP_LS_val,
+        PI_train=PI_train, STO_train=STO_train, EEV_train=EEV_train,
+        PI_val=PI_val, STO_val=STO_val, EEV_val=EEV_val,
+        gap_ls_sto=gap_ls_sto, gap_ls_eev=gap_ls_eev, gap_ls_pi=gap_ls_pi,
+        history=history, temperature=temperature,
     )
 
     genera_grafici_utsp(
@@ -1210,22 +1407,30 @@ def _run_local_search_branch(
         utsp_solutions=solutions_train,
         x_ev=res_B["x_ev"],
         x_sto=res_B["x_used_sto"],
-        x_utsp=[],
+        x_utsp=x_ls,
         utsp_label="UTSP local search",
         save=True,
     )
 
     return {
-        "tour_seed": ls["tour_seed"],
-        "tour_ls": ls["tour_ls"],
-        "arcs_ls": ls["arcs_ls"],
-        "costs_train": costs_train,
+        "x_ls":            x_ls,
+        "costs_train":     costs_train,
+        "tc_train":        tc_train,
+        "pc_train":        pc_train,
+        "tours_train":     tours_train,
         "solutions_train": solutions_train,
-        "UTSP_LS_train": UTSP_LS_train,
-        "ls_info": ls["ls_info"],
-        "H_raw": ls["H_raw"],
-        "H_decode": ls["H_decode"],
+        "UTSP_LS_train":   UTSP_LS_train,
+        "costs_val":       costs_val,
+        "tours_val":       tours_val,
+        "UTSP_LS_val":     UTSP_LS_val,
+        "PI_val":          PI_val,
+        "STO_val":         STO_val,
+        "EEV_val":         EEV_val,
+        "gap_ls_sto":      gap_ls_sto,
+        "gap_ls_eev":      gap_ls_eev,
+        "gap_ls_pi":       gap_ls_pi,
     }
+
 
 
 def _save_utsp_summary(
@@ -1328,28 +1533,32 @@ def _save_utsp_summary(
 
 def _save_utsp_ls_summary(
     exp_name, scenario_ids, results,
-    tour_seed, tour_ls, costs_train,
-    UTSP_LS_train, PI_train, STO_train, EEV_train,
-    ls_info, history, temperature,
+    x_ls, costs_train, tc_train, pc_train, tours_train,
+    UTSP_LS_train, UTSP_LS_val,
+    PI_train, STO_train, EEV_train,
+    PI_val, STO_val, EEV_val,
+    gap_ls_sto, gap_ls_eev, gap_ls_pi,
+    history, temperature,
 ):
     def fmt(x): return f"{x:.4f}" if x is not None else "N/A"
 
     lines = [
         "=" * 65,
-        "ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH",
+        "ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH (2-stadi, per-scenario)",
         "=" * 65,
         "",
-        f"Tour iniziale heatmap: {tour_seed}",
-        f"Tour dopo local search: {tour_ls}",
-        f"Info local search     : {ls_info}",
+        f"Primo stadio x_ls : {sorted(x_ls)}",
         "",
-        "TRAINING (8 scenari)",
-        f"  {'Scen':>4} | {'PI':>10} | {'UTSP_LS':>10}",
+        "TRAINING",
+        f"  {'Scen':>4} | {'PI':>10} | {'UTSP_LS':>10} [perc, multa] | tour",
     ]
     for sid in scenario_ids:
         pi = results[sid]["exact_free"]["length"]
-        lines.append(f"  {sid:>4} | {fmt(pi):>10} | {fmt(costs_train[sid]):>10}")
-
+        lines.append(
+            f"  {sid:>4} | {fmt(pi):>10} | {fmt(costs_train[sid]):>10} "
+            f"[{fmt(tc_train[sid])}, {fmt(pc_train[sid])}] | "
+            f"{tours_train.get(sid, [])}"
+        )
     lines += [
         "",
         f"  PI      (train) = {fmt(PI_train)}",
@@ -1357,18 +1566,28 @@ def _save_utsp_ls_summary(
         f"  EEV     (train) = {fmt(EEV_train)}",
         f"  UTSP_LS (train) = {fmt(UTSP_LS_train)}",
         "",
+        f"VALIDAZIONE ({N_VALIDATION_SCENARIOS} scenari, seme={VALIDATION_SEED})",
+        f"  UTSP_LS_val = {fmt(UTSP_LS_val)}",
+        f"  PI_val      = {fmt(PI_val)}",
+        f"  STO_val     = {fmt(STO_val)}",
+        f"  EEV_val     = {fmt(EEV_val)}",
+        "",
+        f"  Gap LS vs STO (val) = {gap_ls_sto:+.4f}%",
+        f"  Gap LS vs EEV (val) = {gap_ls_eev:+.4f}%",
+        f"  Gap LS vs PI  (val) = {gap_ls_pi:+.4f}%",
+        "",
         "TRAINING GNN",
         f"  Epoche         = {UTSP2_EPOCHS}",
         f"  Temperatura T  = {temperature:.6f}",
         f"  Loss iniziale  = {history['loss'][0]:.5f}",
         f"  Loss finale    = {history['loss'][-1]:.5f}",
-        f"  Loss minima    = {min(history['loss']):.5f} (ep {int(np.argmin(history['loss'])) + 1})",
+        f"  Loss minima    = {min(history['loss']):.5f} "
+        f"(ep {int(np.argmin(history['loss'])) + 1})",
         "=" * 65,
     ]
 
     text = "\n".join(lines)
     print("\n" + text)
-
     fname = os.path.join(OUTPUT_DIR, f"risultati_{exp_name}.txt")
     with open(fname, "w", encoding="utf-8") as f:
         f.write(text + "\n")

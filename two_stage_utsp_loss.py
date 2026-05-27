@@ -280,13 +280,12 @@ def _loss_distance(H_list, dist_list, scenario_probs):
 
 
 def _loss_booking(H_list, p_mat, I_mask, alpha):
-    # H_list: (B, n, n) — B scenari omega
-    H_sum      = H_list.sum(dim=0)                            # (n, n): somma su tutti gli omega
-    I_float    = I_mask.float()                               # (n, n)
-    activation = (1.0 - torch.exp(-alpha * H_sum)) * I_float # (n, n)
-    cost       = (p_mat * activation).sum()                   # scalare
+    H_stack    = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
+    H_sum      = H_stack.sum(dim=0)                                   # (n, n)
+    I_float    = I_mask.float()
+    activation = (1.0 - torch.exp(-alpha * H_sum)) * I_float
+    cost       = (p_mat * activation).sum()
     return cost
-
 
 def _loss_consistency(H_list, H_bar, I_mask, scenario_probs):
     """
@@ -344,31 +343,18 @@ def _loss_asymmetry(H_list, scenario_probs):
 
 
 def _loss_penalty(H_list, C_mat, I_mask, scenario_probs, alpha):
-    """
-    Penalty:
-      Σ_ω p_ω Σ_{(i,j)∈I} C_ij · H^ω_ij · e^{−α · Σ_ω H^ω_ij}
+    I_float    = I_mask.float()
+    C_broad    = C_mat * I_float
+    H_stack    = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
+    H_sum      = H_stack.sum(dim=0)                                   # (n, n)
+    not_booked = torch.exp(-alpha * H_sum) * I_float
 
-    Parametri
-    ---------
-    H_list         : (B, n, n) — scenari omega (B = K)
-    C_mat          : (n, n)    — costi multa (0 fuori da I)
-    I_mask         : (n, n)    BoolTensor
-    scenario_probs : (K,)      FloatTensor
-    alpha          : float
-    """
-    I_float = I_mask.float()                          # (n, n)
-    C_broad = C_mat * I_float                         # (n, n)
-
-    # somma su tutti gli omega — dentro l'esponenziale
-    H_sum      = H_list.sum(dim=0)                    # (n, n)
-    not_booked = torch.exp(-alpha * H_sum) * I_float  # (n, n)
-
-    loss = torch.tensor(0.0, device=H_list.device)
+    loss = torch.tensor(0.0, device=H_stack.device)
     for H_omega, p_w in zip(H_list, scenario_probs):
-        penalty = C_broad * H_omega * not_booked      # (n, n)
+        h = H_omega.squeeze(0) if H_omega.dim() == 3 else H_omega
+        penalty = C_broad * h * not_booked
         loss = loss + p_w * penalty.sum()
-
-    return loss 
+    return loss
 
 
 # ═══════════════════════════════════════════════════════════════════════════
