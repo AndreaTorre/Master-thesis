@@ -285,7 +285,7 @@ def _loss_booking(H_list, p_mat, I_mask, alpha):
     I_float    = I_mask.float()
     activation = (1.0 - torch.exp(-alpha * H_sum)) * I_float
     cost       = (p_mat * activation).sum()
-    return cost
+    return cost/2.0
 
 def _loss_consistency(H_list, H_bar, I_mask, scenario_probs):
     """
@@ -489,8 +489,9 @@ def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, alpha=DEFAUL
     idx = {v: k for k, v in enumerate(nodes)}
 
     with torch.no_grad():
-        H_bar   = compute_H_bar(H_list, scenario_probs)
-        b_tilde = compute_booking_activation(H_bar, I_mask, alpha)
+        H_stack = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
+        H_sum   = H_stack.sum(dim=0)                                   # (n, n)
+        b_tilde = compute_booking_activation(H_sum, I_mask, alpha)
 
     x_reserved = []
     x_scores   = {}

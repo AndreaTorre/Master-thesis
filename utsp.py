@@ -16,7 +16,7 @@ from config import (
     UTSP2_STEP_LR, UTSP2_LOG_FREQ, UTSP2_LAMBDA1, UTSP2_LAMBDA2,
     UTSP2_LAMBDA_E, UTSP2_ALPHA, UTSP2_TEMP_MODE, UTSP2_TEMP_SCALE,
     UTSP2_TEMP_FIXED, UTSP2_DIST_SCALE_MODE,
-    UTSP_LS_MAX_ACTIONS, UTSP_LS_ACTIONS_PER_ROUND,
+    UTSP_LS_MAX_ACTIONS, UTSP_LS_ACTIONS_PER_ROUND,UTSP2_INCLUDE_PENALTY,
     UTSP_LS_MAX_RESTARTS, UTSP_LS_M, UTSP_LS_K,
     UTSP_LS_ALPHA, UTSP_LS_BETA, UTSP_LS_RANDOM_SEED,
     UTSP_LS_APPLY_INITIAL_2OPT,UTSP2_LAMBDA_D,N_TRAINING_SCENARIOS_UTSP, UTSP_TRAINING_SEED,
@@ -233,7 +233,7 @@ def _train_utsp_2stage(
             lambda2=UTSP2_LAMBDA2,
             lambda_e=UTSP2_LAMBDA_E,
             lambda_d=UTSP2_LAMBDA_D,
-            include_penalty=True,
+            include_penalty=UTSP2_INCLUDE_PENALTY,
             return_components=True,
         )
 
@@ -272,7 +272,7 @@ def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device)
 
     x_reserved, x_scores = decode_booking_policy(
         H_list, I, nodes, I_mask, probs_t,
-        alpha=UTSP2_LAMBDA1,   # usa il parametro alpha della tua config
+        alpha=UTSP2_ALPHA,   # usa il parametro alpha della tua config
     )
     return x_reserved, x_scores, H_list, T_batch 
 
@@ -1100,7 +1100,7 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
         title_suffix=f"(media {len(H_list)} scenari)",
     )
 
-    print(f"\n{check_booking_coverage(x_scores, I, UTSP2_TAU)}")
+    print(f"\n{check_booking_coverage(x_scores, I)}")
     print(f"\n  Costo prenotazione UTSP : {reservation_utsp:.4f}")
 
     output = {
@@ -1458,12 +1458,7 @@ def _save_utsp_summary(
         f"  N prenotazioni   : {len(x_utsp)}/{len(I)}",
         f"  Costo prenotazione: {fmt(reservation)}",
         "",
-        "SCORE CONTINUI x̃_ij  (soglia={:.2f})".format(UTSP2_TAU),
     ]
-    for edge, score in sorted(x_scores.items()):
-        flag = "✓" if score >= UTSP2_TAU else "✗"
-        lines.append(f"  {{{edge[0]},{edge[1]}}}  x̃={score:.4f}  {flag}")
-
     lines += [
         "",
         "TRAINING (8 scenari)",
