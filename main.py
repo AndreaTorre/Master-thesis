@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import argparse
-
+import pickle
 from common import load_data, load_env, set_seed
 from experiment_B import run_esperimento_B
 from utsp import run_esperimento_B_UTSP
@@ -27,7 +27,11 @@ def main():
 
     risultati = {}
     risultati["B"] = run_esperimento_B(nodes, coords, base_dist, E, root, env)
-
+    #salvo i risultati in locale di B cosi non serve far andare esperimento di 10min ogni volta
+    with open("res_B_cached.pkl", "wb") as f:
+            pickle.dump(risultati["B"], f)
+    print("res_B salvato in res_B_cached.pkl")
+        
     if args.only == "B":
         return risultati
 
@@ -46,6 +50,7 @@ def main():
 
     return risultati
 
+ 
 
 if __name__ == "__main__":
     main()

@@ -466,31 +466,12 @@ def two_stage_utsp_loss(
 # ═══════════════════════════════════════════════════════════════════════════
 
 def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, alpha=DEFAULT_ALPHA, threshold=0.5):
-    """
-    Decodifica la decisione di prenotazione binaria dal modello addestrato.
-
-    Calcola b̃_ij = 1 − e^{−α·H̄_ij} per ogni {i,j} ∈ I e applica una soglia.
-
-    Parametri
-    ---------
-    H_list         : lista di K tensori (1, n, n) — un campione, non un batch
-    I              : lista di coppie canoniche (i,j) ∈ I  — da prova_neur.py
-    nodes          : lista ordinata degli ID nodo
-    I_mask         : (n, n) BoolTensor
-    scenario_probs : (K,) FloatTensor
-    alpha          : float — tasso di saturazione esponenziale
-    threshold      : float — soglia per la decisione binaria (default 0.5)
-
-    Ritorna
-    -------
-    x_reserved : lista di coppie (i,j) ∈ I per cui b̃_ij ≥ threshold
-    x_scores   : dict {(i,j): valore b̃_ij}  — scores continui per analisi
-    """
     idx = {v: k for k, v in enumerate(nodes)}
 
     with torch.no_grad():
-        H_stack = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
-        H_sum   = H_stack.sum(dim=0)                                   # (n, n)
+        # FIX: usa H_sum, non H_bar
+        H_stack = torch.stack([H.squeeze(0) for H in H_list], dim=0)
+        H_sum   = H_stack.sum(dim=0)
         b_tilde = compute_booking_activation(H_sum, I_mask, alpha)
 
     x_reserved = []
@@ -499,9 +480,10 @@ def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, alpha=DEFAUL
     for edge in I:
         i, j   = canon_edge(*edge)
         ii, jj = idx[i], idx[j]
-        # Prendo il valore in una direzione (simmetrico per costruzione di I_mask)
-        score  = float(b_tilde[0, ii, jj].item())
+        score  = float(b_tilde[0, ii, jj].item())  # già tra 0 e 1
         x_scores[(i, j)] = score
+        # la soglia diventa solo una lettura del risultato naturale:
+        # con alpha alto, b_tilde è quasi binaria da sola
         if score >= threshold:
             x_reserved.append((i, j))
 

@@ -15,7 +15,26 @@ Versione ridotta del progetto: contiene solo il necessario per eseguire
 - `experiment_B.py`: Esperimento B.
 - `two_stage_utsp_loss.py`: loss UTSP two-stage.
 - `utsp.py`: rete UTSP e pipeline B_UTSP.
+- `grid_search.py`: grid search per la scelta dei parametri
 
+# file principali aggiornati
+- **`main.py`** — entry point, lancia esperimento B e/o UTSP tramite `--only`
+- **`experiment_B.py`** — calcola PI, STO, EEV con Gurobi, restituisce `res_B`
+- **`utsp.py`** — training GNN, local search, validazione UTSP
+- **`two_stage_utsp_loss.py`** — loss function, heatmap, decodifica booking policy
+- **`config.py`** — tutti i parametri e `GRID_SEARCH`
+- **`run_single.py`** — esegue una singola combinazione della grid search
+- **`collect_results.py`** — raccoglie i CSV/txt dei job e genera `grid_results_final.csv`
+- **`scenarios.py`** — generazione scenari stocastici
+- **`evaluation.py`** — grafici, heatmap, metriche
+- **`tsp_utils.py`** — utilità TSP (costi, tour)
+- **`common.py`** — load_data, load_env, set_seed
+- **`gurobi_models.py`** — modelli Gurobi (STO, build I)
+- **`prova_neur.py`** — ignorato
+
+Per far andare la grid search uso run_all.sh nella cartella slurm
+Per far andare esperimenti uso run_exp 
+per far andare solo esperimento B e salvarlo in locale (cosi non devo farlo girare ogni volta che provo utsp) uso run_B.sh
 ## Avvio
 
 ```bash
@@ -54,4 +73,3 @@ export GRB_LICENSEID="..."
 
 I grafici e gli esperimenti A/C/D/E/NNE sono stati esclusi dalla versione
 pulita per ridurre il codice al percorso effettivamente usato.
-Per slavare quanot prodotto, prova_neur.py ha dentro tutti gli esperimenti che sono stati scartati.

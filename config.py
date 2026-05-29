@@ -55,21 +55,35 @@ KMEDOID_ARCS_PER_NODE = 5
 # Iperparametri UTSP 2-stage
 UTSP2_HIDDEN = 32
 UTSP2_NLAYERS = 2
-UTSP2_EPOCHS = 300
 UTSP2_LR = 1e-3
 UTSP2_STEP_LR = 50
 UTSP2_LOG_FREQ = 25
 
-# Parametri loss UTSP 2-stage
-UTSP2_LAMBDA1 = 20.0
-UTSP2_LAMBDA2 = 5.0
-UTSP2_LAMBDA_E = 0.1
-UTSP2_LAMBDA_D = 0.1
-UTSP2_ALPHA = 0.8
+
+UTSP2_ALPHA = 5.0
+UTSP2_LAMBDA1 = 10.0
+UTSP2_LAMBDA2 = 10.0
+UTSP2_LAMBDA_D = 1.0   
+UTSP2_LAMBDA_E = 1.0
+UTSP2_TEMP_SCALE = 1.0
+UTSP2_EPOCHS = 300
+
+
+# Parametri loss UTSP 2-stage grid search 
+# Grid search con lista singola entrata = run normale, lista multipla = grid search
+GRID_SEARCH = {
+    "UTSP2_ALPHA":    [0.8, 2.0, 5.0, 10.0],
+    "UTSP2_LAMBDA1":  [10.0],
+    "UTSP2_LAMBDA2":  [5.0, 10.0],
+    "UTSP2_LAMBDA_D": [0.1, 1.0, 5.0], 
+    "UTSP2_LAMBDA_E": [0.1, 1.0, 5.0],
+    "UTSP2_TEMP_SCALE": [1.0],
+    "UTSP2_EPOCHS":   [300],
+}
+
 
 # Temperatura kernel gaussiano adj = exp(-d/T)
 UTSP2_TEMP_MODE = "median"
-UTSP2_TEMP_SCALE = 1.0
 UTSP2_TEMP_FIXED = 1.0
 
 # Normalizzazione distanze interna alla GNN/loss
