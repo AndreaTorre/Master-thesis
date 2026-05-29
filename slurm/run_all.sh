@@ -1,13 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=tesi_B_UTSP
-#SBATCH --output=slurm-%j.out
-#SBATCH --time=04:00:00
+#SBATCH --job-name=grid_array
+#SBATCH --array=0-71        # cambia in base al totale combinazioni
+#SBATCH --time=02:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G
+#SBATCH --output=grid_logs/output_%a.txt
+#SBATCH --error=grid_logs/error_%a.txt
 
-set -euo pipefail
+module load python
+module load gurobi
+cd /home/atorre/UTSP/unione/git
+source venv/bin/activate
 
-module load python || true
-source .venv/bin/activate
-
-python main.py --only ALL
+python run_single.py --combo-index $SLURM_ARRAY_TASK_ID
