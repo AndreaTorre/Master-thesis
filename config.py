@@ -48,25 +48,28 @@ STO_TIME_LIMIT = 600
 STO_MIP_GAP = 0.0001
 
 # K-medoids: nodi ottenuti esternamente
+#per ch=15
 K_MEDOID_NODES = [70, 101, 84]
-MAX_KMEDOID_I_ARCS = 7
-KMEDOID_ARCS_PER_NODE = 5
+#per ch=25 
+#K_MEDOID_NODES = [16, 12, 30, 44, 19]
+MAX_KMEDOID_I_ARCS = 7 # 14 per ch25
+KMEDOID_ARCS_PER_NODE = 5 # 10 per ch25
 
 # Iperparametri UTSP 2-stage
-UTSP2_HIDDEN = 32
+UTSP2_HIDDEN = 64
 UTSP2_NLAYERS = 2
 UTSP2_LR = 1e-3
 UTSP2_STEP_LR = 50
 UTSP2_LOG_FREQ = 25
 
-
-UTSP2_ALPHA = 5.0
+UTSP2_EPOCHS = 300
+UTSP2_ALPHA = 0.5
 UTSP2_LAMBDA1 = 10.0
-UTSP2_LAMBDA2 = 10.0
-UTSP2_LAMBDA_D = 1.0   
+UTSP2_LAMBDA2 = 5.0
+UTSP2_LAMBDA_D = 0.5   
 UTSP2_LAMBDA_E = 1.0
 UTSP2_TEMP_SCALE = 1.0
-UTSP2_EPOCHS = 300
+
 
 
 # Parametri loss UTSP 2-stage grid search 
@@ -111,3 +114,6 @@ UTSP_LS_RANDOM_SEED = 12345
 UTSP_LS_APPLY_INITIAL_2OPT = True
 
 UTSP2_INCLUDE_PENALTY = True
+
+#per disabilitare k-medoids e scegliere archi
+#K_MEDOID_NODES = []  # disabilita k-medoids
