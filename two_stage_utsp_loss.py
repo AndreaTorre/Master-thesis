@@ -41,10 +41,10 @@ import torch.nn.functional as F
 # ═══════════════════════════════════════════════════════════════════════════
 
 # Pesi della loss
-DEFAULT_LAMBDA1   = 20.0   # row-wise constraint  (come UTSP_C1_PENALTY)
-DEFAULT_LAMBDA2   =  5.0   # no-self-loop         (come UTSP_DIAG_LOSS)
-DEFAULT_LAMBDA_E  =  0.1   # consistency          (varianza H^ω rispetto a H̄)
-DEFAULT_LAMBDA_D  =  0.1   # asymmetry            (penalizza archi simmetrici)
+DEFAULT_LAMBDA1   = 10.0   # row-wise constraint  (come UTSP_C1_PENALTY)
+DEFAULT_LAMBDA2   =  10.0   # no-self-loop         (come UTSP_DIAG_LOSS)
+DEFAULT_LAMBDA_E  =  1   # consistency          (varianza H^ω rispetto a H̄)
+DEFAULT_LAMBDA_D  =  1   # asymmetry            (penalizza archi simmetrici)
 
 # Tasso di saturazione per il booking cost:
 #   α → 0  : booking cost ≈ α · c_ij · H̄_ij  (quasi lineare)
@@ -278,14 +278,23 @@ def _loss_distance(H_list, dist_list, scenario_probs):
         loss = loss + p_w * cost.mean()
     return loss
 
-
+# inq uesto modo la prenotazione funziona che:
+# se prenoto ,j allora pago p; se prenoto j,i pago p; se entrambi sono alti, pago al massimo p
 def _loss_booking(H_list, p_mat, I_mask, alpha):
-    H_stack    = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
-    H_sum      = H_stack.sum(dim=0)                                   # (n, n)
-    I_float    = I_mask.float()
-    activation = (1.0 - torch.exp(-alpha * H_sum)) * I_float
-    cost       = (p_mat * activation).sum()
-    return cost/2.0
+    H_stack = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
+    H_sum = H_stack.sum(dim=0) #originalmente era .sum                                   # (n, n)
+
+    n = H_sum.size(0)
+    cost = torch.tensor(0.0, device=H_sum.device)
+
+    for ii in range(n):
+        for jj in range(ii + 1, n):
+            if bool(I_mask[ii, jj].item()):
+                S_ij = H_sum[ii, jj] + H_sum[jj, ii]
+                activation = 1.0 - torch.exp(-alpha * S_ij)
+                cost = cost + p_mat[ii, jj] * activation
+
+    return cost
 
 def _loss_consistency(H_list, H_bar, I_mask, scenario_probs):
     """
@@ -343,17 +352,24 @@ def _loss_asymmetry(H_list, scenario_probs):
 
 
 def _loss_penalty(H_list, C_mat, I_mask, scenario_probs, alpha):
-    I_float    = I_mask.float()
-    C_broad    = C_mat * I_float
-    H_stack    = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
-    H_sum      = H_stack.sum(dim=0)                                   # (n, n)
-    not_booked = torch.exp(-alpha * H_sum) * I_float
+    H_stack = torch.stack([H.squeeze(0) for H in H_list], dim=0)  # (K, n, n)
+    H_sum = H_stack.sum(dim=0)                                    # (n, n)
 
-    loss = torch.tensor(0.0, device=H_stack.device)
-    for H_omega, p_w in zip(H_list, scenario_probs):
-        h = H_omega.squeeze(0) if H_omega.dim() == 3 else H_omega
-        penalty = C_broad * h * not_booked
-        loss = loss + p_w * penalty.sum()
+    n = H_sum.size(0)
+    loss = torch.tensor(0.0, device=H_sum.device)
+
+    for ii in range(n):
+        for jj in range(ii + 1, n):
+            if bool(I_mask[ii, jj].item()):
+                S_ij = H_sum[ii, jj] + H_sum[jj, ii]
+                not_booked = torch.exp(-alpha * S_ij)
+
+                for H_omega, p_w in zip(H_list, scenario_probs):
+                    h = H_omega.squeeze(0)
+                    usage_omega = h[ii, jj] + h[jj, ii]
+
+                    loss = loss + p_w * C_mat[ii, jj] * usage_omega * not_booked
+
     return loss
 
 
@@ -469,7 +485,6 @@ def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, alpha=DEFAUL
     idx = {v: k for k, v in enumerate(nodes)}
 
     with torch.no_grad():
-        # FIX: usa H_sum, non H_bar
         H_stack = torch.stack([H.squeeze(0) for H in H_list], dim=0)
         H_sum   = H_stack.sum(dim=0)
         b_tilde = compute_booking_activation(H_sum, I_mask, alpha)
@@ -480,10 +495,8 @@ def decode_booking_policy(H_list, I, nodes, I_mask, scenario_probs, alpha=DEFAUL
     for edge in I:
         i, j   = canon_edge(*edge)
         ii, jj = idx[i], idx[j]
-        score  = float(b_tilde[0, ii, jj].item())  # già tra 0 e 1
+        score  = float(b_tilde[0, ii, jj].item())
         x_scores[(i, j)] = score
-        # la soglia diventa solo una lettura del risultato naturale:
-        # con alpha alto, b_tilde è quasi binaria da sola
         if score >= threshold:
             x_reserved.append((i, j))
 
@@ -608,7 +621,7 @@ if __name__ == "__main__":
     H_list_single = [compute_heatmap(T_list[k][:1].detach()) for k in range(K)]
     x_res, x_sc   = decode_booking_policy(
         H_list_single, I_fake, nodes, I_mask, probs,
-        alpha=5.0, threshold=0.5,
+        alpha=5.0, threshold=0.7,
     )
     print(f"\n{check_booking_coverage(x_sc, I_fake)}")
     print("\n=== TEST COMPLETATO ===")
