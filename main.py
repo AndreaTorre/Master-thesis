@@ -4,8 +4,8 @@ import pickle
 from common import load_data, load_env, set_seed
 from experiment_B import run_esperimento_B
 from utsp import run_esperimento_B_UTSP
-
-
+import os
+CACHE_PATH = "/home/atorre/UTSP/unione/git/res_B_cached.pkl"
 def main():
     parser = argparse.ArgumentParser(description="Esegue Esperimento B e le varianti UTSP.")
     parser.add_argument(
@@ -26,11 +26,19 @@ def main():
     nodes, coords, base_dist, E, root = load_data()
 
     risultati = {}
-    risultati["B"] = run_esperimento_B(nodes, coords, base_dist, E, root, env)
-    #salvo i risultati in locale di B cosi non serve far andare esperimento di 10min ogni volta
-    with open("res_B_cached.pkl", "wb") as f:
+
+    if os.path.exists(CACHE_PATH):
+        print(f"Carico res_B da file .pkl: {CACHE_PATH}")
+        with open(CACHE_PATH, "rb") as f:
+            risultati["B"] = pickle.load(f)
+    else:
+        print("File .pkl non trovato. Eseguo esperimento B...")
+        risultati["B"] = run_esperimento_B(nodes, coords, base_dist, E, root, env)
+    
+        with open(CACHE_PATH, "wb") as f:
             pickle.dump(risultati["B"], f)
-    print("res_B salvato in res_B_cached.pkl")
+    
+        print(f"res_B salvato in: {CACHE_PATH}")
         
     if args.only == "B":
         return risultati
@@ -43,10 +51,8 @@ def main():
         mode = "both"
 
     risultati["B_UTSP"] = run_esperimento_B_UTSP(
-        nodes, coords, base_dist, E, root, env,
-        res_B=risultati["B"],
-        mode=mode,
-    )
+        nodes, coords, base_dist, E, root, env, res_B=risultati["B"],
+        mode=mode)
 
     return risultati
 
