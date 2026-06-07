@@ -660,6 +660,8 @@ def validate_policies(
         "pi_costs":    pi_costs,
         "sto_costs":   sto_costs,
         "eev_costs":   eev_costs,
+        "sto_solutions_val": sto_solutions_val,
+        "eev_solutions_val": eev_solutions_val,
         "results_val": results_val,
     }
 
