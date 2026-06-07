@@ -12,7 +12,7 @@ def run_grid_search():
     with open("res_B_cached.pkl", "rb") as f:
         res_B = pickle.load(f)
 
-    set_seed()
+    
     env = load_env()
     nodes, coords, base_dist, E, root = load_data()
 
@@ -28,10 +28,11 @@ def run_grid_search():
     results_log = []
 
     for idx, combo in enumerate(combos_this_job):
+        
         params = dict(zip(keys, combo))
         for k, v in params.items():
             setattr(config, k, v)
-
+        set_seed()
         for mod in ["two_stage_utsp_loss", "utsp"]:
             if mod in sys.modules:
                 importlib.reload(sys.modules[mod])
@@ -47,7 +48,7 @@ def run_grid_search():
             mode="local_search",
         )
 
-        utsp_ls_val = res["UTSP_LS_val"]
+        utsp_ls_val = res["local_search"]["UTSP_LS_val"]
         sto_val     = res_B["STO"]
         gap         = (utsp_ls_val - sto_val) / sto_val * 100
 
