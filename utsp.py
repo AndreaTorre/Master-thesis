@@ -14,7 +14,7 @@ from config import (
     N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC,
     UTSP2_HIDDEN, UTSP2_NLAYERS, UTSP2_EPOCHS, UTSP2_LR,
     UTSP2_STEP_LR, UTSP2_LOG_FREQ, UTSP2_LAMBDA1, UTSP2_LAMBDA2,
-    UTSP2_LAMBDA_E, UTSP2_ALPHA, UTSP2_TEMP_MODE, UTSP2_TEMP_SCALE,
+    UTSP2_LAMBDA_E, UTSP2_ALPHA_DECODE,UTSP2_ALPHA_LOSS ,UTSP2_TEMP_MODE, UTSP2_TEMP_SCALE,
     UTSP2_TEMP_FIXED, UTSP2_DIST_SCALE_MODE,
     UTSP_LS_MAX_ACTIONS, UTSP_LS_ACTIONS_PER_ROUND,UTSP2_INCLUDE_PENALTY,
     UTSP_LS_MAX_RESTARTS, UTSP_LS_M, UTSP_LS_K,
@@ -67,7 +67,7 @@ class _SCTConv(nn.Module):
         self.linear1 = nn.Linear(hidden_dim, hidden_dim)
         self.linear2 = nn.Linear(hidden_dim, hidden_dim)
         self.a       = nn.Parameter(torch.zeros(2 * hidden_dim, 1))
-
+    
     def forward(self, X, adj, device):
         h_A, h_A2, _ = _gcn_diffusion(adj, 3, X, device)
         h_A, h_A2    = _leaky(h_A), _leaky(h_A2)
@@ -77,8 +77,9 @@ class _SCTConv(nn.Module):
         a_inputs = torch.stack([torch.cat([X, p], dim=2) for p in parts], dim=1)
         e        = torch.matmul(F.relu(a_inputs), self.a).squeeze(-1)
         attn     = F.softmax(e, dim=1).unsqueeze(-1)
-        h_prime  = (attn * torch.stack(parts, dim=1)).mean(dim=1)
+        h_prime  = (attn * torch.stack(parts, dim=1)).sum(dim=1) # prima era mean
         return _leaky(self.linear2(_leaky(self.linear1(h_prime))))
+    
 
 class UTSP_GNN(nn.Module):
     """GNN UTSP — identica a unionev3.py."""
@@ -90,16 +91,29 @@ class UTSP_GNN(nn.Module):
         self.mlp1    = nn.Linear(hidden_dim * (1 + n_layers), hidden_dim)
         self.mlp2    = nn.Linear(hidden_dim, n_nodes)
         self.softmax = nn.Softmax(dim=1)
-
+# ORIGINALE
+#    def forward(self, xy, adj, device):
+#      B, N, _ = xy.shape
+#      x       = self.bn0(xy.reshape(B * N, 2)).reshape(B, N, 2)
+#      x       = _leaky(self.in_proj(x))
+#      hidden  = x
+#      for conv in self.convs:
+#          x = conv(x, adj, device)
+#          hidden = torch.cat([hidden, x], dim=-1)
+#      return self.softmax(self.mlp2(_leaky(self.mlp1(hidden))))
+      
+    #NUOVA
     def forward(self, xy, adj, device):
-      B, N, _ = xy.shape
-      x       = self.bn0(xy.reshape(B * N, 2)).reshape(B, N, 2)
-      x       = _leaky(self.in_proj(x))
-      hidden  = x
-      for conv in self.convs:
-          x = conv(x, adj, device)
-          hidden = torch.cat([hidden, x], dim=-1)
-      return self.softmax(self.mlp2(_leaky(self.mlp1(hidden))))
+        B, N, _ = xy.shape
+        x       = self.bn0(xy.reshape(B * N, 2)).reshape(B, N, 2)
+        x       = _leaky(self.in_proj(x))
+        hidden  = x
+        for conv in self.convs:
+            x = conv(x, adj, device)
+            hidden = torch.cat([hidden, x], dim=-1)
+        logits = self.mlp2(_leaky(self.mlp1(hidden)))              # (B, N, N)
+        mask   = torch.eye(N, device=device).unsqueeze(0) * (-1e9) # (1, N, N)
+        return self.softmax(logits + mask)                         # diagonale → 0
 
 def _normalize_coords(nodes, coords, device):
     """Normalizza le coordinate in [0,1] come in unionev3.py."""
@@ -166,6 +180,86 @@ def _build_input_tensors(scenario_ids, results, nodes, coords, device):
     )
 
     return xy_tile, dist_raw, dist_model, dist_scale, temperature
+# NUOVA FUNZIONE PER CALColare la matrice dj mista: uso distanza gaussiana + trovo per ogni nodo i k vicini e impongo chee il 
+# loro peso non scenda sotto una soglia minima
+# provo perche con la forma originale i nodi estremi ed isolati vanno a zero e non entrano nella heatmap con dei valori sensati   
+#def _build_adj_with_knn_guarantee(dist_stack, temperature, k=3, min_weight=0.6):
+#    """
+#    Adiacenza gaussiana con peso minimo garantito per i k vicini più prossimi.
+#    """
+#    off_diag = (1 - torch.eye(dist_stack.size(-1), device=dist_stack.device)).unsqueeze(0)
+#    adj = torch.exp(-dist_stack / temperature) * off_diag  # gaussiana standard
+#
+#    K, n, _ = dist_stack.shape
+#    for s in range(K):
+#        for i in range(n):
+#            row = dist_stack[s, i].clone()
+#            row[i] = float('inf')  # escludi diagonale
+#            _, topk_idx = torch.topk(row, k, largest=False)  # k più vicini
+#            for j in topk_idx:
+#                if adj[s, i, j] < min_weight:
+#                  adj[s, i, j] = min_weight
+  
+#
+#    return adj * off_diag
+
+#altra possibile formulazione
+def _build_adj_robust_floor(
+    dist_stack,
+    tau=UTSP2_TEMP_SCALE,
+    eps=0.02,
+    q_scale=0.90,
+    clip_max=3.0,
+):
+    """
+    Costruisce una matrice di adiacenza robusta.
+
+#    Obiettivo:
+#    - evitare che archi lunghi diventino numericamente invisibili;
+#    - mantenere comunque una differenza tra archi corti e archi lunghi;
+#    - proteggere i nodi estremi con una riscalatura per riga.
+#
+#    dist_stack : (K, n, n), distanze già normalizzate
+#    tau        : temperatura del kernel dopo riscalatura robusta
+#    eps        : peso minimo morbido per ogni arco fuori diagonale
+#    q_scale    : quantile usato come scala di riga
+#    clip_max   : massimo valore normalizzato prima del kernel
+    """
+
+    K, n, _ = dist_stack.shape
+    device = dist_stack.device
+
+    off_diag = (1 - torch.eye(n, device=device)).unsqueeze(0)
+    D_scaled = torch.zeros_like(dist_stack)
+
+    for s in range(K):
+        for i in range(n):
+            row = dist_stack[s, i].clone()
+            row[i] = float("inf")
+
+            vals = row[torch.isfinite(row)]
+            vals = vals[vals > 0]
+
+            if vals.numel() == 0:
+                scale_i = torch.tensor(1.0, device=device)
+            else:
+                scale_i = torch.quantile(vals, q_scale).clamp(min=1e-9)
+
+            D_scaled[s, i] = dist_stack[s, i] / scale_i
+
+    D_scaled = torch.clamp(D_scaled, min=0.0, max=clip_max)
+
+    adj = torch.exp(-D_scaled / max(tau, 1e-9))
+
+    # soglia minima morbida: ogni arco fuori diagonale resta visibile
+    adj = eps + (1.0 - eps) * adj
+#
+    # diagonale sempre zero
+    adj = adj * off_diag
+
+    return adj
+
+
 
 def _train_utsp_2stage(
     nodes, coords, scenario_ids, results, scenario_probs,
@@ -186,7 +280,6 @@ def _train_utsp_2stage(
     xy_tile, dist_raw, dist_model, dist_scale, temperature = _build_input_tensors(
         scenario_ids, results, nodes, coords, device
     )
-
     probs_t = torch.tensor(
         [scenario_probs[sid] for sid in scenario_ids],
         dtype=torch.float32, device=device
@@ -195,7 +288,12 @@ def _train_utsp_2stage(
     # Diagonale azzerata   stessa maschera usata in unionev3.py
     off_diag = (1 - torch.eye(n, device=device)).unsqueeze(0)  # (1, n, n)
 
+    from common import set_seed as _set_seed
+    from config import UTSP_TRAINING_SEED as _train_seed
+    _set_seed(_train_seed)
     model = UTSP_GNN(n, UTSP2_HIDDEN, UTSP2_NLAYERS).to(device)
+    
+    
     n_par = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     optimizer = optim.Adam(model.parameters(), lr=UTSP2_LR)
@@ -213,55 +311,67 @@ def _train_utsp_2stage(
     best_loss, best_state = float("inf"), None
     t0 = time.time()
 
-    # Adiacenza per ogni scenario: adj_k = exp(-D^ω_norm / T) con diagonale zero
-    adj_stack = torch.exp(-dist_model / temperature) * off_diag  # (K, n, n)
-
+    # ORIGINALE :Adiacenza per ogni scenario: adj_k = exp(-D^ω_norm / T) con diagonale zero
+    #adj_stack = torch.exp(-dist_model / temperature) * off_diag  # (K, n, n)
+    
+    #POSSIBILE MODIFICA con knn:
+    #adj_stack = _build_adj_with_knn_guarantee(dist_model, temperature, k=3, min_weight=0.6)
+    
+    #seconda possibile modifica
+    adj_stack = _build_adj_robust_floor(dist_model,tau=UTSP2_TEMP_SCALE, eps=0.02, q_scale=0.90,clip_max=3.0,)
+    
     for epoch in range(1, UTSP2_EPOCHS + 1):
-        model.train()
-
-        #   Forward: un unico batch con tutti i K scenari  
-        T_batch = model(xy_tile, adj_stack, device)   # (K, n, n)
-
-        # Separa in lista di K tensori (1, n, n) per la loss
-        T_list    = [T_batch[k:k+1] for k in range(K)]
-        dist_list = [dist_model[k:k+1] for k in range(K)]   # (1, n, n) norm
-
-        loss, comps = two_stage_utsp_loss(
-            T_list, dist_list, I_mask, p_mat, C_mat, probs_t,
-            alpha=UTSP2_ALPHA,
-            lambda1=UTSP2_LAMBDA1,
-            lambda2=UTSP2_LAMBDA2,
-            lambda_e=UTSP2_LAMBDA_E,
-            lambda_d=UTSP2_LAMBDA_D,
-            include_penalty=UTSP2_INCLUDE_PENALTY,
-            return_components=True,
-        )
-
-        optimizer.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        optimizer.step()
-        scheduler.step()
-
-        history["loss"].append(float(loss.item()))
-        history["components"].append(comps)
-
-        if loss.item() < best_loss:
-            best_loss  = loss.item()
-            best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
-
-        if epoch % UTSP2_LOG_FREQ == 0 or epoch == 1:
-            marker = " ★" if abs(loss.item() - best_loss) < 1e-9 else ""
-            print(f"  {format_loss_components(comps, epoch)}{marker}")
-
+            model.train()
+    
+            #   Forward: un unico batch con tutti i K scenari  
+            T_batch = model(xy_tile, adj_stack, device)   # (K, n, n)
+    
+            # Separa in lista di K tensori (1, n, n) per la loss
+            T_list    = [T_batch[k:k+1] for k in range(K)]
+            dist_list = [dist_model[k:k+1] for k in range(K)]   # (1, n, n) norm
+            #print("Distanze archi in I:")
+            #for edge in I:
+            #    i, j = edge
+            #    ii, jj = idx[i], idx[j]
+            #    d = dist_list[0][ii, jj].item()  # primo scenario come riferimento
+            #    print(f"  {{{i},{j}}}: d={d:.4f}")
+            loss, comps = two_stage_utsp_loss(
+                T_list, dist_list, I_mask, p_mat, C_mat, probs_t,
+                alpha=UTSP2_ALPHA_LOSS,
+                lambda1=UTSP2_LAMBDA1,
+                lambda2=UTSP2_LAMBDA2,
+                lambda_e=UTSP2_LAMBDA_E,
+                lambda_d=UTSP2_LAMBDA_D,
+                include_penalty=UTSP2_INCLUDE_PENALTY,
+                return_components=True,
+            )
+    
+            optimizer.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            optimizer.step()
+            scheduler.step()
+    
+            history["loss"].append(float(loss.item()))
+            history["components"].append(comps)
+    
+            if loss.item() < best_loss:
+                best_loss  = loss.item()
+                best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+    
+            if epoch % UTSP2_LOG_FREQ == 0 or epoch == 1:
+                marker = " ★" if abs(loss.item() - best_loss) < 1e-9 else ""
+                print(f"  {format_loss_components(comps, epoch)}{marker}")
+    
     elapsed = time.time() - t0
     print(f"\n  Training completato in {elapsed:.1f}s | "
-          f"miglior loss = {best_loss:.4f}")
-
+              f"miglior loss = {best_loss:.4f}")
+    
     model.load_state_dict(best_state)
     model.eval()
     return model, history, adj_stack, dist_model, xy_tile, probs_t, temperature,  dist_scale
-
+    
+    
 def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device):
     K = adj_stack.size(0)
     model.eval()
@@ -272,9 +382,45 @@ def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device)
 
     x_reserved, x_scores = decode_booking_policy(
     H_list, I, nodes, I_mask, probs_t,
-    alpha=UTSP2_ALPHA,
+    alpha=UTSP2_ALPHA_DECODE,
     )
     return x_reserved, x_scores, H_list, T_batch 
+    
+    
+def debug_T_H(T_batch, H_list, name="TRAIN"):
+    """
+    Diagnostica numerica su T e H dopo il passaggio nella GNN.
+    Serve a capire se il problema nasce da T, da H, o solo dalla visualizzazione.
+    """
+    with torch.no_grad():
+        T = T_batch.detach().cpu()
+        H = torch.stack([h.squeeze(0).detach().cpu() for h in H_list], dim=0)
+
+        Tm = T.mean(dim=0).numpy()
+        Hm = H.mean(dim=0).numpy()
+
+        def stats(A, label):
+            A = np.asarray(A)
+            n = A.shape[0]
+            mask = ~np.eye(n, dtype=bool)
+            vals = A[mask]
+
+            print(f"\n[{name}] {label}")
+            print(f"  min fuori diagonale   = {vals.min():.6e}")
+            print(f"  max fuori diagonale   = {vals.max():.6e}")
+            print(f"  media fuori diagonale = {vals.mean():.6e}")
+            print(f"  std fuori diagonale   = {vals.std():.6e}")
+            print(f"  p50 fuori diagonale   = {np.percentile(vals, 50):.6e}")
+            print(f"  p90 fuori diagonale   = {np.percentile(vals, 90):.6e}")
+            print(f"  p99 fuori diagonale   = {np.percentile(vals, 99):.6e}")
+            print(f"  somma righe min/max   = {A.sum(axis=1).min():.6f} / {A.sum(axis=1).max():.6f}")
+            print(f"  somma colonne min/max = {A.sum(axis=0).min():.6f} / {A.sum(axis=0).max():.6f}")
+            print(f"  diagonale somma       = {np.trace(A):.6e}")
+
+        stats(Tm, "T medio")
+        stats(Hm, "H medio")  
+  
+    
 
 def _evaluate_policy_oos(
     policy_name, x_policy, nodes, E, base_dist, root, env,
@@ -726,7 +872,7 @@ def _greedy_tour(nodes, root, dist):
         cur = nxt
     return tour
 
-
+# Orginale
 def _build_adj_single(D, n, device, dist_scale, temperature):
     """
     Costruisce la matrice di adiacenza per un singolo scenario.
@@ -737,6 +883,22 @@ def _build_adj_single(D, n, device, dist_scale, temperature):
     off_diag = (1 - torch.eye(n, device=device))
     dist_norm = D / max(dist_scale, 1e-9)
     return torch.exp(-dist_norm / max(temperature, 1e-9)) * off_diag  # (n, n)
+#def _build_adj_single(D, n, device, dist_scale, temperature, k=3, min_weight=0.2): #potrebbe aver senso mettere poi k e min weight nel config.py
+#    """
+#    Costruisce la matrice di adiacenza per un singolo scenario.
+#    Usa la stessa normalizzazione (dist_scale, temperature) del training,
+#    in modo che la GNN veda input nella stessa scala.
+#    D: (n, n) tensor delle distanze reali dello scenario.
+ 
+#    Applica la stessa garanzia k-NN di _build_adj_with_knn_guarantee,
+#    così ogni nodo ha almeno k vicini con peso >= min_weight anche in inferenza.
+#    """
+#    dist_norm = D / max(dist_scale, 1e-9)
+    # Riusa la funzione di training: aggiunge dimensione batch (1, n, n) poi la rimuove
+#    adj = _build_adj_with_knn_guarantee(
+#        dist_norm.unsqueeze(0), max(temperature, 1e-9), k=k, min_weight=min_weight
+#    )
+#    return adj.squeeze(0)  # (n, n)
 
 
 def _gnn_heatmap_single(model, xy, adj_single, device):
@@ -822,9 +984,16 @@ def _run_ls_on_scenarios(
                 for jj, j in enumerate(nodes):
                     if i != j:
                         D[ii, jj] = float(dist_s[i][j])
-            adj_s = _build_adj_single(D, n, device, dist_scale, temperature)
-            H_s   = _gnn_heatmap_single(model, xy, adj_s, device)
-
+            #originale
+            #adj_s = _build_adj_single(D, n, device, dist_scale, temperature)
+            #H_s   = _gnn_heatmap_single(model, xy, adj_s, device)
+             
+            #nuova versione
+            # DOPO
+            adj_s = _build_adj_robust_floor(  D.unsqueeze(0) / max(dist_scale, 1e-9), tau=UTSP2_TEMP_SCALE, eps=0.02, q_scale=0.90, clip_max=3.0, ).squeeze(0)
+            H_s = _gnn_heatmap_single(model, xy, adj_s, device)
+            
+              
         # ── Distanze effettive + LS ───────────────────────────────────
         dist_eff = _effective_dist_for_ls(dist_s, nodes, I, x_ls, C)
         seed     = _greedy_tour(nodes, root, dist_eff)
@@ -1085,12 +1254,15 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
     x_utsp, x_scores, H_list, T_batch = _decode_policy(
         model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device,
     )
+    
+    debug_T_H(T_batch, H_list, name="dopo training UTSP")
+    
     reservation_utsp = sum(get_edge_value(p, i, j) for (i, j) in x_utsp)
-    # ── Visualizzazioni heatmap e grafo pesato ─────────────────────
+    # Visualizzazioni heatmap e grafo pesato 
     _H_avg = _heatmap_numpy_from_H_list(H_list)
     _H_decode_vis = _H_avg.copy()
     np.fill_diagonal(_H_decode_vis, 0.0)
-    print("\n  Generazione grafici heatmap UTSP ...")
+    
     plot_utsp_heatmap(
         "espB_UTSP", nodes, _H_decode_vis,
         title_suffix=f"(media {len(H_list)} scenari — diagonale azzerata)",
@@ -1102,7 +1274,24 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
 
     print(f"\n{check_booking_coverage(x_scores, I)}")
     print(f"\n  Costo prenotazione UTSP : {reservation_utsp:.4f}")
+        # ── Visualizzazione dell'adiacenza dopo il kernel ─────────────────
+    _adj_avg = adj_stack.detach().cpu().numpy().mean(axis=0)
+    np.fill_diagonal(_adj_avg, 0.0)
 
+    plot_utsp_heatmap(
+        "espB_UTSP_adj_kernel",
+        nodes,
+        _adj_avg,
+        title_suffix=f"(adj_stack media su {adj_stack.shape[0]} scenari — dopo kernel)",
+    )
+
+    plot_utsp_graph_weights(
+        "espB_UTSP_adj_kernel",
+        nodes,
+        coords,
+        _adj_avg,
+        title_suffix=f"(adj_stack media su {adj_stack.shape[0]} scenari — dopo kernel)",
+    )
     output = {
         "model": model,
         "history": history,
@@ -1196,6 +1385,33 @@ def _run_policy_branch(
         N_EXTRA_ARCS, MEAN_FRAC, SIGMA_FRAC,
         exp_name="espB"
     )
+    
+    scenario_ids_test_8 = scenario_ids_val[:8]
+
+    genera_grafici_utsp(
+        exp_name="espB_UTSP_LS_TEST",
+        nodes=nodes,
+        coords=coords,
+        scenario_ids=scenario_ids_test_8,
+        results=results_val,
+    
+        eev_costs=val_bench["eev_costs"],
+        eev_solutions=val_bench["eev_solutions_val"],
+    
+        stoch_costs=val_bench["sto_costs"],
+        stoch_solutions=val_bench["sto_solutions_val"],
+    
+        utsp_costs=costs_val,
+        utsp_solutions=solutions_val,
+    
+        x_ev=res_B["x_ev"],
+        x_sto=res_B["x_used_sto"],
+        x_utsp=x_ls,
+    
+        utsp_label="UTSP local search",
+        save=True,
+    )
+    
     PI_val = val_results["PI_val"]
     STO_val = val_results["STO_val"]
     EEV_val = val_results["EEV_val"]
@@ -1254,24 +1470,7 @@ def _run_policy_branch(
         temperature=temperature,
     )
 
-    genera_grafici_utsp(
-        exp_name="espB_UTSP",
-        nodes=nodes,
-        coords=coords,
-        scenario_ids=scenario_ids,
-        results=results,
-        eev_costs=res_B["eev_costs"],
-        eev_solutions=res_B["eev_solutions"],
-        stoch_costs=res_B["stoch_costs"],
-        stoch_solutions=res_B["stoch_solutions"],
-        utsp_costs=utsp_costs_train,
-        utsp_solutions=utsp_solutions_train,
-        x_ev=res_B["x_ev"],
-        x_sto=res_B["x_used_sto"],
-        x_utsp=x_utsp,
-        utsp_label="UTSP two-stage",
-        save=True,
-    )
+    
 
     return {
         "utsp_costs_train": utsp_costs_train,
@@ -1544,7 +1743,7 @@ def _save_utsp_ls_summary(
         "",
         f"Primo stadio x_ls : {sorted(x_ls)}",
         "",
-        "TRAINING",
+        "TEST",
         f"  {'Scen':>4} | {'PI':>10} | {'UTSP_LS':>10} [perc, multa] | tour",
     ]
     for sid in scenario_ids:
