@@ -23,14 +23,13 @@ def _solution_arcs_undir(solution):
 
     return {canon_edge(i, j) for (i, j) in arcs}
 
-def compute_random_edge_usage_stats(results, scenario_ids, stoch_solutions=None, eev_solutions=None):
-    """
-    Conta quanti archi casuali perturbati compaiono nei tour PI/STO/EEV.
 
-    Un arco conta solo se:
-    1. è stato estratto come arco casuale nello scenario s;
-    2. compare nel tour PI, STO o EEV dello stesso scenario s.
-    """
+
+# conto quanti archi generati casualmente e che poi verranno perturbati vengono effettivamente usati
+# voglio sapere se incidono oppure queste perturbazioni sono inutili
+# per essere parte del conteggio: deve essere estratto in uno scenario e poi usato da almeno un modello
+def compute_random_edge_usage_stats(results, scenario_ids, stoch_solutions=None, eev_solutions=None):
+    
     stoch_solutions = stoch_solutions or {}
     eev_solutions = eev_solutions or {}
 
@@ -84,6 +83,7 @@ def compute_random_edge_usage_stats(results, scenario_ids, stoch_solutions=None,
         stats["any_policy"]["by_scenario"][sid] = used_any_sid
 
     return stats
+
 
 def format_random_edge_usage_lines(stats, title):
     if not stats:
@@ -150,7 +150,7 @@ def format_random_edge_usage_lines(stats, title):
     return out
 
 def compute_eev_medione(nodes, E, root, env, base_dist, I, p, C, results, scenario_ids, return_solutions=False):
-    # Step 1: distanza media sui 4 scenari
+    # 1: distanza media sui 4 scenari
     all_deltas = [results[s]["pert"] for s in scenario_ids]
     dist_media = {
         i: {
@@ -160,7 +160,7 @@ def compute_eev_medione(nodes, E, root, env, base_dist, I, p, C, results, scenar
         for i in base_dist
     }
 
-    # Step 2: problema deterministico sul medione.
+    # 2: problema deterministico sul medione.
     # Da qui estraggo x^EV, cioè le prenotazioni decise con informazione media.
     mean_solution = solve_reservation_tsp(
         nodes, E, I, dist_media, root, p, C, env,
@@ -172,7 +172,7 @@ def compute_eev_medione(nodes, E, root, env, base_dist, I, p, C, results, scenar
     arcs_medio = mean_solution["arcs"]
     x_ev = set(mean_solution["x_used"])
 
-    # Step 3: valutazione EEV vera.
+    # 3: valutazione EEV vera.
     # Fisso x^EV, poi per ogni scenario riottimizzo il tour y sui costi reali dello scenario.
     eev_costs = {}
     eev_tour_costs = {}
@@ -199,7 +199,7 @@ def compute_eev_medione(nodes, E, root, env, base_dist, I, p, C, results, scenar
             reserved_not_used = second_stage.get("reserved_not_used", [])
             used_unreserved_directed = second_stage.get("used_unreserved_directed", [])
         else:
-            # Fallback prudente: non dovrebbe servire se il modello è corretto.
+            # Fallback non necessario ma per sicurezza
             tour_c = sum(scenario_dist[i][j] for (i, j) in arcs_medio)
             penalty_c = 0.0
             arcs_ev = arcs_medio
@@ -544,7 +544,7 @@ def validate_policies(
     print(f"  Politica STO: {sorted(x_sto)} ({len(x_sto)} archi prenotati)")
     print(f"  Politica EEV: {sorted(x_ev)} ({len(x_ev)} archi prenotati)")
 
-    # Genera scenari di validazione indipendenti
+    # Genero scenari di validazione indipendenti
     results_val, _, _ = generate_scenarios(
         scenario_ids_val, nodes, E, base_dist, I, frequent_arcs,
         n_extra_arcs, mean_frac, sigma_frac, VALIDATION_SEED,
@@ -561,7 +561,7 @@ def validate_policies(
         sd = results_val[sid]["scenario_dist"]
         pi_costs[sid] = results_val[sid]["exact_free"]["length"]
 
-        # Applica x_sto: fissa le prenotazioni, ottimizza y
+        # Applico x_sto: fisso le prenotazioni, ottimizzo y
         r_sto = solve_reservation_tsp(
             nodes, E, I, sd, root, p, C, env,
             fixed_reservations=list(x_sto), output_flag=0,
@@ -572,7 +572,7 @@ def validate_policies(
         sto_costs[sid] = reservation_sto + sto_tc[sid] + sto_pc[sid]
         sto_solutions_val[sid] = r_sto
 
-        # Applica x_ev: fissa le prenotazioni, ottimizza y
+        # Applico x_ev: fisso le prenotazioni, ottimizzo y
         r_ev = solve_reservation_tsp(
             nodes, E, I, sd, root, p, C, env,
             fixed_reservations=list(x_ev), output_flag=0,
@@ -617,7 +617,7 @@ def validate_policies(
     print(f"  Gap PI-STO_val = {gap_pi_sto_val:.4f}%")
     print("=" * 60)
     print("\n".join(random_impact_lines))
-    # Appende i risultati di validazione al txt dell'esperimento
+    # Appendo i risultati di validazione al txt dell'esperimento
     if exp_name:
         val_lines = [
             "",
@@ -665,9 +665,9 @@ def validate_policies(
         "results_val": results_val,
     }
 
-# ═══════════════════════════════════════════════════════════════════
+
 # GRAFICI 4 PANNELLI: PI / EEV / STO / UTSP
-# ═══════════════════════════════════════════════════════════════════
+
 
 def _draw_nodes(ax, nodes, coords):
     xs = [coords[n][0] for n in nodes]
@@ -727,24 +727,10 @@ def _solution_tour(solution):
     return solution.get("tour", [])
 
 
-def plot_scenario_comparison_utsp(
-    exp_name,
-    scenario_id,
-    nodes,
-    coords,
-    results,
-    eev_costs,
-    eev_solutions,
-    stoch_costs,
-    stoch_solutions,
-    utsp_costs,
-    utsp_solutions,
-    x_ev,
-    x_sto,
-    x_utsp,
-    utsp_label="UTSP",
-    save=True,
-):
+def plot_scenario_comparison_utsp( exp_name, scenario_id, nodes,
+    coords, results, eev_costs, eev_solutions, stoch_costs,
+    stoch_solutions, utsp_costs, utsp_solutions,
+    x_ev, x_sto, x_utsp, utsp_label="UTSP", save=True,):
     fig, axes = plt.subplots(2, 2, figsize=(26, 22))
     fig.suptitle(
         f"Scenario {scenario_id} — confronto PI / EEV / STO / {utsp_label}",
@@ -861,24 +847,11 @@ def plot_scenario_comparison_utsp(
         plt.show()
 
 
-def genera_grafici_utsp(
-    exp_name,
-    nodes,
-    coords,
-    scenario_ids,
-    results,
-    eev_costs,
-    eev_solutions,
-    stoch_costs,
-    stoch_solutions,
-    utsp_costs,
-    utsp_solutions,
-    x_ev,
-    x_sto,
-    x_utsp,
-    utsp_label="UTSP",
-    save=True,
-):
+def genera_grafici_utsp( exp_name, nodes, coords, scenario_ids,
+    results, eev_costs, eev_solutions,
+    stoch_costs, stoch_solutions,utsp_costs,
+    utsp_solutions, x_ev, x_sto,
+    x_utsp,  utsp_label="UTSP", save=True, ):
     for sid in scenario_ids:
         plot_scenario_comparison_utsp(
             exp_name=exp_name,
@@ -898,15 +871,13 @@ def genera_grafici_utsp(
             utsp_label=utsp_label,
             save=save,
         )
-# ═══════════════════════════════════════════════════════════════════
-# HEATMAP E GRAFO PESATO — UTSP
-# ═══════════════════════════════════════════════════════════════════
 
+# HEATMAP E GRAFO PESATO PER UTSP
+
+
+#
 def plot_utsp_heatmap(exp_name, nodes, H, title_suffix="", save=True):
-    """
-    Visualizza la matrice H (n×n) come imshow con etichette dei nodi sugli assi.
-    H è tipicamente H_decode (diagonale azzerata, media sugli scenari).
-    """
+    
     import numpy as np
     n = len(nodes)
     fig, ax = plt.subplots(figsize=(max(6, n * 0.75), max(5, n * 0.7)))
@@ -948,11 +919,7 @@ def plot_utsp_heatmap(exp_name, nodes, H, title_suffix="", save=True):
 
 def plot_utsp_graph_weights(exp_name, nodes, coords, H,
                             threshold=0.01, title_suffix="", save=True):
-    """
-    Disegna il grafo con archi la cui larghezza è proporzionale a H[i→j].
-    H è tipicamente H_raw (media sugli scenari, con diagonale).
-    Gli archi con H[i,j] / H.max() < threshold vengono omessi.
-    """
+    
     import numpy as np
     from matplotlib.cm import ScalarMappable
     from matplotlib.colors import Normalize
