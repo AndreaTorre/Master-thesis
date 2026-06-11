@@ -1,13 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Configurazione minimale per Esperimento B e B_UTSP.
-
-Nota per GitHub: le credenziali Gurobi non sono salvate qui. Usa variabili
-d'ambiente, ad esempio:
-
-    export GRB_WLSACCESSID="..."
-    export GRB_WLSSECRET="..."
-    export GRB_LICENSEID="..."
-"""
 
 import os
 
@@ -62,13 +53,28 @@ UTSP2_LR = 1e-3
 UTSP2_STEP_LR = 50
 UTSP2_LOG_FREQ = 25
 
-UTSP2_EPOCHS = 300
-#UTSP2_ALPHA  = 2.0
-UTSP2_LAMBDA1  = 30.0
-UTSP2_LAMBDA2 = 1.0 #post grid era 1.0
-UTSP2_LAMBDA_D  = 5.0 #post grid era 1.0
-UTSP2_LAMBDA_E  =  2.0
+
+#MEAN
+#UTSP2_EPOCHS = 500
+#UTSP2_LS_ALPHA  = 6.0 
+#UTSP2_LAMBDA1  = 60.0
+#UTSP2_LAMBDA2 = 1.0 
+#UTSP2_LAMBDA_D  = 12.0 
+#UTSP2_LAMBDA_E  =  2.0
+#UTSP2_TEMP_SCALE =  0.5
+
+
+#SUM
+UTSP2_EPOCHS = 500
+UTSP2_LS_ALPHA  = 0.01 
+UTSP2_LAMBDA1  = 5.0
+UTSP2_LAMBDA2 = 1.0 
+UTSP2_LAMBDA_D  = 3.0 
+UTSP2_LAMBDA_E  =  0.5
 UTSP2_TEMP_SCALE =  0.5
+
+
+
 
 # tengo .sum su loss booking e loss penalty e quindi uso un parametro meno aggressivo di 0.4,
 #mentre usando .mean su decode booking per gli x tilde mi serve un valore di alpha maggiore altrimenti
@@ -76,34 +82,32 @@ UTSP2_TEMP_SCALE =  0.5
 UTSP2_ALPHA_LOSS = 0.6 # post grid era 0.6   
 UTSP2_ALPHA_DECODE  = 4.0
 
-# Parametri loss UTSP 2-stage grid search 
-# GRID SEARCH INZIALE
-# Grid search con lista singola entrata = run normale, lista multipla = grid search
-#GRID_SEARCH = {
-#    "UTSP2_LAMBDA1":    [10.0, 20.0, 30.0],
-#    "UTSP2_LAMBDA2":    [1.0,  3.0,  6.0],
-#    "UTSP2_LAMBDA_D":   [1.0,  2.0,  3.5,  5.0],
-#    "UTSP2_LAMBDA_E":   [0.3,  0.5,  1.0,  2.0],
-#    "UTSP2_TEMP_SCALE": [0.5,  0.7,  0.9],
-#    "UTSP2_ALPHA_LOSS": [0.3,  0.4,  0.6],
-#    "UTSP2_ALPHA_DECODE":[3.0, 4.0,  6.0],
-#    "UTSP2_EPOCHS":     [300],
-#}
-# 3×3×4×4×3×3×3×1 = 3888 combinazioni
 
-# FINE GRID SEARCH
-#GRID_SEARCH = {
-#    "UTSP2_LAMBDA1":     [30.0],
-#    "UTSP2_LAMBDA2":     [6.0],
-#    "UTSP2_LAMBDA_D":    [1.0, 3.0, 5.0, 7.0],
-#    "UTSP2_LAMBDA_E":    [0.3, 0.5, 1.0],
-#    "UTSP2_TEMP_SCALE":  [0.5],
-#    "UTSP2_ALPHA_LOSS":  [0.5, 0.6, 0.7],
-#    "UTSP2_ALPHA_DECODE":[3.0, 4.0, 5.0],
-#    "UTSP2_EPOCHS":      [300],
-#}
-# 1×1×4×3×1×3×3×1 = 108 combinazioni — un solo batch piccolo
 
+# per il .sum
+#GRID_SEARCH = {
+#    "UTSP2_EPOCHS":     [300, 500],
+#    "UTSP2_LS_ALPHA":   [0.001, 0.005, 0.01, 0.05],
+#    "UTSP2_LAMBDA1":    [5.0, 10.0, 20.0, 30.0],
+#    "UTSP2_LAMBDA2":    [0.1, 0.5, 1.0],
+#    "UTSP2_LAMBDA_D":   [1.0, 3.0, 5.0],
+#    "UTSP2_LAMBDA_E":   [0.5, 1.0, 2.0],
+#    "UTSP2_TEMP_SCALE": [0.2, 0.5, 0.8],
+#}
+#3888
+
+
+
+#per il .mean
+#GRID_SEARCH = {
+#    "UTSP2_EPOCHS":     [300, 500],
+#    "UTSP2_LS_ALPHA":   [4.0, 6.0, 8.0, 10.0],
+#    "UTSP2_LAMBDA1":    [20.0, 30.0,60.0, 100.0],
+#    "UTSP2_LAMBDA2":    [0.5, 1.0, 3.0],
+#    "UTSP2_LAMBDA_D":   [5.0, 8.0, 12.0],
+#    "UTSP2_LAMBDA_E":   [0.5, 1.0, 2.0],
+#    "UTSP2_TEMP_SCALE": [0.2, 0.5, 0.8],
+#} # 2592 combinazioni
 
 # Temperatura kernel gaussiano adj = exp(-d/T)
 UTSP2_TEMP_MODE = "median"
@@ -128,12 +132,11 @@ UTSP_LS_ACTIONS_PER_ROUND = 120
 UTSP_LS_MAX_RESTARTS = 80 #era 40
 UTSP_LS_M = 8
 UTSP_LS_K = 15 # era 10
-UTSP_LS_ALPHA = 0.0
 UTSP_LS_BETA = 10.0
 UTSP_LS_RANDOM_SEED = 12345
 UTSP_LS_APPLY_INITIAL_2OPT = True
 
-UTSP2_INCLUDE_PENALTY = True
+UTSP2_INCLUDE_PENALTY = False
 
 #per disabilitare k-medoids e scegliere archi
 #K_MEDOID_NODES = []  # disabilita k-medoids
