@@ -18,7 +18,7 @@ from config import (
     UTSP2_TEMP_FIXED, UTSP2_DIST_SCALE_MODE,
     UTSP_LS_MAX_ACTIONS, UTSP_LS_ACTIONS_PER_ROUND,UTSP2_INCLUDE_PENALTY,
     UTSP_LS_MAX_RESTARTS, UTSP_LS_M, UTSP_LS_K,
-    UTSP_LS_ALPHA, UTSP_LS_BETA, UTSP_LS_RANDOM_SEED,
+    UTSP2_LS_ALPHA, UTSP_LS_BETA, UTSP_LS_RANDOM_SEED,
     UTSP_LS_APPLY_INITIAL_2OPT,UTSP2_LAMBDA_D,N_TRAINING_SCENARIOS_UTSP, UTSP_TRAINING_SEED,
 )
 from tsp_utils import get_edge_value
@@ -40,6 +40,10 @@ from two_stage_utsp_loss import (
 
 _leaky = F.leaky_relu
 
+
+# Prende il grafo (matrice di adiacenza W) e "propaga" le feature dei nodi attraverso i vicini.
+# Ad ogni passo, ogni nodo aggrega le informazioni dei suoi vicini, pesate per il grado (la normalizzazione D). 
+# L'ordine 3 significa che fai 3 passi di propagazione, quindi ogni nodo "vede" fino a 3 salti di distanza. Ritorna i risultati di ogni passo.
 def _gcn_diffusion(W, order, feature, device):
     I_n = torch.eye(W.size(1), device=device).unsqueeze(0).expand(W.size(0), -1, -1)
     A   = W + I_n
@@ -51,6 +55,10 @@ def _gcn_diffusion(W, order, feature, device):
         res.append(x)
     return res
 
+
+#Fa qualcosa di simile ma con una logica diversa: invece di passi discreti, fa una diffusione "lenta" (media pesata 0.5/0.5) 
+#per 16 iterazioni e cattura le differenze tra scale diverse (buf[0]-buf[1], ecc.).
+# È come una wavelet: cattura struttura locale a diverse risoluzioni del grafo.
 def _scattering_diffusion(W, feature):
     deg, D = torch.sum(W, 2, keepdim=True).clamp(min=1e-9), None
     D   = torch.pow(deg, -1)
@@ -61,6 +69,9 @@ def _scattering_diffusion(W, feature):
             buf.append(x)
     return buf[0]-buf[1], buf[1]-buf[2], buf[2]-buf[3], buf[3]-feature*0
 
+
+#Combina i due tipi di diffusione sopra tramite attention: per ogni nodo calcola quanto è rilevante ciascuna delle 6 rappresentazioni
+# (2 da GCN + 4 da scattering) e le combina con pesi appresi. Poi passa attraverso due layer lineari. È il cuore della GNN
 class _SCTConv(nn.Module):
     def __init__(self, hidden_dim):
         super().__init__()
@@ -82,15 +93,15 @@ class _SCTConv(nn.Module):
     
 
 class UTSP_GNN(nn.Module):
-    """GNN UTSP — identica a unionev3.py."""
     def __init__(self, n_nodes, hidden_dim, n_layers):
         super().__init__()
-        self.bn0     = nn.BatchNorm1d(2)
+        #self.bn0     = nn.BatchNorm1d(2) # pensavo fosse utile per le distanze normalizzate ma non cambia nulla, quindi non lo uso
         self.in_proj = nn.Linear(2, hidden_dim)
         self.convs   = nn.ModuleList([_SCTConv(hidden_dim) for _ in range(n_layers)])
         self.mlp1    = nn.Linear(hidden_dim * (1 + n_layers), hidden_dim)
         self.mlp2    = nn.Linear(hidden_dim, n_nodes)
         self.softmax = nn.Softmax(dim=1)
+        
 # ORIGINALE
 #    def forward(self, xy, adj, device):
 #      B, N, _ = xy.shape
@@ -105,8 +116,8 @@ class UTSP_GNN(nn.Module):
     #NUOVA
     def forward(self, xy, adj, device):
         B, N, _ = xy.shape
-        x       = self.bn0(xy.reshape(B * N, 2)).reshape(B, N, 2)
-        x       = _leaky(self.in_proj(x))
+        #x       = self.bn0(xy.reshape(B * N, 2)).reshape(B, N, 2)
+        x       = _leaky(self.in_proj(xy))
         hidden  = x
         for conv in self.convs:
             x = conv(x, adj, device)
@@ -115,8 +126,8 @@ class UTSP_GNN(nn.Module):
         mask   = torch.eye(N, device=device).unsqueeze(0) * (-1e9) # (1, N, N)
         return self.softmax(logits + mask)                         # diagonale → 0
 
-def _normalize_coords(nodes, coords, device):
-    """Normalizza le coordinate in [0,1] come in unionev3.py."""
+# Normalizzo le coordinate in [0,1]
+def _normalize_coords(nodes, coords, device): 
     xs = np.array([coords[v][0] for v in nodes], dtype=np.float32)
     ys = np.array([coords[v][1] for v in nodes], dtype=np.float32)
     xs = (xs - xs.min()) / (xs.max() - xs.min() + 1e-9)
@@ -124,11 +135,8 @@ def _normalize_coords(nodes, coords, device):
     xy = torch.from_numpy(np.stack([xs, ys], axis=1)).float().to(device)
     return xy   # (n, 2)
 
-def _compute_temperature(dist_stack, mode, scale, fixed):
-    """
-    Calcola la temperatura T per adj = exp(-d/T).
-    dist_stack : (K, n, n) tensor — distanze GIÀ normalizzate
-    """
+# calcolo temp per la adj
+def _compute_temperature(dist_stack, mode, scale, fixed): 
     if mode == "fixed":
         return float(fixed)
     n    = dist_stack.size(-1)
@@ -141,21 +149,17 @@ def _compute_temperature(dist_stack, mode, scale, fixed):
     T = float(torch.median(vals).item()) * float(scale)
     return max(T, 1e-9)
 
-def _build_input_tensors(scenario_ids, results, nodes, coords, device):
-    """
-    Costruisce xy e le matrici di distanza normalizzate per tutti gli scenari.
-
-    Ritorna
-    xy_tile    : (K, n, 2)  — coordinate normalizzate, replicate per ogni scenario
-    dist_raw   : list di K tensori (n, n) — distanze reali (non normalizzate)
-    dist_model : (K, n, n)  — distanze normalizzate per GNN/loss
-    dist_scale :   scala usata per la normalizzazione
-    temperature:  temperatura T per il kernel gaussiano
-    """
+#Costruisco xy e le matrici di distanza normalizzate per tutti gli scenari.
+#xy_tile    : (K, n, 2)  — coordinate normalizzate, replicate per ogni scenario
+#dist_raw   : list di K tensori (n, n) — distanze reali (non normalizzate)
+#dist_model : (K, n, n)  — distanze normalizzate per GNN/loss
+#dist_scale :   scala usata per la normalizzazione
+#temperature:  temperatura T per il kernel gaussiano
+def _build_input_tensors(scenario_ids, results, nodes, coords, device): 
     K = len(scenario_ids)
     n = len(nodes)
-    xy = _normalize_coords(nodes, coords, device)         # (n, 2)
-    xy_tile = xy.unsqueeze(0).expand(K, -1, -1).contiguous()           # (K, n, 2)
+    xy = _normalize_coords(nodes, coords, device)  # (n, 2)
+    xy_tile = xy.unsqueeze(0).expand(K, -1, -1).contiguous() # (K, n, 2)
 
     # Distanze reali per ogni scenario
     dist_raw = []
@@ -168,7 +172,7 @@ def _build_input_tensors(scenario_ids, results, nodes, coords, device):
                     D[ii, jj] = float(sd[i][j])
         dist_raw.append(D)
 
-    dist_stack = torch.stack(dist_raw, dim=0)              # (K, n, n)
+    dist_stack = torch.stack(dist_raw, dim=0)  # (K, n, n)
 
     # Normalizzazione interna UTSP
     dist_model, dist_scale = normalize_dist_tensor(
@@ -180,51 +184,16 @@ def _build_input_tensors(scenario_ids, results, nodes, coords, device):
     )
 
     return xy_tile, dist_raw, dist_model, dist_scale, temperature
-# NUOVA FUNZIONE PER CALColare la matrice dj mista: uso distanza gaussiana + trovo per ogni nodo i k vicini e impongo chee il 
-# loro peso non scenda sotto una soglia minima
-# provo perche con la forma originale i nodi estremi ed isolati vanno a zero e non entrano nella heatmap con dei valori sensati   
-#def _build_adj_with_knn_guarantee(dist_stack, temperature, k=3, min_weight=0.6):
-#    """
-#    Adiacenza gaussiana con peso minimo garantito per i k vicini più prossimi.
-#    """
-#    off_diag = (1 - torch.eye(dist_stack.size(-1), device=dist_stack.device)).unsqueeze(0)
-#    adj = torch.exp(-dist_stack / temperature) * off_diag  # gaussiana standard
-#
-#    K, n, _ = dist_stack.shape
-#    for s in range(K):
-#        for i in range(n):
-#            row = dist_stack[s, i].clone()
-#            row[i] = float('inf')  # escludi diagonale
-#            _, topk_idx = torch.topk(row, k, largest=False)  # k più vicini
-#            for j in topk_idx:
-#                if adj[s, i, j] < min_weight:
-#                  adj[s, i, j] = min_weight
-  
-#
-#    return adj * off_diag
+    
 
-#altra possibile formulazione
-def _build_adj_robust_floor(
-    dist_stack,
-    tau=UTSP2_TEMP_SCALE,
-    eps=0.02,
-    q_scale=0.90,
-    clip_max=3.0,
-):
-    """
-    Costruisce una matrice di adiacenza robusta.
 
-#    Obiettivo:
-#    - evitare che archi lunghi diventino numericamente invisibili;
-#    - mantenere comunque una differenza tra archi corti e archi lunghi;
-#    - proteggere i nodi estremi con una riscalatura per riga.
-#
-#    dist_stack : (K, n, n), distanze già normalizzate
-#    tau        : temperatura del kernel dopo riscalatura robusta
-#    eps        : peso minimo morbido per ogni arco fuori diagonale
-#    q_scale    : quantile usato come scala di riga
-#    clip_max   : massimo valore normalizzato prima del kernel
-    """
+#altra possibile formulazione AL MOMENTO NON LA STO USANDO PERCHE QUELLA DEL PAPER FUNZIONA
+#tau : temperatura del kernel dopo riscalatura robusta
+# eps : peso minimo morbido per ogni arco fuori diagonale
+# q_scale : quantile usato come scala di riga
+# clip_max : massimo valore normalizzato prima del kernel
+def _build_adj_robust_floor( dist_stack, tau=UTSP2_TEMP_SCALE,
+    eps=0.02, q_scale=0.90, clip_max=3.0, ): 
 
     K, n, _ = dist_stack.shape
     device = dist_stack.device
@@ -248,32 +217,19 @@ def _build_adj_robust_floor(
             D_scaled[s, i] = dist_stack[s, i] / scale_i
 
     D_scaled = torch.clamp(D_scaled, min=0.0, max=clip_max)
-
     adj = torch.exp(-D_scaled / max(tau, 1e-9))
-
     # soglia minima morbida: ogni arco fuori diagonale resta visibile
     adj = eps + (1.0 - eps) * adj
-#
     # diagonale sempre zero
     adj = adj * off_diag
-
     return adj
 
 
-
+# Addestro la GNN 
 def _train_utsp_2stage(
     nodes, coords, scenario_ids, results, scenario_probs,
     I_mask, p_mat, C_mat, device
-):
-    """
-    Addestra UTSP_GNN con la loss 2-stage su tutti gli scenari di training.
-
-    Strategia di training:
-    - Tutti i K scenari vengono processati in un unico forward pass per epoca
-    (batch size = K).  Con K=8 è trattabile e mantiene la correlazione
-    tra scenari che la loss sfrutta per la decisione di prenotazione.
-    - Non serve DataLoader: gli scenari sono fissi e pochi.
-    """
+): 
     K = len(scenario_ids)
     n = len(nodes)
 
@@ -285,14 +241,15 @@ def _train_utsp_2stage(
         dtype=torch.float32, device=device
     )
 
-    # Diagonale azzerata   stessa maschera usata in unionev3.py
+    # Diagonale azzerata  
     off_diag = (1 - torch.eye(n, device=device)).unsqueeze(0)  # (1, n, n)
-
-    from common import set_seed as _set_seed
-    from config import UTSP_TRAINING_SEED as _train_seed
-    _set_seed(_train_seed)
-    model = UTSP_GNN(n, UTSP2_HIDDEN, UTSP2_NLAYERS).to(device)
     
+    print(f"[SEED_CHECK] torch.initial_seed()={torch.initial_seed()}")
+    print(f"[SEED_CHECK] np.random state[0]={np.random.get_state()[1][0]}")
+   
+    # Seed locale dedicato all'inizializzazione GNN, indipendente dal flusso globale
+    torch.manual_seed(UTSP_TRAINING_SEED)
+    model = UTSP_GNN(n, UTSP2_HIDDEN, UTSP2_NLAYERS).to(device)
     
     n_par = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
@@ -312,20 +269,15 @@ def _train_utsp_2stage(
     t0 = time.time()
 
     # ORIGINALE :Adiacenza per ogni scenario: adj_k = exp(-D^ω_norm / T) con diagonale zero
-    #adj_stack = torch.exp(-dist_model / temperature) * off_diag  # (K, n, n)
-    
-    #POSSIBILE MODIFICA con knn:
-    #adj_stack = _build_adj_with_knn_guarantee(dist_model, temperature, k=3, min_weight=0.6)
+    adj_stack = torch.exp(-dist_model / temperature) * off_diag  # (K, n, n)
     
     #seconda possibile modifica
-    adj_stack = _build_adj_robust_floor(dist_model,tau=UTSP2_TEMP_SCALE, eps=0.02, q_scale=0.90,clip_max=3.0,)
+    #adj_stack = _build_adj_robust_floor(dist_model,tau=UTSP2_TEMP_SCALE, eps=0.02, q_scale=0.90,clip_max=3.0,)
     
     for epoch in range(1, UTSP2_EPOCHS + 1):
             model.train()
-    
-            #   Forward: un unico batch con tutti i K scenari  
+            # Forward: un unico batch con tutti i K scenari  
             T_batch = model(xy_tile, adj_stack, device)   # (K, n, n)
-    
             # Separa in lista di K tensori (1, n, n) per la loss
             T_list    = [T_batch[k:k+1] for k in range(K)]
             dist_list = [dist_model[k:k+1] for k in range(K)]   # (1, n, n) norm
@@ -336,8 +288,8 @@ def _train_utsp_2stage(
             #    d = dist_list[0][ii, jj].item()  # primo scenario come riferimento
             #    print(f"  {{{i},{j}}}: d={d:.4f}")
             loss, comps = two_stage_utsp_loss(
-                T_list, dist_list, I_mask, p_mat, C_mat, probs_t,
-                alpha=UTSP2_ALPHA_LOSS,
+                T_list, dist_list, I_mask, p_mat, C_mat, probs_t, 
+                alpha=UTSP2_LS_ALPHA,
                 lambda1=UTSP2_LAMBDA1,
                 lambda2=UTSP2_LAMBDA2,
                 lambda_e=UTSP2_LAMBDA_E,
@@ -364,9 +316,14 @@ def _train_utsp_2stage(
                 print(f"  {format_loss_components(comps, epoch)}{marker}")
     
     elapsed = time.time() - t0
-    print(f"\n  Training completato in {elapsed:.1f}s | "
-              f"miglior loss = {best_loss:.4f}")
-    
+    print(f"\n{'═'*65}")
+    print(f"  TRAINING COMPLETATO")
+    print(f"  Tempo totale          = {elapsed:.2f}s  ({elapsed/UTSP2_EPOCHS*1000:.1f}ms/epoca)")
+    print(f"  Miglior loss          = {best_loss:.5f}  (ep {int(np.argmin(history['loss']))+1})")
+    print(f"  Loss iniziale→finale  = {history['loss'][0]:.5f} → {history['loss'][-1]:.5f}")
+    print(f"  Riduzione loss        = {(history['loss'][0]-best_loss)/history['loss'][0]*100:.1f}%")
+    print(f"{'═'*65}")
+
     model.load_state_dict(best_state)
     model.eval()
     return model, history, adj_stack, dist_model, xy_tile, probs_t, temperature,  dist_scale
@@ -381,17 +338,12 @@ def _decode_policy(model, adj_stack, xy_tile, I, nodes, I_mask, probs_t, device)
     H_list = [compute_heatmap(T_batch[k:k+1]) for k in range(K)]
 
     x_reserved, x_scores = decode_booking_policy(
-    H_list, I, nodes, I_mask, probs_t,
-    alpha=UTSP2_ALPHA_DECODE,
-    )
+    H_list, I, nodes, I_mask, probs_t, alpha=UTSP2_LS_ALPHA )
     return x_reserved, x_scores, H_list, T_batch 
     
-    
-def debug_T_H(T_batch, H_list, name="TRAIN"):
-    """
-    Diagnostica numerica su T e H dopo il passaggio nella GNN.
-    Serve a capire se il problema nasce da T, da H, o solo dalla visualizzazione.
-    """
+# Diagnostica numerica su T e H dopo il passaggio nella GNN per possibili problemi     
+def debug_T_H(T_batch, H_list, name="TRAIN"): 
+
     with torch.no_grad():
         T = T_batch.detach().cpu()
         H = torch.stack([h.squeeze(0).detach().cpu() for h in H_list], dim=0)
@@ -419,33 +371,90 @@ def debug_T_H(T_batch, H_list, name="TRAIN"):
 
         stats(Tm, "T medio")
         stats(Hm, "H medio")  
+
+# Stampo la matrice di adiacenza media con valori numerici
+def _print_adj_matrix(adj_stack, nodes, label="Matrice adiacenza (media scenari)"):
+    adj_avg = adj_stack.detach().cpu().numpy().mean(axis=0)
+    np.fill_diagonal(adj_avg, 0.0)
+    n = len(nodes)
+    sep = "─" * (9 * n + 14)
+    print(f"\n{'═'*65}")
+    print(f"  {label}")
+    print(sep)
+    header = f"  {'i→j':>6} |" + "".join(f" {str(v):>7}" for v in nodes)
+    print(header)
+    print(sep)
+    for ii, i in enumerate(nodes):
+        row = f"  {str(i):>6} |" + "".join(
+            f" {adj_avg[ii, jj]:>7.4f}" if ii != jj else f" {'—':>7}"
+            for jj in range(n)
+        )
+        print(row)
+    print(sep)
+    # Statistiche sintetiche
+    mask = ~np.eye(n, dtype=bool)
+    vals = adj_avg[mask]
+    print(f"  min={vals.min():.4f}  max={vals.max():.4f}  "
+          f"media={vals.mean():.4f}  std={vals.std():.4f}")
+    print(f"{'═'*65}")
+
+#Entropia e copertura della heatmap media
+def _print_heatmap_diagnostics(H_list, nodes, scenario_ids, label="Heatmap diagnostica"): 
+    H_avg = None
+    for H in H_list:
+        arr = H.detach().squeeze(0).cpu().numpy()
+        H_avg = arr.copy() if H_avg is None else H_avg + arr
+    H_avg /= max(len(H_list), 1)
+    np.fill_diagonal(H_avg, 0.0)
+
+    n = len(nodes)
+    mask = ~np.eye(n, dtype=bool)
+    vals = H_avg[mask]
+    vals_pos = vals[vals > 1e-9]
+
+    # Entropia di Shannon normalizzata
+    if vals_pos.sum() > 0:
+        p = vals_pos / vals_pos.sum()
+        entropy = float(-np.sum(p * np.log(p + 1e-12)))
+        max_entropy = float(np.log(len(vals_pos)))
+        entropy_norm = entropy / max_entropy if max_entropy > 0 else 0.0
+    else:
+        entropy, entropy_norm = 0.0, 0.0
+
+    # Copertura: % archi con H > soglie
+    thresholds = [0.05, 0.10, 0.20]
+    print(f"\n{'═'*65}")
+    print(f"  {label}")
+    print(f"  Entropia Shannon         = {entropy:.4f}")
+    print(f"  Entropia normalizzata    = {entropy_norm:.4f}  "
+          f"(1.0=uniforme, 0.0=concentrata)")
+    print(f"  H_avg: min={vals.min():.4f}  max={vals.max():.4f}  "
+          f"media={vals.mean():.4f}")
+    for thr in thresholds:
+        n_above = int((vals > thr).sum())
+        pct = 100.0 * n_above / len(vals)
+        print(f"  Archi con H > {thr:.2f}        = {n_above}/{len(vals)} ({pct:.1f}%)")
+    print(f"{'═'*65}")
   
     
-
+# evaluation con stesso seme degli altri modelli gurobi
 def _evaluate_policy_oos(
     policy_name, x_policy, nodes, E, base_dist, root, env,
-    I, p, C, frequent_arcs, n_val, n_extra, mean_frac, sigma_frac
-):
-    """
-    Valuta una politica di prenotazione fissa su n_val scenari out-of-sample.
-    Genera gli scenari con VALIDATION_SEED (identico a validate_policies
-    di prova_neur.py) così i numeri sono direttamente comparabili.
-    Ritorna
-    costs   : dict {sid: costo_totale}
-    tc_dict : dict {sid: tour_cost}
-    pc_dict : dict {sid: penalty_paid}
-    mean    : float — costo medio
-    """
+    I, p, C, frequent_arcs, n_val, n_extra, mean_frac, sigma_frac):
     scenario_ids_val = list(range(1, n_val + 1))
     reservation = sum(get_edge_value(p, i, j) for (i, j) in x_policy)
 
+    t0_val = time.time()
     results_val, _, _ = generate_scenarios(
         scenario_ids_val, nodes, E, base_dist, I, frequent_arcs,
         n_extra, mean_frac, sigma_frac, VALIDATION_SEED,
         root=root, env=env, p=p, C=C
     )
+    t_gen = time.time() - t0_val
+    print(f"  [val] Generazione {n_val} scenari: {t_gen:.2f}s")
 
     costs, tc_dict, pc_dict = {}, {}, {}
+    t0_val2 = time.time()
     for sid in scenario_ids_val:
         sd  = results_val[sid]["scenario_dist"]
         sol = solve_reservation_tsp(
@@ -459,30 +468,23 @@ def _evaluate_policy_oos(
         tc_dict[sid] = tc
         pc_dict[sid] = pc
 
+    t_solve = time.time() - t0_val2
+    print(f"  [val] Risoluzione {n_val} scenari (Gurobi): {t_solve:.2f}s  "
+          f"({t_solve/n_val:.2f}s/scenario)")
     mean = sum(costs.values()) / len(costs)
     return costs, tc_dict, pc_dict, mean, results_val
 
 
  
-# DIPENDENZE E LOCAL SEARCH DA unionev3.py
+# DIPENDENZE E LOCAL SEARCH 
  
-
-def tour_cost(tour, dist):
-    """Costo di un tour su una matrice/dizionario di distanze orientate."""
+# Costo di un tour su una matrice/dizionario di distanze orientate
+def tour_cost(tour, dist): 
     n = len(tour)
     return sum(dist[tour[k]][tour[(k + 1) % n]] for k in range(n))
 
-
+# decodifica H e tour con gurobi e non local search
 def _decode_tour_gurobi(H, nodes, E, root, env):
-    """
-    Decodifica il tour dalla heatmap direzionale H.
-
-    Risolve un TSP con costi = -H[i,j], quindi Gurobi cerca il tour
-    con massima verosimiglianza secondo la heatmap.
-
-    H non viene simmetrizzata perché il problema è orientato:
-    il costo i→j può essere diverso dal costo j→i.
-    """
     node_idx = {v: k for k, v in enumerate(nodes)}
     dist_neg = {
         i: {j: -float(H[node_idx[i], node_idx[j]])
@@ -689,24 +691,8 @@ def _random_tour(nodes, root, rng):
     rng.shuffle(rest)
     return [root] + rest
 
-
+#  Ricerca locale guidata dalla heatmap
 def _utsp_paper_style_local_search(tour_seed, H_decode, nodes, root, avg_dist):
-    """
-    Ricerca locale guidata dalla heatmap, nello spirito del codice Search/ del paper UTSP.
-
-    Corrispondenze con il paper/repository:
-      - usa una soluzione iniziale e una fase 2-opt;
-      - usa una candidate list di dimensione M derivata dalla heatmap;
-      - usa selezione stocastica con H + alpha * sqrt(log(S+1)/(N+1));
-      - usa una forma di backpropagation/update della heatmap con beta quando trova
-        una mossa migliorativa;
-      - usa restart casuali quando non trova azioni migliorative.
-
-    Adattamento necessario:
-      - il repository originale è per TSP simmetrico euclideo;
-      - qui le distanze sono orientate/asimmetriche, quindi ogni candidato viene
-        valutato ricalcolando il costo completo sul costo medio reale di training.
-    """
     if not tour_seed or len(tour_seed) <= 3:
         return list(tour_seed), float("inf"), {"actions": 0, "restarts": 0, "improvements": 0}
 
@@ -747,7 +733,7 @@ def _utsp_paper_style_local_search(tour_seed, H_decode, nodes, root, avg_dist):
             a = rng.choice(nodes)
             b = _select_heatmap_candidate(
                 a, candidates, H_work, chosen_times, idx, rng,
-                UTSP_LS_ALPHA, total_actions
+                UTSP2_LS_ALPHA, total_actions
             )
             if b is None:
                 continue
@@ -768,7 +754,7 @@ def _utsp_paper_style_local_search(tour_seed, H_decode, nodes, root, avg_dist):
                 for _depth in range(min(UTSP_LS_K, 4)):
                     bb = _select_heatmap_candidate(
                         aa, candidates, H_work, chosen_times, idx, rng,
-                        UTSP_LS_ALPHA, total_actions
+                        UTSP2_LS_ALPHA, total_actions
                     )
                     if bb is None:
                         break
@@ -861,8 +847,8 @@ def _build_mean_dist_from_results(results, scenario_ids, nodes):
             else:
                 avg[i][j] = float(np.mean([results[sid]["scenario_dist"][i][j] for sid in scenario_ids]))
     return avg
+ # Tour greedy nearest-neighbor come seed per la local search   
 def _greedy_tour(nodes, root, dist):
-    """Tour greedy nearest-neighbor come seed per la local search."""
     unvisited = set(nodes) - {root}
     tour, cur = [root], root
     while unvisited:
@@ -872,18 +858,12 @@ def _greedy_tour(nodes, root, dist):
         cur = nxt
     return tour
 
-# Orginale
+# Orginale: Costruisce la matrice di adiacenza per un singolo scenario
 def _build_adj_single(D, n, device, dist_scale, temperature):
-    """
-    Costruisce la matrice di adiacenza per un singolo scenario.
-    Usa la stessa normalizzazione (dist_scale, temperature) del training,
-    in modo che la GNN veda input nella stessa scala.
-    D: (n, n) tensor delle distanze reali dello scenario.
-    """
     off_diag = (1 - torch.eye(n, device=device))
     dist_norm = D / max(dist_scale, 1e-9)
     return torch.exp(-dist_norm / max(temperature, 1e-9)) * off_diag  # (n, n)
-#def _build_adj_single(D, n, device, dist_scale, temperature, k=3, min_weight=0.2): #potrebbe aver senso mettere poi k e min weight nel config.py
+#def _build_adj_single(D, n, device, dist_scale, temperature, k=3, min_weight=0.2): 
 #    """
 #    Costruisce la matrice di adiacenza per un singolo scenario.
 #    Usa la stessa normalizzazione (dist_scale, temperature) del training,
@@ -901,13 +881,8 @@ def _build_adj_single(D, n, device, dist_scale, temperature):
 #    return adj.squeeze(0)  # (n, n)
 
 
-def _gnn_heatmap_single(model, xy, adj_single, device):
-    """
-    Forward pass della GNN su un singolo scenario nuovo.
-    xy         : (n, 2) — coordinate normalizzate (invarianti tra scenari)
-    adj_single : (n, n) — adiacenza scenario-specifica
-    Ritorna H  : numpy (n, n) con diagonale azzerata.
-    """
+# Forward pass della GNN su un singolo scenario nuovo
+def _gnn_heatmap_single(model, xy, adj_single, device): 
     model.eval()
     with torch.no_grad():
         T_out = model(xy.unsqueeze(0), adj_single.unsqueeze(0), device)  # (1,n,n)
@@ -916,13 +891,8 @@ def _gnn_heatmap_single(model, xy, adj_single, device):
     np.fill_diagonal(H, 0.0)
     return H
 
-
-def _effective_dist_for_ls(dist_s, nodes, I, x_ls, C):
-    """
-    Distanze effettive per il secondo stadio della LS.
-    Aggiunge la penale C[i,j] agli archi di I non prenotati (entrambe le direzioni),
-    così la LS evita naturalmente gli archi penalizzati o li usa solo se conviene.
-    """
+# Distanze effettive per il secondo stadio della LS: aggiungo la penale C[i,j] agli archi di I non prenotat
+def _effective_dist_for_ls(dist_s, nodes, I, x_ls, C): 
     from tsp_utils import canon_edge as _ce
     x_set = {_ce(i, j) for (i, j) in x_ls}
     eff   = {i: dict(dist_s[i]) for i in nodes}
@@ -933,13 +903,8 @@ def _effective_dist_for_ls(dist_s, nodes, I, x_ls, C):
             eff[j][i] = dist_s[j][i] + pen
     return eff
 
-
-def _ls_cost_with_penalty(tour, dist_s, nodes, I, x_ls, C):
-    """
-    Costo reale del secondo stadio:
-      tc = percorrenza reale (distanze vere, non effettive)
-      pc = penale per archi di I usati nel tour ma non prenotati
-    """
+# costo reale secondo stadio con percorrenze vere e penale degli archi
+def _ls_cost_with_penalty(tour, dist_s, nodes, I, x_ls, C): 
     from tsp_utils import canon_edge as _ce
     x_set = {_ce(i, j) for (i, j) in x_ls}
     I_set = {_ce(i, j) for (i, j) in I}
@@ -952,28 +917,22 @@ def _ls_cost_with_penalty(tour, dist_s, nodes, I, x_ls, C):
     )
     return tc, pc
 
-
+#Esegue il secondo stadio local search per ogni scenario
 def _run_ls_on_scenarios(
     model, xy, nodes, root, I, p, C,
     results_scenarios, scenario_ids, scenario_probs,
     H_list_precomputed, dist_scale, temperature, device, x_ls, label="train",
 ):
-    """
-    Esegue il secondo stadio local search per ogni scenario.
-
-    Se H_list_precomputed è fornita (training): usa le heatmap già calcolate.
-    Altrimenti (validazione): fa forward GNN per ogni scenario nuovo.
-
-    Ritorna: costs, tc_dict, pc_dict, tours, solutions, mean_cost
-    """
     n      = len(nodes)
     reserv = sum(get_edge_value(p, i, j) for (i, j) in x_ls)
     costs, tc_dict, pc_dict, tours, solutions = {}, {}, {}, {}, {}
 
+    t0_ls = time.time()
     for k, sid in enumerate(scenario_ids):
+        t0_sid = time.time()
         dist_s = results_scenarios[sid]["scenario_dist"]
 
-        # ── Heatmap scenario-specifica ────────────────────────────────
+        # Heatmap scenario-specifica  
         if H_list_precomputed is not None:
             H_t = H_list_precomputed[k]             # (1, n, n) tensor training
             H_s = H_t.detach().squeeze(0).cpu().numpy().copy()
@@ -985,26 +944,27 @@ def _run_ls_on_scenarios(
                     if i != j:
                         D[ii, jj] = float(dist_s[i][j])
             #originale
-            #adj_s = _build_adj_single(D, n, device, dist_scale, temperature)
-            #H_s   = _gnn_heatmap_single(model, xy, adj_s, device)
+            adj_s = _build_adj_single(D, n, device, dist_scale, temperature)
+            
              
             #nuova versione
             # DOPO
-            adj_s = _build_adj_robust_floor(  D.unsqueeze(0) / max(dist_scale, 1e-9), tau=UTSP2_TEMP_SCALE, eps=0.02, q_scale=0.90, clip_max=3.0, ).squeeze(0)
+            #adj_s = _build_adj_robust_floor(  D.unsqueeze(0) / max(dist_scale, 1e-9), tau=UTSP2_TEMP_SCALE, eps=0.02, q_scale=0.90, clip_max=3.0, ).squeeze(0)
             H_s = _gnn_heatmap_single(model, xy, adj_s, device)
             
               
-        # ── Distanze effettive + LS ───────────────────────────────────
+        # Distanze effettive + LS  
         dist_eff = _effective_dist_for_ls(dist_s, nodes, I, x_ls, C)
         seed     = _greedy_tour(nodes, root, dist_eff)
         tour_s, _, ls_info = _utsp_paper_style_local_search(
             seed, H_s, nodes, root, dist_eff
         )
 
-        # ── Costo reale (distanze vere + penale) ─────────────────────
+        # Costo reale (distanze vere + penale) 
         tc, pc = _ls_cost_with_penalty(tour_s, dist_s, nodes, I, x_ls, C)
         arcs_s = _tour_edges(tour_s)
 
+        elapsed_sid = time.time() - t0_sid
         costs[sid]   = reserv + tc + pc
         tc_dict[sid] = tc
         pc_dict[sid] = pc
@@ -1021,7 +981,12 @@ def _run_ls_on_scenarios(
         }
 
         print(f"    [{label}] s={sid}: tc={tc:.4f}  pc={pc:.4f}  "
-              f"tot={costs[sid]:.4f}  tour={tour_s}")
+              f"tot={costs[sid]:.4f}  t={elapsed_sid:.2f}s  tour={tour_s}")
+
+    elapsed_ls = time.time() - t0_ls
+    n_scen = len(scenario_ids)
+    print(f"  [{label}] Local search completata: {n_scen} scenari in "
+          f"{elapsed_ls:.2f}s  ({elapsed_ls/n_scen:.2f}s/scenario)")
 
     if scenario_probs is not None:
         mean = sum(scenario_probs[sid] * costs[sid] for sid in scenario_ids)
@@ -1036,22 +1001,9 @@ def _heatmap_numpy_from_H_list(H_list):
         arr = H.detach().squeeze(0).cpu().numpy()
         H_sum = arr.copy() if H_sum is None else H_sum + arr
     return H_sum / max(len(H_list), 1)
-    
+
+#Costruisco la heatmap aggregata pesata    
 def _heatmap_bar_from_H_list(H_list, scenario_ids, scenario_probs):
-    """
-    Costruisce la heatmap aggregata pesata:
-
-        H_bar_ij = Σ_{ω∈Ω} p_ω H^ω_ij
-
-    dove:
-      - H_list[k] è la heatmap dello scenario scenario_ids[k];
-      - scenario_probs[sid] è la probabilità p_ω dello scenario sid.
-
-    Ritorna
-    -------
-    H_bar : np.ndarray, shape (n, n)
-        Heatmap aggregata pesata sugli scenari.
-    """
     H_bar = None
 
     for sid, H in zip(scenario_ids, H_list):
@@ -1109,8 +1061,6 @@ def _run_heatmap_local_search(nodes, E, root, env, results, scenario_ids, H_list
         tour_seed = []
 
     if not tour_seed and arcs_seed:
-        # In questa versione solve_exact_tsp ritorna già il tour. Questo ramo resta solo
-        # come protezione nel caso si usi una funzione compatibile con unionev3.py.
         succ = {i: j for (i, j) in arcs_seed}
         tour_seed = [root]
         cur = root
@@ -1148,11 +1098,9 @@ def _run_heatmap_local_search(nodes, E, root, env, results, scenario_ids, H_list
         "ls_info": ls_info,
     }
 
-
+# per far andare l esperimento intero
 def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="local search"):
     """
-    Esperimento B — UTSP 2-stadi.
-
     mode:
       - "policy"       : x_utsp + secondo stadio Gurobi;
       - "local_search" : H_avg + decodifica + local search UTSP;
@@ -1231,9 +1179,25 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
 
     n = len(nodes)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    
     I_mask, p_mat, C_mat, node_idx = build_I_tensors(I, nodes, p, C, device)
 
+
+    _, _, _, dist_scale, _ = _build_input_tensors( scenario_ids_utsp, results_utsp, nodes, coords, device )
+    
+
+    p_mat = p_mat / dist_scale
+    C_mat = C_mat / dist_scale
+    
+    assert I_mask.sum() > 0, f"I_mask è vuota! Controlla build_I_tensors e la lista I passata"
+    print(f"Archi in I: {I_mask.sum().item() // 2} coppie non orientate")
+    print(f"p_mat nonzero: {(p_mat > 0).sum().item()} celle")
+    print(f"p_mat range: [{p_mat[p_mat>0].min().item():.4f}, {p_mat.max().item():.4f}]")
+    print(f"dist_scale: {dist_scale:.4f}")
+    
+    
+    
+    
     print(f"\n  Setup: |I|={len(I)}  n_nodi={n}  K_train_UTSP={len(scenario_ids_utsp)}  device={device}")
     print(f"  Scenari B per grafici/benchmark = {len(scenario_ids_B)}")
     print(f"  I = {I}")
@@ -1256,7 +1220,12 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
     )
     
     debug_T_H(T_batch, H_list, name="dopo training UTSP")
-    
+
+    # Diagnostica adiacenza e heatmap  
+    _print_adj_matrix(adj_stack, nodes, label="Matrice adiacenza GNN (media scenari training)")
+    _print_heatmap_diagnostics(H_list, nodes, scenario_ids_utsp,
+                               label="Heatmap diagnostica (media scenari training)")
+
     reservation_utsp = sum(get_edge_value(p, i, j) for (i, j) in x_utsp)
     # Visualizzazioni heatmap e grafo pesato 
     _H_avg = _heatmap_numpy_from_H_list(H_list)
@@ -1274,7 +1243,7 @@ def run_esperimento_B_UTSP(nodes, coords, base_dist, E, root, env, res_B, mode="
 
     print(f"\n{check_booking_coverage(x_scores, I)}")
     print(f"\n  Costo prenotazione UTSP : {reservation_utsp:.4f}")
-        # ── Visualizzazione dell'adiacenza dopo il kernel ─────────────────
+        # Visualizzazione dell'adiacenza dopo il kernel 
     _adj_avg = adj_stack.detach().cpu().numpy().mean(axis=0)
     np.fill_diagonal(_adj_avg, 0.0)
 
@@ -1509,7 +1478,7 @@ def _run_local_search_branch(
     print(f"\n  Primo stadio x_ls (= x_utsp) : {sorted(x_ls)}")
     print(f"  Costo prenotazione            : {reserv:.4f}")
 
-    # ── Secondo stadio LS su scenari di training ──────────────────────
+    # Secondo stadio LS su scenari di training  
     print(f"\n  LS su {len(scenario_ids)} scenari di training ...")
     (costs_train, tc_train, pc_train,
      tours_train, solutions_train, UTSP_LS_train) = _run_ls_on_scenarios(
@@ -1520,7 +1489,7 @@ def _run_local_search_branch(
         device=device, x_ls=x_ls, label="train",
     )
 
-    # ── Validazione: genera scenari nuovi, forward GNN, LS ────────────
+    # Validazione: genera scenari nuovi, forward GNN, LS  
     print(f"\n  LS out-of-sample ({N_VALIDATION_SCENARIOS} scenari, seme={VALIDATION_SEED}) ...")
     scenario_ids_val = list(range(1, N_VALIDATION_SCENARIOS + 1))
     results_val, _, _ = generate_scenarios(
@@ -1538,7 +1507,7 @@ def _run_local_search_branch(
         device=device, x_ls=x_ls, label="val",
     )
 
-    # ── Benchmark PI/STO/EEV di validazione ──────────────────────────
+    #  Benchmark PI/STO/EEV di validazione  
     val_bench = validate_policies(
         nodes, E, base_dist, root, env, I, p, C,
         res_B["x_used_sto"], res_B["x_ev"],
