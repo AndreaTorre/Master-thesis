@@ -3,8 +3,13 @@ import argparse
 import pickle
 from common import load_data, load_env, set_seed
 from experiment_B import run_esperimento_B
+import torch  
 from utsp import run_esperimento_B_UTSP
 import os
+import hashlib
+
+
+
 CACHE_PATH = "/home/atorre/UTSP/unione/git/res_B_cached.pkl"
 def main():
     parser = argparse.ArgumentParser(description="Esegue Esperimento B e le varianti UTSP.")
@@ -22,9 +27,11 @@ def main():
     args = parser.parse_args()
 
     set_seed()
+        
     env = load_env()
+     
     nodes, coords, base_dist, E, root = load_data()
-
+    
     risultati = {}
 
     if os.path.exists(CACHE_PATH):
@@ -39,6 +46,7 @@ def main():
             pickle.dump(risultati["B"], f)
     
         print(f"res_B salvato in: {CACHE_PATH}")
+    
         
     if args.only == "B":
         return risultati
