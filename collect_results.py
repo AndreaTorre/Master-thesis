@@ -1,34 +1,23 @@
 # -*- coding: utf-8 -*-
-import glob, re, ast, pandas as pd
+import glob, pandas as pd
 
-results = []
+dfs = []
+for f in sorted(glob.glob("/home/atorre/UTSP/unione/git/grid_check_combo*.csv")):
+    try:
+        dfs.append(pd.read_csv(f))
+    except Exception as e:
+        print(f"SKIP {f} - {e}")
 
-for f in sorted(glob.glob("/home/atorre/UTSP/unione/git/grid_logs/output_*.txt")):
-    text = open(f, encoding="utf-8", errors="ignore").read()
-
-    combo_match  = re.search(r"Combo \d+: ({.*?})", text)
-    # regex robusta: accetta "UTSP_LS_val=3.14", "UTSP_LS_val = 3.14", "UTSP_LS_val: 3.14"
-    utsp_match   = re.search(r"UTSP_LS_val\s*[=:]\s*([\d.]+)", text)
-    sto_match    = re.search(r"STO_val\s*[=:]\s*([\d.]+)", text)
-    gap_match    = re.search(r"gap\s*[=:]\s*([\d.]+)", text)
-
-    if combo_match and utsp_match:
-        params = ast.literal_eval(combo_match.group(1))
-        utsp_ls_val = float(utsp_match.group(1))
-        row = {**params, "UTSP_LS_val": utsp_ls_val}
-        if sto_match:
-            row["STO_val"] = float(sto_match.group(1))
-        if gap_match:
-            row["gap_%"] = float(gap_match.group(1))
-        results.append(row)
-    else:
-        print("SKIP " + f + " - dati mancanti")
-
-if results:
-    df = pd.DataFrame(results).sort_values("UTSP_LS_val").reset_index(drop=True)
+if dfs:
+    df = pd.concat(dfs, ignore_index=True).sort_values("UTSP_LS_val").reset_index(drop=True)
     df.to_csv("grid_results_final.csv", index=False)
-    print("Raccolte " + str(len(results)) + " combinazioni")
-    print("\n=== TOP 10 ===")
+    print(f"Raccolte {len(df)} combinazioni")
+    print(f"File CSV letti: {len(dfs)}")
+    print(f"\n=== TOP 10 per UTSP_LS_val ===")
     print(df.head(10).to_string(index=False))
+
+    if df["gap_%"].notna().any():
+        print(f"\n=== TOP 10 per gap_% (minimo) ===")
+        print(df.dropna(subset=["gap_%"]).nsmallest(10, "gap_%").to_string(index=False))
 else:
-    print("Nessun risultato trovato.")
+    print("Nessun CSV trovato.")
