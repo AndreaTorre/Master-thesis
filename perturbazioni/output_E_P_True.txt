@@ -1,0 +1,2541 @@
+Python usato:
+/home/atorre/UTSP/unione/git/venv/bin/python
+/home/atorre/UTSP/unione/git/venv/bin/python
+Controllo numpy:
+2.4.2
+Set parameter TokenServer to value "license1.computecanada.ca"
+Carico res_B da file .pkl: /home/atorre/UTSP/unione/git/pert/res_B_cached_15.pkl
+
+======================================================================
+ESPERIMENTO B — UTSP 2-STADI | mode=local_search
+
+Generazione 1500 scenari → 50 batch da 30 scenari
+  Scenario 1 | PI = N/A
+  Scenario 2 | PI = N/A
+  Scenario 3 | PI = N/A
+  Scenario 4 | PI = N/A
+  Scenario 5 | PI = N/A
+  Scenario 6 | PI = N/A
+  Scenario 7 | PI = N/A
+  Scenario 8 | PI = N/A
+  Scenario 9 | PI = N/A
+  Scenario 10 | PI = N/A
+  Scenario 11 | PI = N/A
+  Scenario 12 | PI = N/A
+  Scenario 13 | PI = N/A
+  Scenario 14 | PI = N/A
+  Scenario 15 | PI = N/A
+  Scenario 16 | PI = N/A
+  Scenario 17 | PI = N/A
+  Scenario 18 | PI = N/A
+  Scenario 19 | PI = N/A
+  Scenario 20 | PI = N/A
+  Scenario 21 | PI = N/A
+  Scenario 22 | PI = N/A
+  Scenario 23 | PI = N/A
+  Scenario 24 | PI = N/A
+  Scenario 25 | PI = N/A
+  Scenario 26 | PI = N/A
+  Scenario 27 | PI = N/A
+  Scenario 28 | PI = N/A
+  Scenario 29 | PI = N/A
+  Scenario 30 | PI = N/A
+  Scenario 31 | PI = N/A
+  Scenario 32 | PI = N/A
+  Scenario 33 | PI = N/A
+  Scenario 34 | PI = N/A
+  Scenario 35 | PI = N/A
+  Scenario 36 | PI = N/A
+  Scenario 37 | PI = N/A
+  Scenario 38 | PI = N/A
+  Scenario 39 | PI = N/A
+  Scenario 40 | PI = N/A
+  Scenario 41 | PI = N/A
+  Scenario 42 | PI = N/A
+  Scenario 43 | PI = N/A
+  Scenario 44 | PI = N/A
+  Scenario 45 | PI = N/A
+  Scenario 46 | PI = N/A
+  Scenario 47 | PI = N/A
+  Scenario 48 | PI = N/A
+  Scenario 49 | PI = N/A
+  Scenario 50 | PI = N/A
+  Scenario 51 | PI = N/A
+  Scenario 52 | PI = N/A
+  Scenario 53 | PI = N/A
+  Scenario 54 | PI = N/A
+  Scenario 55 | PI = N/A
+  Scenario 56 | PI = N/A
+  Scenario 57 | PI = N/A
+  Scenario 58 | PI = N/A
+  Scenario 59 | PI = N/A
+  Scenario 60 | PI = N/A
+  Scenario 61 | PI = N/A
+  Scenario 62 | PI = N/A
+  Scenario 63 | PI = N/A
+  Scenario 64 | PI = N/A
+  Scenario 65 | PI = N/A
+  Scenario 66 | PI = N/A
+  Scenario 67 | PI = N/A
+  Scenario 68 | PI = N/A
+  Scenario 69 | PI = N/A
+  Scenario 70 | PI = N/A
+  Scenario 71 | PI = N/A
+  Scenario 72 | PI = N/A
+  Scenario 73 | PI = N/A
+  Scenario 74 | PI = N/A
+  Scenario 75 | PI = N/A
+  Scenario 76 | PI = N/A
+  Scenario 77 | PI = N/A
+  Scenario 78 | PI = N/A
+  Scenario 79 | PI = N/A
+  Scenario 80 | PI = N/A
+  Scenario 81 | PI = N/A
+  Scenario 82 | PI = N/A
+  Scenario 83 | PI = N/A
+  Scenario 84 | PI = N/A
+  Scenario 85 | PI = N/A
+  Scenario 86 | PI = N/A
+  Scenario 87 | PI = N/A
+  Scenario 88 | PI = N/A
+  Scenario 89 | PI = N/A
+  Scenario 90 | PI = N/A
+  Scenario 91 | PI = N/A
+  Scenario 92 | PI = N/A
+  Scenario 93 | PI = N/A
+  Scenario 94 | PI = N/A
+  Scenario 95 | PI = N/A
+  Scenario 96 | PI = N/A
+  Scenario 97 | PI = N/A
+  Scenario 98 | PI = N/A
+  Scenario 99 | PI = N/A
+  Scenario 100 | PI = N/A
+  Scenario 101 | PI = N/A
+  Scenario 102 | PI = N/A
+  Scenario 103 | PI = N/A
+  Scenario 104 | PI = N/A
+  Scenario 105 | PI = N/A
+  Scenario 106 | PI = N/A
+  Scenario 107 | PI = N/A
+  Scenario 108 | PI = N/A
+  Scenario 109 | PI = N/A
+  Scenario 110 | PI = N/A
+  Scenario 111 | PI = N/A
+  Scenario 112 | PI = N/A
+  Scenario 113 | PI = N/A
+  Scenario 114 | PI = N/A
+  Scenario 115 | PI = N/A
+  Scenario 116 | PI = N/A
+  Scenario 117 | PI = N/A
+  Scenario 118 | PI = N/A
+  Scenario 119 | PI = N/A
+  Scenario 120 | PI = N/A
+  Scenario 121 | PI = N/A
+  Scenario 122 | PI = N/A
+  Scenario 123 | PI = N/A
+  Scenario 124 | PI = N/A
+  Scenario 125 | PI = N/A
+  Scenario 126 | PI = N/A
+  Scenario 127 | PI = N/A
+  Scenario 128 | PI = N/A
+  Scenario 129 | PI = N/A
+  Scenario 130 | PI = N/A
+  Scenario 131 | PI = N/A
+  Scenario 132 | PI = N/A
+  Scenario 133 | PI = N/A
+  Scenario 134 | PI = N/A
+  Scenario 135 | PI = N/A
+  Scenario 136 | PI = N/A
+  Scenario 137 | PI = N/A
+  Scenario 138 | PI = N/A
+  Scenario 139 | PI = N/A
+  Scenario 140 | PI = N/A
+  Scenario 141 | PI = N/A
+  Scenario 142 | PI = N/A
+  Scenario 143 | PI = N/A
+  Scenario 144 | PI = N/A
+  Scenario 145 | PI = N/A
+  Scenario 146 | PI = N/A
+  Scenario 147 | PI = N/A
+  Scenario 148 | PI = N/A
+  Scenario 149 | PI = N/A
+  Scenario 150 | PI = N/A
+  Scenario 151 | PI = N/A
+  Scenario 152 | PI = N/A
+  Scenario 153 | PI = N/A
+  Scenario 154 | PI = N/A
+  Scenario 155 | PI = N/A
+  Scenario 156 | PI = N/A
+  Scenario 157 | PI = N/A
+  Scenario 158 | PI = N/A
+  Scenario 159 | PI = N/A
+  Scenario 160 | PI = N/A
+  Scenario 161 | PI = N/A
+  Scenario 162 | PI = N/A
+  Scenario 163 | PI = N/A
+  Scenario 164 | PI = N/A
+  Scenario 165 | PI = N/A
+  Scenario 166 | PI = N/A
+  Scenario 167 | PI = N/A
+  Scenario 168 | PI = N/A
+  Scenario 169 | PI = N/A
+  Scenario 170 | PI = N/A
+  Scenario 171 | PI = N/A
+  Scenario 172 | PI = N/A
+  Scenario 173 | PI = N/A
+  Scenario 174 | PI = N/A
+  Scenario 175 | PI = N/A
+  Scenario 176 | PI = N/A
+  Scenario 177 | PI = N/A
+  Scenario 178 | PI = N/A
+  Scenario 179 | PI = N/A
+  Scenario 180 | PI = N/A
+  Scenario 181 | PI = N/A
+  Scenario 182 | PI = N/A
+  Scenario 183 | PI = N/A
+  Scenario 184 | PI = N/A
+  Scenario 185 | PI = N/A
+  Scenario 186 | PI = N/A
+  Scenario 187 | PI = N/A
+  Scenario 188 | PI = N/A
+  Scenario 189 | PI = N/A
+  Scenario 190 | PI = N/A
+  Scenario 191 | PI = N/A
+  Scenario 192 | PI = N/A
+  Scenario 193 | PI = N/A
+  Scenario 194 | PI = N/A
+  Scenario 195 | PI = N/A
+  Scenario 196 | PI = N/A
+  Scenario 197 | PI = N/A
+  Scenario 198 | PI = N/A
+  Scenario 199 | PI = N/A
+  Scenario 200 | PI = N/A
+  Scenario 201 | PI = N/A
+  Scenario 202 | PI = N/A
+  Scenario 203 | PI = N/A
+  Scenario 204 | PI = N/A
+  Scenario 205 | PI = N/A
+  Scenario 206 | PI = N/A
+  Scenario 207 | PI = N/A
+  Scenario 208 | PI = N/A
+  Scenario 209 | PI = N/A
+  Scenario 210 | PI = N/A
+  Scenario 211 | PI = N/A
+  Scenario 212 | PI = N/A
+  Scenario 213 | PI = N/A
+  Scenario 214 | PI = N/A
+  Scenario 215 | PI = N/A
+  Scenario 216 | PI = N/A
+  Scenario 217 | PI = N/A
+  Scenario 218 | PI = N/A
+  Scenario 219 | PI = N/A
+  Scenario 220 | PI = N/A
+  Scenario 221 | PI = N/A
+  Scenario 222 | PI = N/A
+  Scenario 223 | PI = N/A
+  Scenario 224 | PI = N/A
+  Scenario 225 | PI = N/A
+  Scenario 226 | PI = N/A
+  Scenario 227 | PI = N/A
+  Scenario 228 | PI = N/A
+  Scenario 229 | PI = N/A
+  Scenario 230 | PI = N/A
+  Scenario 231 | PI = N/A
+  Scenario 232 | PI = N/A
+  Scenario 233 | PI = N/A
+  Scenario 234 | PI = N/A
+  Scenario 235 | PI = N/A
+  Scenario 236 | PI = N/A
+  Scenario 237 | PI = N/A
+  Scenario 238 | PI = N/A
+  Scenario 239 | PI = N/A
+  Scenario 240 | PI = N/A
+  Scenario 241 | PI = N/A
+  Scenario 242 | PI = N/A
+  Scenario 243 | PI = N/A
+  Scenario 244 | PI = N/A
+  Scenario 245 | PI = N/A
+  Scenario 246 | PI = N/A
+  Scenario 247 | PI = N/A
+  Scenario 248 | PI = N/A
+  Scenario 249 | PI = N/A
+  Scenario 250 | PI = N/A
+  Scenario 251 | PI = N/A
+  Scenario 252 | PI = N/A
+  Scenario 253 | PI = N/A
+  Scenario 254 | PI = N/A
+  Scenario 255 | PI = N/A
+  Scenario 256 | PI = N/A
+  Scenario 257 | PI = N/A
+  Scenario 258 | PI = N/A
+  Scenario 259 | PI = N/A
+  Scenario 260 | PI = N/A
+  Scenario 261 | PI = N/A
+  Scenario 262 | PI = N/A
+  Scenario 263 | PI = N/A
+  Scenario 264 | PI = N/A
+  Scenario 265 | PI = N/A
+  Scenario 266 | PI = N/A
+  Scenario 267 | PI = N/A
+  Scenario 268 | PI = N/A
+  Scenario 269 | PI = N/A
+  Scenario 270 | PI = N/A
+  Scenario 271 | PI = N/A
+  Scenario 272 | PI = N/A
+  Scenario 273 | PI = N/A
+  Scenario 274 | PI = N/A
+  Scenario 275 | PI = N/A
+  Scenario 276 | PI = N/A
+  Scenario 277 | PI = N/A
+  Scenario 278 | PI = N/A
+  Scenario 279 | PI = N/A
+  Scenario 280 | PI = N/A
+  Scenario 281 | PI = N/A
+  Scenario 282 | PI = N/A
+  Scenario 283 | PI = N/A
+  Scenario 284 | PI = N/A
+  Scenario 285 | PI = N/A
+  Scenario 286 | PI = N/A
+  Scenario 287 | PI = N/A
+  Scenario 288 | PI = N/A
+  Scenario 289 | PI = N/A
+  Scenario 290 | PI = N/A
+  Scenario 291 | PI = N/A
+  Scenario 292 | PI = N/A
+  Scenario 293 | PI = N/A
+  Scenario 294 | PI = N/A
+  Scenario 295 | PI = N/A
+  Scenario 296 | PI = N/A
+  Scenario 297 | PI = N/A
+  Scenario 298 | PI = N/A
+  Scenario 299 | PI = N/A
+  Scenario 300 | PI = N/A
+  Scenario 301 | PI = N/A
+  Scenario 302 | PI = N/A
+  Scenario 303 | PI = N/A
+  Scenario 304 | PI = N/A
+  Scenario 305 | PI = N/A
+  Scenario 306 | PI = N/A
+  Scenario 307 | PI = N/A
+  Scenario 308 | PI = N/A
+  Scenario 309 | PI = N/A
+  Scenario 310 | PI = N/A
+  Scenario 311 | PI = N/A
+  Scenario 312 | PI = N/A
+  Scenario 313 | PI = N/A
+  Scenario 314 | PI = N/A
+  Scenario 315 | PI = N/A
+  Scenario 316 | PI = N/A
+  Scenario 317 | PI = N/A
+  Scenario 318 | PI = N/A
+  Scenario 319 | PI = N/A
+  Scenario 320 | PI = N/A
+  Scenario 321 | PI = N/A
+  Scenario 322 | PI = N/A
+  Scenario 323 | PI = N/A
+  Scenario 324 | PI = N/A
+  Scenario 325 | PI = N/A
+  Scenario 326 | PI = N/A
+  Scenario 327 | PI = N/A
+  Scenario 328 | PI = N/A
+  Scenario 329 | PI = N/A
+  Scenario 330 | PI = N/A
+  Scenario 331 | PI = N/A
+  Scenario 332 | PI = N/A
+  Scenario 333 | PI = N/A
+  Scenario 334 | PI = N/A
+  Scenario 335 | PI = N/A
+  Scenario 336 | PI = N/A
+  Scenario 337 | PI = N/A
+  Scenario 338 | PI = N/A
+  Scenario 339 | PI = N/A
+  Scenario 340 | PI = N/A
+  Scenario 341 | PI = N/A
+  Scenario 342 | PI = N/A
+  Scenario 343 | PI = N/A
+  Scenario 344 | PI = N/A
+  Scenario 345 | PI = N/A
+  Scenario 346 | PI = N/A
+  Scenario 347 | PI = N/A
+  Scenario 348 | PI = N/A
+  Scenario 349 | PI = N/A
+  Scenario 350 | PI = N/A
+  Scenario 351 | PI = N/A
+  Scenario 352 | PI = N/A
+  Scenario 353 | PI = N/A
+  Scenario 354 | PI = N/A
+  Scenario 355 | PI = N/A
+  Scenario 356 | PI = N/A
+  Scenario 357 | PI = N/A
+  Scenario 358 | PI = N/A
+  Scenario 359 | PI = N/A
+  Scenario 360 | PI = N/A
+  Scenario 361 | PI = N/A
+  Scenario 362 | PI = N/A
+  Scenario 363 | PI = N/A
+  Scenario 364 | PI = N/A
+  Scenario 365 | PI = N/A
+  Scenario 366 | PI = N/A
+  Scenario 367 | PI = N/A
+  Scenario 368 | PI = N/A
+  Scenario 369 | PI = N/A
+  Scenario 370 | PI = N/A
+  Scenario 371 | PI = N/A
+  Scenario 372 | PI = N/A
+  Scenario 373 | PI = N/A
+  Scenario 374 | PI = N/A
+  Scenario 375 | PI = N/A
+  Scenario 376 | PI = N/A
+  Scenario 377 | PI = N/A
+  Scenario 378 | PI = N/A
+  Scenario 379 | PI = N/A
+  Scenario 380 | PI = N/A
+  Scenario 381 | PI = N/A
+  Scenario 382 | PI = N/A
+  Scenario 383 | PI = N/A
+  Scenario 384 | PI = N/A
+  Scenario 385 | PI = N/A
+  Scenario 386 | PI = N/A
+  Scenario 387 | PI = N/A
+  Scenario 388 | PI = N/A
+  Scenario 389 | PI = N/A
+  Scenario 390 | PI = N/A
+  Scenario 391 | PI = N/A
+  Scenario 392 | PI = N/A
+  Scenario 393 | PI = N/A
+  Scenario 394 | PI = N/A
+  Scenario 395 | PI = N/A
+  Scenario 396 | PI = N/A
+  Scenario 397 | PI = N/A
+  Scenario 398 | PI = N/A
+  Scenario 399 | PI = N/A
+  Scenario 400 | PI = N/A
+  Scenario 401 | PI = N/A
+  Scenario 402 | PI = N/A
+  Scenario 403 | PI = N/A
+  Scenario 404 | PI = N/A
+  Scenario 405 | PI = N/A
+  Scenario 406 | PI = N/A
+  Scenario 407 | PI = N/A
+  Scenario 408 | PI = N/A
+  Scenario 409 | PI = N/A
+  Scenario 410 | PI = N/A
+  Scenario 411 | PI = N/A
+  Scenario 412 | PI = N/A
+  Scenario 413 | PI = N/A
+  Scenario 414 | PI = N/A
+  Scenario 415 | PI = N/A
+  Scenario 416 | PI = N/A
+  Scenario 417 | PI = N/A
+  Scenario 418 | PI = N/A
+  Scenario 419 | PI = N/A
+  Scenario 420 | PI = N/A
+  Scenario 421 | PI = N/A
+  Scenario 422 | PI = N/A
+  Scenario 423 | PI = N/A
+  Scenario 424 | PI = N/A
+  Scenario 425 | PI = N/A
+  Scenario 426 | PI = N/A
+  Scenario 427 | PI = N/A
+  Scenario 428 | PI = N/A
+  Scenario 429 | PI = N/A
+  Scenario 430 | PI = N/A
+  Scenario 431 | PI = N/A
+  Scenario 432 | PI = N/A
+  Scenario 433 | PI = N/A
+  Scenario 434 | PI = N/A
+  Scenario 435 | PI = N/A
+  Scenario 436 | PI = N/A
+  Scenario 437 | PI = N/A
+  Scenario 438 | PI = N/A
+  Scenario 439 | PI = N/A
+  Scenario 440 | PI = N/A
+  Scenario 441 | PI = N/A
+  Scenario 442 | PI = N/A
+  Scenario 443 | PI = N/A
+  Scenario 444 | PI = N/A
+  Scenario 445 | PI = N/A
+  Scenario 446 | PI = N/A
+  Scenario 447 | PI = N/A
+  Scenario 448 | PI = N/A
+  Scenario 449 | PI = N/A
+  Scenario 450 | PI = N/A
+  Scenario 451 | PI = N/A
+  Scenario 452 | PI = N/A
+  Scenario 453 | PI = N/A
+  Scenario 454 | PI = N/A
+  Scenario 455 | PI = N/A
+  Scenario 456 | PI = N/A
+  Scenario 457 | PI = N/A
+  Scenario 458 | PI = N/A
+  Scenario 459 | PI = N/A
+  Scenario 460 | PI = N/A
+  Scenario 461 | PI = N/A
+  Scenario 462 | PI = N/A
+  Scenario 463 | PI = N/A
+  Scenario 464 | PI = N/A
+  Scenario 465 | PI = N/A
+  Scenario 466 | PI = N/A
+  Scenario 467 | PI = N/A
+  Scenario 468 | PI = N/A
+  Scenario 469 | PI = N/A
+  Scenario 470 | PI = N/A
+  Scenario 471 | PI = N/A
+  Scenario 472 | PI = N/A
+  Scenario 473 | PI = N/A
+  Scenario 474 | PI = N/A
+  Scenario 475 | PI = N/A
+  Scenario 476 | PI = N/A
+  Scenario 477 | PI = N/A
+  Scenario 478 | PI = N/A
+  Scenario 479 | PI = N/A
+  Scenario 480 | PI = N/A
+  Scenario 481 | PI = N/A
+  Scenario 482 | PI = N/A
+  Scenario 483 | PI = N/A
+  Scenario 484 | PI = N/A
+  Scenario 485 | PI = N/A
+  Scenario 486 | PI = N/A
+  Scenario 487 | PI = N/A
+  Scenario 488 | PI = N/A
+  Scenario 489 | PI = N/A
+  Scenario 490 | PI = N/A
+  Scenario 491 | PI = N/A
+  Scenario 492 | PI = N/A
+  Scenario 493 | PI = N/A
+  Scenario 494 | PI = N/A
+  Scenario 495 | PI = N/A
+  Scenario 496 | PI = N/A
+  Scenario 497 | PI = N/A
+  Scenario 498 | PI = N/A
+  Scenario 499 | PI = N/A
+  Scenario 500 | PI = N/A
+  Scenario 501 | PI = N/A
+  Scenario 502 | PI = N/A
+  Scenario 503 | PI = N/A
+  Scenario 504 | PI = N/A
+  Scenario 505 | PI = N/A
+  Scenario 506 | PI = N/A
+  Scenario 507 | PI = N/A
+  Scenario 508 | PI = N/A
+  Scenario 509 | PI = N/A
+  Scenario 510 | PI = N/A
+  Scenario 511 | PI = N/A
+  Scenario 512 | PI = N/A
+  Scenario 513 | PI = N/A
+  Scenario 514 | PI = N/A
+  Scenario 515 | PI = N/A
+  Scenario 516 | PI = N/A
+  Scenario 517 | PI = N/A
+  Scenario 518 | PI = N/A
+  Scenario 519 | PI = N/A
+  Scenario 520 | PI = N/A
+  Scenario 521 | PI = N/A
+  Scenario 522 | PI = N/A
+  Scenario 523 | PI = N/A
+  Scenario 524 | PI = N/A
+  Scenario 525 | PI = N/A
+  Scenario 526 | PI = N/A
+  Scenario 527 | PI = N/A
+  Scenario 528 | PI = N/A
+  Scenario 529 | PI = N/A
+  Scenario 530 | PI = N/A
+  Scenario 531 | PI = N/A
+  Scenario 532 | PI = N/A
+  Scenario 533 | PI = N/A
+  Scenario 534 | PI = N/A
+  Scenario 535 | PI = N/A
+  Scenario 536 | PI = N/A
+  Scenario 537 | PI = N/A
+  Scenario 538 | PI = N/A
+  Scenario 539 | PI = N/A
+  Scenario 540 | PI = N/A
+  Scenario 541 | PI = N/A
+  Scenario 542 | PI = N/A
+  Scenario 543 | PI = N/A
+  Scenario 544 | PI = N/A
+  Scenario 545 | PI = N/A
+  Scenario 546 | PI = N/A
+  Scenario 547 | PI = N/A
+  Scenario 548 | PI = N/A
+  Scenario 549 | PI = N/A
+  Scenario 550 | PI = N/A
+  Scenario 551 | PI = N/A
+  Scenario 552 | PI = N/A
+  Scenario 553 | PI = N/A
+  Scenario 554 | PI = N/A
+  Scenario 555 | PI = N/A
+  Scenario 556 | PI = N/A
+  Scenario 557 | PI = N/A
+  Scenario 558 | PI = N/A
+  Scenario 559 | PI = N/A
+  Scenario 560 | PI = N/A
+  Scenario 561 | PI = N/A
+  Scenario 562 | PI = N/A
+  Scenario 563 | PI = N/A
+  Scenario 564 | PI = N/A
+  Scenario 565 | PI = N/A
+  Scenario 566 | PI = N/A
+  Scenario 567 | PI = N/A
+  Scenario 568 | PI = N/A
+  Scenario 569 | PI = N/A
+  Scenario 570 | PI = N/A
+  Scenario 571 | PI = N/A
+  Scenario 572 | PI = N/A
+  Scenario 573 | PI = N/A
+  Scenario 574 | PI = N/A
+  Scenario 575 | PI = N/A
+  Scenario 576 | PI = N/A
+  Scenario 577 | PI = N/A
+  Scenario 578 | PI = N/A
+  Scenario 579 | PI = N/A
+  Scenario 580 | PI = N/A
+  Scenario 581 | PI = N/A
+  Scenario 582 | PI = N/A
+  Scenario 583 | PI = N/A
+  Scenario 584 | PI = N/A
+  Scenario 585 | PI = N/A
+  Scenario 586 | PI = N/A
+  Scenario 587 | PI = N/A
+  Scenario 588 | PI = N/A
+  Scenario 589 | PI = N/A
+  Scenario 590 | PI = N/A
+  Scenario 591 | PI = N/A
+  Scenario 592 | PI = N/A
+  Scenario 593 | PI = N/A
+  Scenario 594 | PI = N/A
+  Scenario 595 | PI = N/A
+  Scenario 596 | PI = N/A
+  Scenario 597 | PI = N/A
+  Scenario 598 | PI = N/A
+  Scenario 599 | PI = N/A
+  Scenario 600 | PI = N/A
+  Scenario 601 | PI = N/A
+  Scenario 602 | PI = N/A
+  Scenario 603 | PI = N/A
+  Scenario 604 | PI = N/A
+  Scenario 605 | PI = N/A
+  Scenario 606 | PI = N/A
+  Scenario 607 | PI = N/A
+  Scenario 608 | PI = N/A
+  Scenario 609 | PI = N/A
+  Scenario 610 | PI = N/A
+  Scenario 611 | PI = N/A
+  Scenario 612 | PI = N/A
+  Scenario 613 | PI = N/A
+  Scenario 614 | PI = N/A
+  Scenario 615 | PI = N/A
+  Scenario 616 | PI = N/A
+  Scenario 617 | PI = N/A
+  Scenario 618 | PI = N/A
+  Scenario 619 | PI = N/A
+  Scenario 620 | PI = N/A
+  Scenario 621 | PI = N/A
+  Scenario 622 | PI = N/A
+  Scenario 623 | PI = N/A
+  Scenario 624 | PI = N/A
+  Scenario 625 | PI = N/A
+  Scenario 626 | PI = N/A
+  Scenario 627 | PI = N/A
+  Scenario 628 | PI = N/A
+  Scenario 629 | PI = N/A
+  Scenario 630 | PI = N/A
+  Scenario 631 | PI = N/A
+  Scenario 632 | PI = N/A
+  Scenario 633 | PI = N/A
+  Scenario 634 | PI = N/A
+  Scenario 635 | PI = N/A
+  Scenario 636 | PI = N/A
+  Scenario 637 | PI = N/A
+  Scenario 638 | PI = N/A
+  Scenario 639 | PI = N/A
+  Scenario 640 | PI = N/A
+  Scenario 641 | PI = N/A
+  Scenario 642 | PI = N/A
+  Scenario 643 | PI = N/A
+  Scenario 644 | PI = N/A
+  Scenario 645 | PI = N/A
+  Scenario 646 | PI = N/A
+  Scenario 647 | PI = N/A
+  Scenario 648 | PI = N/A
+  Scenario 649 | PI = N/A
+  Scenario 650 | PI = N/A
+  Scenario 651 | PI = N/A
+  Scenario 652 | PI = N/A
+  Scenario 653 | PI = N/A
+  Scenario 654 | PI = N/A
+  Scenario 655 | PI = N/A
+  Scenario 656 | PI = N/A
+  Scenario 657 | PI = N/A
+  Scenario 658 | PI = N/A
+  Scenario 659 | PI = N/A
+  Scenario 660 | PI = N/A
+  Scenario 661 | PI = N/A
+  Scenario 662 | PI = N/A
+  Scenario 663 | PI = N/A
+  Scenario 664 | PI = N/A
+  Scenario 665 | PI = N/A
+  Scenario 666 | PI = N/A
+  Scenario 667 | PI = N/A
+  Scenario 668 | PI = N/A
+  Scenario 669 | PI = N/A
+  Scenario 670 | PI = N/A
+  Scenario 671 | PI = N/A
+  Scenario 672 | PI = N/A
+  Scenario 673 | PI = N/A
+  Scenario 674 | PI = N/A
+  Scenario 675 | PI = N/A
+  Scenario 676 | PI = N/A
+  Scenario 677 | PI = N/A
+  Scenario 678 | PI = N/A
+  Scenario 679 | PI = N/A
+  Scenario 680 | PI = N/A
+  Scenario 681 | PI = N/A
+  Scenario 682 | PI = N/A
+  Scenario 683 | PI = N/A
+  Scenario 684 | PI = N/A
+  Scenario 685 | PI = N/A
+  Scenario 686 | PI = N/A
+  Scenario 687 | PI = N/A
+  Scenario 688 | PI = N/A
+  Scenario 689 | PI = N/A
+  Scenario 690 | PI = N/A
+  Scenario 691 | PI = N/A
+  Scenario 692 | PI = N/A
+  Scenario 693 | PI = N/A
+  Scenario 694 | PI = N/A
+  Scenario 695 | PI = N/A
+  Scenario 696 | PI = N/A
+  Scenario 697 | PI = N/A
+  Scenario 698 | PI = N/A
+  Scenario 699 | PI = N/A
+  Scenario 700 | PI = N/A
+  Scenario 701 | PI = N/A
+  Scenario 702 | PI = N/A
+  Scenario 703 | PI = N/A
+  Scenario 704 | PI = N/A
+  Scenario 705 | PI = N/A
+  Scenario 706 | PI = N/A
+  Scenario 707 | PI = N/A
+  Scenario 708 | PI = N/A
+  Scenario 709 | PI = N/A
+  Scenario 710 | PI = N/A
+  Scenario 711 | PI = N/A
+  Scenario 712 | PI = N/A
+  Scenario 713 | PI = N/A
+  Scenario 714 | PI = N/A
+  Scenario 715 | PI = N/A
+  Scenario 716 | PI = N/A
+  Scenario 717 | PI = N/A
+  Scenario 718 | PI = N/A
+  Scenario 719 | PI = N/A
+  Scenario 720 | PI = N/A
+  Scenario 721 | PI = N/A
+  Scenario 722 | PI = N/A
+  Scenario 723 | PI = N/A
+  Scenario 724 | PI = N/A
+  Scenario 725 | PI = N/A
+  Scenario 726 | PI = N/A
+  Scenario 727 | PI = N/A
+  Scenario 728 | PI = N/A
+  Scenario 729 | PI = N/A
+  Scenario 730 | PI = N/A
+  Scenario 731 | PI = N/A
+  Scenario 732 | PI = N/A
+  Scenario 733 | PI = N/A
+  Scenario 734 | PI = N/A
+  Scenario 735 | PI = N/A
+  Scenario 736 | PI = N/A
+  Scenario 737 | PI = N/A
+  Scenario 738 | PI = N/A
+  Scenario 739 | PI = N/A
+  Scenario 740 | PI = N/A
+  Scenario 741 | PI = N/A
+  Scenario 742 | PI = N/A
+  Scenario 743 | PI = N/A
+  Scenario 744 | PI = N/A
+  Scenario 745 | PI = N/A
+  Scenario 746 | PI = N/A
+  Scenario 747 | PI = N/A
+  Scenario 748 | PI = N/A
+  Scenario 749 | PI = N/A
+  Scenario 750 | PI = N/A
+  Scenario 751 | PI = N/A
+  Scenario 752 | PI = N/A
+  Scenario 753 | PI = N/A
+  Scenario 754 | PI = N/A
+  Scenario 755 | PI = N/A
+  Scenario 756 | PI = N/A
+  Scenario 757 | PI = N/A
+  Scenario 758 | PI = N/A
+  Scenario 759 | PI = N/A
+  Scenario 760 | PI = N/A
+  Scenario 761 | PI = N/A
+  Scenario 762 | PI = N/A
+  Scenario 763 | PI = N/A
+  Scenario 764 | PI = N/A
+  Scenario 765 | PI = N/A
+  Scenario 766 | PI = N/A
+  Scenario 767 | PI = N/A
+  Scenario 768 | PI = N/A
+  Scenario 769 | PI = N/A
+  Scenario 770 | PI = N/A
+  Scenario 771 | PI = N/A
+  Scenario 772 | PI = N/A
+  Scenario 773 | PI = N/A
+  Scenario 774 | PI = N/A
+  Scenario 775 | PI = N/A
+  Scenario 776 | PI = N/A
+  Scenario 777 | PI = N/A
+  Scenario 778 | PI = N/A
+  Scenario 779 | PI = N/A
+  Scenario 780 | PI = N/A
+  Scenario 781 | PI = N/A
+  Scenario 782 | PI = N/A
+  Scenario 783 | PI = N/A
+  Scenario 784 | PI = N/A
+  Scenario 785 | PI = N/A
+  Scenario 786 | PI = N/A
+  Scenario 787 | PI = N/A
+  Scenario 788 | PI = N/A
+  Scenario 789 | PI = N/A
+  Scenario 790 | PI = N/A
+  Scenario 791 | PI = N/A
+  Scenario 792 | PI = N/A
+  Scenario 793 | PI = N/A
+  Scenario 794 | PI = N/A
+  Scenario 795 | PI = N/A
+  Scenario 796 | PI = N/A
+  Scenario 797 | PI = N/A
+  Scenario 798 | PI = N/A
+  Scenario 799 | PI = N/A
+  Scenario 800 | PI = N/A
+  Scenario 801 | PI = N/A
+  Scenario 802 | PI = N/A
+  Scenario 803 | PI = N/A
+  Scenario 804 | PI = N/A
+  Scenario 805 | PI = N/A
+  Scenario 806 | PI = N/A
+  Scenario 807 | PI = N/A
+  Scenario 808 | PI = N/A
+  Scenario 809 | PI = N/A
+  Scenario 810 | PI = N/A
+  Scenario 811 | PI = N/A
+  Scenario 812 | PI = N/A
+  Scenario 813 | PI = N/A
+  Scenario 814 | PI = N/A
+  Scenario 815 | PI = N/A
+  Scenario 816 | PI = N/A
+  Scenario 817 | PI = N/A
+  Scenario 818 | PI = N/A
+  Scenario 819 | PI = N/A
+  Scenario 820 | PI = N/A
+  Scenario 821 | PI = N/A
+  Scenario 822 | PI = N/A
+  Scenario 823 | PI = N/A
+  Scenario 824 | PI = N/A
+  Scenario 825 | PI = N/A
+  Scenario 826 | PI = N/A
+  Scenario 827 | PI = N/A
+  Scenario 828 | PI = N/A
+  Scenario 829 | PI = N/A
+  Scenario 830 | PI = N/A
+  Scenario 831 | PI = N/A
+  Scenario 832 | PI = N/A
+  Scenario 833 | PI = N/A
+  Scenario 834 | PI = N/A
+  Scenario 835 | PI = N/A
+  Scenario 836 | PI = N/A
+  Scenario 837 | PI = N/A
+  Scenario 838 | PI = N/A
+  Scenario 839 | PI = N/A
+  Scenario 840 | PI = N/A
+  Scenario 841 | PI = N/A
+  Scenario 842 | PI = N/A
+  Scenario 843 | PI = N/A
+  Scenario 844 | PI = N/A
+  Scenario 845 | PI = N/A
+  Scenario 846 | PI = N/A
+  Scenario 847 | PI = N/A
+  Scenario 848 | PI = N/A
+  Scenario 849 | PI = N/A
+  Scenario 850 | PI = N/A
+  Scenario 851 | PI = N/A
+  Scenario 852 | PI = N/A
+  Scenario 853 | PI = N/A
+  Scenario 854 | PI = N/A
+  Scenario 855 | PI = N/A
+  Scenario 856 | PI = N/A
+  Scenario 857 | PI = N/A
+  Scenario 858 | PI = N/A
+  Scenario 859 | PI = N/A
+  Scenario 860 | PI = N/A
+  Scenario 861 | PI = N/A
+  Scenario 862 | PI = N/A
+  Scenario 863 | PI = N/A
+  Scenario 864 | PI = N/A
+  Scenario 865 | PI = N/A
+  Scenario 866 | PI = N/A
+  Scenario 867 | PI = N/A
+  Scenario 868 | PI = N/A
+  Scenario 869 | PI = N/A
+  Scenario 870 | PI = N/A
+  Scenario 871 | PI = N/A
+  Scenario 872 | PI = N/A
+  Scenario 873 | PI = N/A
+  Scenario 874 | PI = N/A
+  Scenario 875 | PI = N/A
+  Scenario 876 | PI = N/A
+  Scenario 877 | PI = N/A
+  Scenario 878 | PI = N/A
+  Scenario 879 | PI = N/A
+  Scenario 880 | PI = N/A
+  Scenario 881 | PI = N/A
+  Scenario 882 | PI = N/A
+  Scenario 883 | PI = N/A
+  Scenario 884 | PI = N/A
+  Scenario 885 | PI = N/A
+  Scenario 886 | PI = N/A
+  Scenario 887 | PI = N/A
+  Scenario 888 | PI = N/A
+  Scenario 889 | PI = N/A
+  Scenario 890 | PI = N/A
+  Scenario 891 | PI = N/A
+  Scenario 892 | PI = N/A
+  Scenario 893 | PI = N/A
+  Scenario 894 | PI = N/A
+  Scenario 895 | PI = N/A
+  Scenario 896 | PI = N/A
+  Scenario 897 | PI = N/A
+  Scenario 898 | PI = N/A
+  Scenario 899 | PI = N/A
+  Scenario 900 | PI = N/A
+  Scenario 901 | PI = N/A
+  Scenario 902 | PI = N/A
+  Scenario 903 | PI = N/A
+  Scenario 904 | PI = N/A
+  Scenario 905 | PI = N/A
+  Scenario 906 | PI = N/A
+  Scenario 907 | PI = N/A
+  Scenario 908 | PI = N/A
+  Scenario 909 | PI = N/A
+  Scenario 910 | PI = N/A
+  Scenario 911 | PI = N/A
+  Scenario 912 | PI = N/A
+  Scenario 913 | PI = N/A
+  Scenario 914 | PI = N/A
+  Scenario 915 | PI = N/A
+  Scenario 916 | PI = N/A
+  Scenario 917 | PI = N/A
+  Scenario 918 | PI = N/A
+  Scenario 919 | PI = N/A
+  Scenario 920 | PI = N/A
+  Scenario 921 | PI = N/A
+  Scenario 922 | PI = N/A
+  Scenario 923 | PI = N/A
+  Scenario 924 | PI = N/A
+  Scenario 925 | PI = N/A
+  Scenario 926 | PI = N/A
+  Scenario 927 | PI = N/A
+  Scenario 928 | PI = N/A
+  Scenario 929 | PI = N/A
+  Scenario 930 | PI = N/A
+  Scenario 931 | PI = N/A
+  Scenario 932 | PI = N/A
+  Scenario 933 | PI = N/A
+  Scenario 934 | PI = N/A
+  Scenario 935 | PI = N/A
+  Scenario 936 | PI = N/A
+  Scenario 937 | PI = N/A
+  Scenario 938 | PI = N/A
+  Scenario 939 | PI = N/A
+  Scenario 940 | PI = N/A
+  Scenario 941 | PI = N/A
+  Scenario 942 | PI = N/A
+  Scenario 943 | PI = N/A
+  Scenario 944 | PI = N/A
+  Scenario 945 | PI = N/A
+  Scenario 946 | PI = N/A
+  Scenario 947 | PI = N/A
+  Scenario 948 | PI = N/A
+  Scenario 949 | PI = N/A
+  Scenario 950 | PI = N/A
+  Scenario 951 | PI = N/A
+  Scenario 952 | PI = N/A
+  Scenario 953 | PI = N/A
+  Scenario 954 | PI = N/A
+  Scenario 955 | PI = N/A
+  Scenario 956 | PI = N/A
+  Scenario 957 | PI = N/A
+  Scenario 958 | PI = N/A
+  Scenario 959 | PI = N/A
+  Scenario 960 | PI = N/A
+  Scenario 961 | PI = N/A
+  Scenario 962 | PI = N/A
+  Scenario 963 | PI = N/A
+  Scenario 964 | PI = N/A
+  Scenario 965 | PI = N/A
+  Scenario 966 | PI = N/A
+  Scenario 967 | PI = N/A
+  Scenario 968 | PI = N/A
+  Scenario 969 | PI = N/A
+  Scenario 970 | PI = N/A
+  Scenario 971 | PI = N/A
+  Scenario 972 | PI = N/A
+  Scenario 973 | PI = N/A
+  Scenario 974 | PI = N/A
+  Scenario 975 | PI = N/A
+  Scenario 976 | PI = N/A
+  Scenario 977 | PI = N/A
+  Scenario 978 | PI = N/A
+  Scenario 979 | PI = N/A
+  Scenario 980 | PI = N/A
+  Scenario 981 | PI = N/A
+  Scenario 982 | PI = N/A
+  Scenario 983 | PI = N/A
+  Scenario 984 | PI = N/A
+  Scenario 985 | PI = N/A
+  Scenario 986 | PI = N/A
+  Scenario 987 | PI = N/A
+  Scenario 988 | PI = N/A
+  Scenario 989 | PI = N/A
+  Scenario 990 | PI = N/A
+  Scenario 991 | PI = N/A
+  Scenario 992 | PI = N/A
+  Scenario 993 | PI = N/A
+  Scenario 994 | PI = N/A
+  Scenario 995 | PI = N/A
+  Scenario 996 | PI = N/A
+  Scenario 997 | PI = N/A
+  Scenario 998 | PI = N/A
+  Scenario 999 | PI = N/A
+  Scenario 1000 | PI = N/A
+  Scenario 1001 | PI = N/A
+  Scenario 1002 | PI = N/A
+  Scenario 1003 | PI = N/A
+  Scenario 1004 | PI = N/A
+  Scenario 1005 | PI = N/A
+  Scenario 1006 | PI = N/A
+  Scenario 1007 | PI = N/A
+  Scenario 1008 | PI = N/A
+  Scenario 1009 | PI = N/A
+  Scenario 1010 | PI = N/A
+  Scenario 1011 | PI = N/A
+  Scenario 1012 | PI = N/A
+  Scenario 1013 | PI = N/A
+  Scenario 1014 | PI = N/A
+  Scenario 1015 | PI = N/A
+  Scenario 1016 | PI = N/A
+  Scenario 1017 | PI = N/A
+  Scenario 1018 | PI = N/A
+  Scenario 1019 | PI = N/A
+  Scenario 1020 | PI = N/A
+  Scenario 1021 | PI = N/A
+  Scenario 1022 | PI = N/A
+  Scenario 1023 | PI = N/A
+  Scenario 1024 | PI = N/A
+  Scenario 1025 | PI = N/A
+  Scenario 1026 | PI = N/A
+  Scenario 1027 | PI = N/A
+  Scenario 1028 | PI = N/A
+  Scenario 1029 | PI = N/A
+  Scenario 1030 | PI = N/A
+  Scenario 1031 | PI = N/A
+  Scenario 1032 | PI = N/A
+  Scenario 1033 | PI = N/A
+  Scenario 1034 | PI = N/A
+  Scenario 1035 | PI = N/A
+  Scenario 1036 | PI = N/A
+  Scenario 1037 | PI = N/A
+  Scenario 1038 | PI = N/A
+  Scenario 1039 | PI = N/A
+  Scenario 1040 | PI = N/A
+  Scenario 1041 | PI = N/A
+  Scenario 1042 | PI = N/A
+  Scenario 1043 | PI = N/A
+  Scenario 1044 | PI = N/A
+  Scenario 1045 | PI = N/A
+  Scenario 1046 | PI = N/A
+  Scenario 1047 | PI = N/A
+  Scenario 1048 | PI = N/A
+  Scenario 1049 | PI = N/A
+  Scenario 1050 | PI = N/A
+  Scenario 1051 | PI = N/A
+  Scenario 1052 | PI = N/A
+  Scenario 1053 | PI = N/A
+  Scenario 1054 | PI = N/A
+  Scenario 1055 | PI = N/A
+  Scenario 1056 | PI = N/A
+  Scenario 1057 | PI = N/A
+  Scenario 1058 | PI = N/A
+  Scenario 1059 | PI = N/A
+  Scenario 1060 | PI = N/A
+  Scenario 1061 | PI = N/A
+  Scenario 1062 | PI = N/A
+  Scenario 1063 | PI = N/A
+  Scenario 1064 | PI = N/A
+  Scenario 1065 | PI = N/A
+  Scenario 1066 | PI = N/A
+  Scenario 1067 | PI = N/A
+  Scenario 1068 | PI = N/A
+  Scenario 1069 | PI = N/A
+  Scenario 1070 | PI = N/A
+  Scenario 1071 | PI = N/A
+  Scenario 1072 | PI = N/A
+  Scenario 1073 | PI = N/A
+  Scenario 1074 | PI = N/A
+  Scenario 1075 | PI = N/A
+  Scenario 1076 | PI = N/A
+  Scenario 1077 | PI = N/A
+  Scenario 1078 | PI = N/A
+  Scenario 1079 | PI = N/A
+  Scenario 1080 | PI = N/A
+  Scenario 1081 | PI = N/A
+  Scenario 1082 | PI = N/A
+  Scenario 1083 | PI = N/A
+  Scenario 1084 | PI = N/A
+  Scenario 1085 | PI = N/A
+  Scenario 1086 | PI = N/A
+  Scenario 1087 | PI = N/A
+  Scenario 1088 | PI = N/A
+  Scenario 1089 | PI = N/A
+  Scenario 1090 | PI = N/A
+  Scenario 1091 | PI = N/A
+  Scenario 1092 | PI = N/A
+  Scenario 1093 | PI = N/A
+  Scenario 1094 | PI = N/A
+  Scenario 1095 | PI = N/A
+  Scenario 1096 | PI = N/A
+  Scenario 1097 | PI = N/A
+  Scenario 1098 | PI = N/A
+  Scenario 1099 | PI = N/A
+  Scenario 1100 | PI = N/A
+  Scenario 1101 | PI = N/A
+  Scenario 1102 | PI = N/A
+  Scenario 1103 | PI = N/A
+  Scenario 1104 | PI = N/A
+  Scenario 1105 | PI = N/A
+  Scenario 1106 | PI = N/A
+  Scenario 1107 | PI = N/A
+  Scenario 1108 | PI = N/A
+  Scenario 1109 | PI = N/A
+  Scenario 1110 | PI = N/A
+  Scenario 1111 | PI = N/A
+  Scenario 1112 | PI = N/A
+  Scenario 1113 | PI = N/A
+  Scenario 1114 | PI = N/A
+  Scenario 1115 | PI = N/A
+  Scenario 1116 | PI = N/A
+  Scenario 1117 | PI = N/A
+  Scenario 1118 | PI = N/A
+  Scenario 1119 | PI = N/A
+  Scenario 1120 | PI = N/A
+  Scenario 1121 | PI = N/A
+  Scenario 1122 | PI = N/A
+  Scenario 1123 | PI = N/A
+  Scenario 1124 | PI = N/A
+  Scenario 1125 | PI = N/A
+  Scenario 1126 | PI = N/A
+  Scenario 1127 | PI = N/A
+  Scenario 1128 | PI = N/A
+  Scenario 1129 | PI = N/A
+  Scenario 1130 | PI = N/A
+  Scenario 1131 | PI = N/A
+  Scenario 1132 | PI = N/A
+  Scenario 1133 | PI = N/A
+  Scenario 1134 | PI = N/A
+  Scenario 1135 | PI = N/A
+  Scenario 1136 | PI = N/A
+  Scenario 1137 | PI = N/A
+  Scenario 1138 | PI = N/A
+  Scenario 1139 | PI = N/A
+  Scenario 1140 | PI = N/A
+  Scenario 1141 | PI = N/A
+  Scenario 1142 | PI = N/A
+  Scenario 1143 | PI = N/A
+  Scenario 1144 | PI = N/A
+  Scenario 1145 | PI = N/A
+  Scenario 1146 | PI = N/A
+  Scenario 1147 | PI = N/A
+  Scenario 1148 | PI = N/A
+  Scenario 1149 | PI = N/A
+  Scenario 1150 | PI = N/A
+  Scenario 1151 | PI = N/A
+  Scenario 1152 | PI = N/A
+  Scenario 1153 | PI = N/A
+  Scenario 1154 | PI = N/A
+  Scenario 1155 | PI = N/A
+  Scenario 1156 | PI = N/A
+  Scenario 1157 | PI = N/A
+  Scenario 1158 | PI = N/A
+  Scenario 1159 | PI = N/A
+  Scenario 1160 | PI = N/A
+  Scenario 1161 | PI = N/A
+  Scenario 1162 | PI = N/A
+  Scenario 1163 | PI = N/A
+  Scenario 1164 | PI = N/A
+  Scenario 1165 | PI = N/A
+  Scenario 1166 | PI = N/A
+  Scenario 1167 | PI = N/A
+  Scenario 1168 | PI = N/A
+  Scenario 1169 | PI = N/A
+  Scenario 1170 | PI = N/A
+  Scenario 1171 | PI = N/A
+  Scenario 1172 | PI = N/A
+  Scenario 1173 | PI = N/A
+  Scenario 1174 | PI = N/A
+  Scenario 1175 | PI = N/A
+  Scenario 1176 | PI = N/A
+  Scenario 1177 | PI = N/A
+  Scenario 1178 | PI = N/A
+  Scenario 1179 | PI = N/A
+  Scenario 1180 | PI = N/A
+  Scenario 1181 | PI = N/A
+  Scenario 1182 | PI = N/A
+  Scenario 1183 | PI = N/A
+  Scenario 1184 | PI = N/A
+  Scenario 1185 | PI = N/A
+  Scenario 1186 | PI = N/A
+  Scenario 1187 | PI = N/A
+  Scenario 1188 | PI = N/A
+  Scenario 1189 | PI = N/A
+  Scenario 1190 | PI = N/A
+  Scenario 1191 | PI = N/A
+  Scenario 1192 | PI = N/A
+  Scenario 1193 | PI = N/A
+  Scenario 1194 | PI = N/A
+  Scenario 1195 | PI = N/A
+  Scenario 1196 | PI = N/A
+  Scenario 1197 | PI = N/A
+  Scenario 1198 | PI = N/A
+  Scenario 1199 | PI = N/A
+  Scenario 1200 | PI = N/A
+  Scenario 1201 | PI = N/A
+  Scenario 1202 | PI = N/A
+  Scenario 1203 | PI = N/A
+  Scenario 1204 | PI = N/A
+  Scenario 1205 | PI = N/A
+  Scenario 1206 | PI = N/A
+  Scenario 1207 | PI = N/A
+  Scenario 1208 | PI = N/A
+  Scenario 1209 | PI = N/A
+  Scenario 1210 | PI = N/A
+  Scenario 1211 | PI = N/A
+  Scenario 1212 | PI = N/A
+  Scenario 1213 | PI = N/A
+  Scenario 1214 | PI = N/A
+  Scenario 1215 | PI = N/A
+  Scenario 1216 | PI = N/A
+  Scenario 1217 | PI = N/A
+  Scenario 1218 | PI = N/A
+  Scenario 1219 | PI = N/A
+  Scenario 1220 | PI = N/A
+  Scenario 1221 | PI = N/A
+  Scenario 1222 | PI = N/A
+  Scenario 1223 | PI = N/A
+  Scenario 1224 | PI = N/A
+  Scenario 1225 | PI = N/A
+  Scenario 1226 | PI = N/A
+  Scenario 1227 | PI = N/A
+  Scenario 1228 | PI = N/A
+  Scenario 1229 | PI = N/A
+  Scenario 1230 | PI = N/A
+  Scenario 1231 | PI = N/A
+  Scenario 1232 | PI = N/A
+  Scenario 1233 | PI = N/A
+  Scenario 1234 | PI = N/A
+  Scenario 1235 | PI = N/A
+  Scenario 1236 | PI = N/A
+  Scenario 1237 | PI = N/A
+  Scenario 1238 | PI = N/A
+  Scenario 1239 | PI = N/A
+  Scenario 1240 | PI = N/A
+  Scenario 1241 | PI = N/A
+  Scenario 1242 | PI = N/A
+  Scenario 1243 | PI = N/A
+  Scenario 1244 | PI = N/A
+  Scenario 1245 | PI = N/A
+  Scenario 1246 | PI = N/A
+  Scenario 1247 | PI = N/A
+  Scenario 1248 | PI = N/A
+  Scenario 1249 | PI = N/A
+  Scenario 1250 | PI = N/A
+  Scenario 1251 | PI = N/A
+  Scenario 1252 | PI = N/A
+  Scenario 1253 | PI = N/A
+  Scenario 1254 | PI = N/A
+  Scenario 1255 | PI = N/A
+  Scenario 1256 | PI = N/A
+  Scenario 1257 | PI = N/A
+  Scenario 1258 | PI = N/A
+  Scenario 1259 | PI = N/A
+  Scenario 1260 | PI = N/A
+  Scenario 1261 | PI = N/A
+  Scenario 1262 | PI = N/A
+  Scenario 1263 | PI = N/A
+  Scenario 1264 | PI = N/A
+  Scenario 1265 | PI = N/A
+  Scenario 1266 | PI = N/A
+  Scenario 1267 | PI = N/A
+  Scenario 1268 | PI = N/A
+  Scenario 1269 | PI = N/A
+  Scenario 1270 | PI = N/A
+  Scenario 1271 | PI = N/A
+  Scenario 1272 | PI = N/A
+  Scenario 1273 | PI = N/A
+  Scenario 1274 | PI = N/A
+  Scenario 1275 | PI = N/A
+  Scenario 1276 | PI = N/A
+  Scenario 1277 | PI = N/A
+  Scenario 1278 | PI = N/A
+  Scenario 1279 | PI = N/A
+  Scenario 1280 | PI = N/A
+  Scenario 1281 | PI = N/A
+  Scenario 1282 | PI = N/A
+  Scenario 1283 | PI = N/A
+  Scenario 1284 | PI = N/A
+  Scenario 1285 | PI = N/A
+  Scenario 1286 | PI = N/A
+  Scenario 1287 | PI = N/A
+  Scenario 1288 | PI = N/A
+  Scenario 1289 | PI = N/A
+  Scenario 1290 | PI = N/A
+  Scenario 1291 | PI = N/A
+  Scenario 1292 | PI = N/A
+  Scenario 1293 | PI = N/A
+  Scenario 1294 | PI = N/A
+  Scenario 1295 | PI = N/A
+  Scenario 1296 | PI = N/A
+  Scenario 1297 | PI = N/A
+  Scenario 1298 | PI = N/A
+  Scenario 1299 | PI = N/A
+  Scenario 1300 | PI = N/A
+  Scenario 1301 | PI = N/A
+  Scenario 1302 | PI = N/A
+  Scenario 1303 | PI = N/A
+  Scenario 1304 | PI = N/A
+  Scenario 1305 | PI = N/A
+  Scenario 1306 | PI = N/A
+  Scenario 1307 | PI = N/A
+  Scenario 1308 | PI = N/A
+  Scenario 1309 | PI = N/A
+  Scenario 1310 | PI = N/A
+  Scenario 1311 | PI = N/A
+  Scenario 1312 | PI = N/A
+  Scenario 1313 | PI = N/A
+  Scenario 1314 | PI = N/A
+  Scenario 1315 | PI = N/A
+  Scenario 1316 | PI = N/A
+  Scenario 1317 | PI = N/A
+  Scenario 1318 | PI = N/A
+  Scenario 1319 | PI = N/A
+  Scenario 1320 | PI = N/A
+  Scenario 1321 | PI = N/A
+  Scenario 1322 | PI = N/A
+  Scenario 1323 | PI = N/A
+  Scenario 1324 | PI = N/A
+  Scenario 1325 | PI = N/A
+  Scenario 1326 | PI = N/A
+  Scenario 1327 | PI = N/A
+  Scenario 1328 | PI = N/A
+  Scenario 1329 | PI = N/A
+  Scenario 1330 | PI = N/A
+  Scenario 1331 | PI = N/A
+  Scenario 1332 | PI = N/A
+  Scenario 1333 | PI = N/A
+  Scenario 1334 | PI = N/A
+  Scenario 1335 | PI = N/A
+  Scenario 1336 | PI = N/A
+  Scenario 1337 | PI = N/A
+  Scenario 1338 | PI = N/A
+  Scenario 1339 | PI = N/A
+  Scenario 1340 | PI = N/A
+  Scenario 1341 | PI = N/A
+  Scenario 1342 | PI = N/A
+  Scenario 1343 | PI = N/A
+  Scenario 1344 | PI = N/A
+  Scenario 1345 | PI = N/A
+  Scenario 1346 | PI = N/A
+  Scenario 1347 | PI = N/A
+  Scenario 1348 | PI = N/A
+  Scenario 1349 | PI = N/A
+  Scenario 1350 | PI = N/A
+  Scenario 1351 | PI = N/A
+  Scenario 1352 | PI = N/A
+  Scenario 1353 | PI = N/A
+  Scenario 1354 | PI = N/A
+  Scenario 1355 | PI = N/A
+  Scenario 1356 | PI = N/A
+  Scenario 1357 | PI = N/A
+  Scenario 1358 | PI = N/A
+  Scenario 1359 | PI = N/A
+  Scenario 1360 | PI = N/A
+  Scenario 1361 | PI = N/A
+  Scenario 1362 | PI = N/A
+  Scenario 1363 | PI = N/A
+  Scenario 1364 | PI = N/A
+  Scenario 1365 | PI = N/A
+  Scenario 1366 | PI = N/A
+  Scenario 1367 | PI = N/A
+  Scenario 1368 | PI = N/A
+  Scenario 1369 | PI = N/A
+  Scenario 1370 | PI = N/A
+  Scenario 1371 | PI = N/A
+  Scenario 1372 | PI = N/A
+  Scenario 1373 | PI = N/A
+  Scenario 1374 | PI = N/A
+  Scenario 1375 | PI = N/A
+  Scenario 1376 | PI = N/A
+  Scenario 1377 | PI = N/A
+  Scenario 1378 | PI = N/A
+  Scenario 1379 | PI = N/A
+  Scenario 1380 | PI = N/A
+  Scenario 1381 | PI = N/A
+  Scenario 1382 | PI = N/A
+  Scenario 1383 | PI = N/A
+  Scenario 1384 | PI = N/A
+  Scenario 1385 | PI = N/A
+  Scenario 1386 | PI = N/A
+  Scenario 1387 | PI = N/A
+  Scenario 1388 | PI = N/A
+  Scenario 1389 | PI = N/A
+  Scenario 1390 | PI = N/A
+  Scenario 1391 | PI = N/A
+  Scenario 1392 | PI = N/A
+  Scenario 1393 | PI = N/A
+  Scenario 1394 | PI = N/A
+  Scenario 1395 | PI = N/A
+  Scenario 1396 | PI = N/A
+  Scenario 1397 | PI = N/A
+  Scenario 1398 | PI = N/A
+  Scenario 1399 | PI = N/A
+  Scenario 1400 | PI = N/A
+  Scenario 1401 | PI = N/A
+  Scenario 1402 | PI = N/A
+  Scenario 1403 | PI = N/A
+  Scenario 1404 | PI = N/A
+  Scenario 1405 | PI = N/A
+  Scenario 1406 | PI = N/A
+  Scenario 1407 | PI = N/A
+  Scenario 1408 | PI = N/A
+  Scenario 1409 | PI = N/A
+  Scenario 1410 | PI = N/A
+  Scenario 1411 | PI = N/A
+  Scenario 1412 | PI = N/A
+  Scenario 1413 | PI = N/A
+  Scenario 1414 | PI = N/A
+  Scenario 1415 | PI = N/A
+  Scenario 1416 | PI = N/A
+  Scenario 1417 | PI = N/A
+  Scenario 1418 | PI = N/A
+  Scenario 1419 | PI = N/A
+  Scenario 1420 | PI = N/A
+  Scenario 1421 | PI = N/A
+  Scenario 1422 | PI = N/A
+  Scenario 1423 | PI = N/A
+  Scenario 1424 | PI = N/A
+  Scenario 1425 | PI = N/A
+  Scenario 1426 | PI = N/A
+  Scenario 1427 | PI = N/A
+  Scenario 1428 | PI = N/A
+  Scenario 1429 | PI = N/A
+  Scenario 1430 | PI = N/A
+  Scenario 1431 | PI = N/A
+  Scenario 1432 | PI = N/A
+  Scenario 1433 | PI = N/A
+  Scenario 1434 | PI = N/A
+  Scenario 1435 | PI = N/A
+  Scenario 1436 | PI = N/A
+  Scenario 1437 | PI = N/A
+  Scenario 1438 | PI = N/A
+  Scenario 1439 | PI = N/A
+  Scenario 1440 | PI = N/A
+  Scenario 1441 | PI = N/A
+  Scenario 1442 | PI = N/A
+  Scenario 1443 | PI = N/A
+  Scenario 1444 | PI = N/A
+  Scenario 1445 | PI = N/A
+  Scenario 1446 | PI = N/A
+  Scenario 1447 | PI = N/A
+  Scenario 1448 | PI = N/A
+  Scenario 1449 | PI = N/A
+  Scenario 1450 | PI = N/A
+  Scenario 1451 | PI = N/A
+  Scenario 1452 | PI = N/A
+  Scenario 1453 | PI = N/A
+  Scenario 1454 | PI = N/A
+  Scenario 1455 | PI = N/A
+  Scenario 1456 | PI = N/A
+  Scenario 1457 | PI = N/A
+  Scenario 1458 | PI = N/A
+  Scenario 1459 | PI = N/A
+  Scenario 1460 | PI = N/A
+  Scenario 1461 | PI = N/A
+  Scenario 1462 | PI = N/A
+  Scenario 1463 | PI = N/A
+  Scenario 1464 | PI = N/A
+  Scenario 1465 | PI = N/A
+  Scenario 1466 | PI = N/A
+  Scenario 1467 | PI = N/A
+  Scenario 1468 | PI = N/A
+  Scenario 1469 | PI = N/A
+  Scenario 1470 | PI = N/A
+  Scenario 1471 | PI = N/A
+  Scenario 1472 | PI = N/A
+  Scenario 1473 | PI = N/A
+  Scenario 1474 | PI = N/A
+  Scenario 1475 | PI = N/A
+  Scenario 1476 | PI = N/A
+  Scenario 1477 | PI = N/A
+  Scenario 1478 | PI = N/A
+  Scenario 1479 | PI = N/A
+  Scenario 1480 | PI = N/A
+  Scenario 1481 | PI = N/A
+  Scenario 1482 | PI = N/A
+  Scenario 1483 | PI = N/A
+  Scenario 1484 | PI = N/A
+  Scenario 1485 | PI = N/A
+  Scenario 1486 | PI = N/A
+  Scenario 1487 | PI = N/A
+  Scenario 1488 | PI = N/A
+  Scenario 1489 | PI = N/A
+  Scenario 1490 | PI = N/A
+  Scenario 1491 | PI = N/A
+  Scenario 1492 | PI = N/A
+  Scenario 1493 | PI = N/A
+  Scenario 1494 | PI = N/A
+  Scenario 1495 | PI = N/A
+  Scenario 1496 | PI = N/A
+  Scenario 1497 | PI = N/A
+  Scenario 1498 | PI = N/A
+  Scenario 1499 | PI = N/A
+  Scenario 1500 | PI = N/A
+  Batch 00: scenari 1..30
+  Batch 01: scenari 31..60
+  Batch 02: scenari 61..90
+  Batch 03: scenari 91..120
+  Batch 04: scenari 121..150
+  Batch 05: scenari 151..180
+  Batch 06: scenari 181..210
+  Batch 07: scenari 211..240
+  Batch 08: scenari 241..270
+  Batch 09: scenari 271..300
+  Batch 10: scenari 301..330
+  Batch 11: scenari 331..360
+  Batch 12: scenari 361..390
+  Batch 13: scenari 391..420
+  Batch 14: scenari 421..450
+  Batch 15: scenari 451..480
+  Batch 16: scenari 481..510
+  Batch 17: scenari 511..540
+  Batch 18: scenari 541..570
+  Batch 19: scenari 571..600
+  Batch 20: scenari 601..630
+  Batch 21: scenari 631..660
+  Batch 22: scenari 661..690
+  Batch 23: scenari 691..720
+  Batch 24: scenari 721..750
+  Batch 25: scenari 751..780
+  Batch 26: scenari 781..810
+  Batch 27: scenari 811..840
+  Batch 28: scenari 841..870
+  Batch 29: scenari 871..900
+  Batch 30: scenari 901..930
+  Batch 31: scenari 931..960
+  Batch 32: scenari 961..990
+  Batch 33: scenari 991..1020
+  Batch 34: scenari 1021..1050
+  Batch 35: scenari 1051..1080
+  Batch 36: scenari 1081..1110
+  Batch 37: scenari 1111..1140
+  Batch 38: scenari 1141..1170
+  Batch 39: scenari 1171..1200
+  Batch 40: scenari 1201..1230
+  Batch 41: scenari 1231..1260
+  Batch 42: scenari 1261..1290
+  Batch 43: scenari 1291..1320
+  Batch 44: scenari 1321..1350
+  Batch 45: scenari 1351..1380
+  Batch 46: scenari 1381..1410
+  Batch 47: scenari 1411..1440
+  Batch 48: scenari 1441..1470
+  Batch 49: scenari 1471..1500
+Archi in I: 7 coppie non orientate
+p_mat nonzero: 14 celle
+p_mat range: [0.0529, 0.2612]
+dist_scale: 418.1539
+
+  Setup: |I|=7  n_nodi=15  K_train_UTSP=1500 (50 batch × 30)  device=cpu
+  Scenari B per grafici/benchmark = 8
+  I = [(11, 70), (66, 101), (70, 97), (70, 99), (70, 100), (70, 101), (101, 129)]
+[SEED_CHECK] torch.initial_seed()=42
+[SEED_CHECK] np.random state[0]=42
+
+  Training UTSP 2-stage | device=cpu | n_params=30,415
+  GNN(15→64×2) | K_total=1500 (50 batch × 30) | T=0.5271 | scale=418.1539
+  Epoche=50  lr=0.001  λ1=5.0  λ2=1.0  λe=0.5  
+  Ep    1 | total=17.6193 | dist=12.7094 | book=0.0438 | cons=0.0000 | asym=1.0406 | pen=0.2862 | row=0.0545 | diag=1.1857 avg=18.23010 ★
+  Ep    5 | total=15.2522 | dist=8.1110 | book=0.0444 | cons=0.0124 | asym=1.5579 | pen=0.2884 | row=0.0300 | diag=1.9783 avg=15.42874 ★
+  Ep   10 | total=13.5658 | dist=7.1318 | book=0.0484 | cons=0.0191 | asym=1.3423 | pen=0.3028 | row=0.0564 | diag=1.7643 avg=13.49420 ★
+  Ep   15 | total=11.8777 | dist=7.4973 | book=0.0500 | cons=0.0294 | asym=0.8250 | pen=0.3120 | row=0.1003 | diag=1.0275 avg=12.05576 ★
+  Ep   20 | total=11.0047 | dist=7.6783 | book=0.0477 | cons=0.0265 | asym=0.6043 | pen=0.2974 | row=0.0877 | diag=0.7164 avg=11.07977 ★
+  Ep   25 | total=9.7865 | dist=7.9412 | book=0.0386 | cons=0.0192 | asym=0.2169 | pen=0.2385 | row=0.1095 | diag=0.3603 avg=9.93624 ★
+  Ep   30 | total=9.0524 | dist=8.0230 | book=0.0316 | cons=0.0132 | asym=0.0820 | pen=0.1935 | row=0.0719 | diag=0.1925 avg=9.09370 ★
+  Ep   35 | total=8.6087 | dist=8.0710 | book=0.0274 | cons=0.0137 | asym=0.0327 | pen=0.1662 | row=0.0289 | diag=0.0943 avg=8.66324 ★
+  Ep   40 | total=8.4291 | dist=8.0901 | book=0.0243 | cons=0.0190 | asym=0.0162 | pen=0.1461 | row=0.0129 | diag=0.0457 avg=8.44500 ★
+  Ep   45 | total=8.3307 | dist=8.0571 | book=0.0231 | cons=0.0233 | asym=0.0129 | pen=0.1379 | row=0.0067 | diag=0.0290 avg=8.34009 ★
+  Ep   50 | total=8.2415 | dist=7.9751 | book=0.0225 | cons=0.0252 | asym=0.0136 | pen=0.1339 | row=0.0068 | diag=0.0227 avg=8.24760 ★
+
+═════════════════════════════════════════════════════════════════
+  TRAINING COMPLETATO
+  Tempo totale          = 287.17s  (5743.4ms/epoca)
+  Miglior loss          = 8.24760  (ep 50)
+  Loss iniziale→finale  = 18.23010 → 8.24760
+  Riduzione loss        = 54.8%
+═════════════════════════════════════════════════════════════════
+DEBUG decode_booking_policy: len(H_list)=1500, H_list[0].shape=torch.Size([1, 15, 15])
+
+[dopo training UTSP] T medio
+  min fuori diagonale   = 0.000000e+00
+  max fuori diagonale   = 9.997979e-01
+  media fuori diagonale = 7.058609e-02
+  std fuori diagonale   = 2.136281e-01
+  p50 fuori diagonale   = 6.681738e-11
+  p90 fuori diagonale   = 2.554142e-01
+  p99 fuori diagonale   = 9.980344e-01
+  somma righe min/max   = 0.977491 / 1.015075
+  somma colonne min/max = 1.000000 / 1.000000
+  diagonale somma       = 1.769205e-01
+
+[dopo training UTSP] H medio
+  min fuori diagonale   = 8.731962e-20
+  max fuori diagonale   = 9.993865e-01
+  media fuori diagonale = 7.130980e-02
+  std fuori diagonale   = 1.846263e-01
+  p50 fuori diagonale   = 4.142612e-06
+  p90 fuori diagonale   = 3.089585e-01
+  p99 fuori diagonale   = 7.561230e-01
+  somma righe min/max   = 0.977491 / 1.015075
+  somma colonne min/max = 0.977491 / 1.015075
+  diagonale somma       = 2.494184e-02
+
+═════════════════════════════════════════════════════════════════
+  Matrice adiacenza GNN (media scenari training)
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     i→j |      11      31      63      66      70      84      94      97      99     100     101     107     113     129     148
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      11 |       —  0.2119  0.0642  0.5523  0.1977  0.0698  0.0895  0.0729  0.1943  0.0598  0.4152  0.0485  0.0739  0.2654  0.8131
+      31 |  0.2193       —  0.1444  0.3104  0.0889  0.1259  0.2141  0.1002  0.0901  0.0849  0.4246  0.0778  0.1736  0.7464  0.2309
+      63 |  0.0667  0.1343       —  0.0687  0.1113  0.7239  0.6164  0.4103  0.0861  0.3714  0.1289  0.4297  0.7588  0.1442  0.0627
+      66 |  0.5501  0.3166  0.0705       —  0.1078  0.0671  0.0971  0.0680  0.1269  0.0558  0.4765  0.0487  0.0809  0.3642  0.6570
+      70 |  0.1972  0.0928  0.1136  0.1067       —  0.1384  0.1172  0.2447  0.6768  0.2152  0.2100  0.1328  0.1065  0.1174  0.1315
+      84 |  0.0657  0.1227  0.7221  0.0698  0.1398       —  0.4994  0.5659  0.1050  0.5109  0.1251  0.5684  0.5609  0.1320  0.0655
+      94 |  0.0900  0.2072  0.6191  0.0942  0.1199  0.4929       —  0.3283  0.0947  0.2781  0.1867  0.2842  0.7904  0.2144  0.0825
+      97 |  0.0782  0.1082  0.4186  0.0698  0.2434  0.5698  0.3242       —  0.1535  0.7511  0.1276  0.5900  0.3427  0.1201  0.0678
+      99 |  0.1983  0.0960  0.0941  0.1295  0.6833  0.1078  0.0987  0.1498       —  0.1328  0.1959  0.0971  0.0857  0.1202  0.1675
+     100 |  0.0580  0.0826  0.3745  0.0534  0.2170  0.5132  0.2712  0.7459  0.1253       —  0.1026  0.7191  0.2971  0.0896  0.0515
+     101 |  0.4216  0.4232  0.1268  0.4717  0.2236  0.1282  0.1791  0.1293  0.1826  0.1017       —  0.0861  0.1473  0.5751  0.4123
+     107 |  0.0533  0.0774  0.4338  0.0505  0.1357  0.5654  0.2942  0.5938  0.0995  0.7151  0.0902       —  0.3329  0.0883  0.0462
+     113 |  0.0720  0.1739  0.7588  0.0777  0.1077  0.5687  0.7860  0.3410  0.0881  0.2954  0.1506  0.3344       —  0.1790  0.0693
+     129 |  0.2706  0.7463  0.1460  0.3629  0.1166  0.1328  0.2238  0.1209  0.1204  0.0970  0.5758  0.0847  0.1739       —  0.2820
+     148 |  0.8151  0.2326  0.0630  0.6547  0.1336  0.0618  0.0861  0.0688  0.1620  0.0527  0.4135  0.0501  0.0725  0.2840       —
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  min=0.0462  max=0.8151  media=0.2472  std=0.2113
+═════════════════════════════════════════════════════════════════
+
+═════════════════════════════════════════════════════════════════
+  Heatmap diagnostica (media scenari training)
+  Entropia Shannon         = 3.4379
+  Entropia normalizzata    = 0.6843  (1.0=uniforme, 0.0=concentrata)
+  H_avg: min=0.0000  max=0.9994  media=0.0713
+  Archi con H > 0.05        = 34/210 (16.2%)
+  Archi con H > 0.10        = 33/210 (15.7%)
+  Archi con H > 0.20        = 29/210 (13.8%)
+═════════════════════════════════════════════════════════════════
+  Salvato heatmap: ./espB_UTSP_heatmap.png
+  Salvato grafo pesato: ./espB_UTSP_graph_weights.png
+
+Decisioni di prenotazione NN:
+  {11,70}  x̃=0.0024  ✗ non prenota
+  {66,101}  x̃=0.1782  ✗ non prenota
+  {70,97}  x̃=0.0006  ✗ non prenota
+  {70,99}  x̃=1.0000  ✓ PRENOTA
+  {70,100}  x̃=0.0823  ✗ non prenota
+  {70,101}  x̃=0.0000  ✗ non prenota
+  {101,129}  x̃=0.9950  ✓ PRENOTA
+  Totale prenotazioni: 2/7
+
+  Costo prenotazione UTSP : 54.4319
+  Salvato heatmap: ./espB_UTSP_adj_kernel_heatmap.png
+  Salvato grafo pesato: ./espB_UTSP_adj_kernel_graph_weights.png
+
+======================================================================
+ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH (2-stadi, per-scenario)
+
+  Primo stadio x_ls (= x_utsp) : [(70, 99), (101, 129)]
+  Costo prenotazione            : 54.4319
+
+  LS su 8 scenari di training ...
+    [train] s=1: tc=1890.7932  pc=0.0000  tot=1945.2251  t=0.48s  tour=[11, 148, 66, 31, 129, 70, 99, 100, 97, 107, 84, 63, 113, 94, 101]
+    [train] s=2: tc=1520.3253  pc=183.5025  tot=1758.2597  t=0.44s  tour=[11, 66, 148, 99, 70, 97, 100, 107, 84, 63, 94, 113, 31, 129, 101]
+    [train] s=3: tc=1598.6225  pc=307.7221  tot=1960.7765  t=0.46s  tour=[11, 148, 66, 101, 129, 31, 113, 94, 100, 107, 97, 63, 84, 99, 70]
+    [train] s=4: tc=1717.5382  pc=89.2751  tot=1861.2452  t=0.48s  tour=[11, 99, 70, 107, 84, 94, 113, 63, 100, 97, 31, 129, 101, 66, 148]
+    [train] s=5: tc=1770.9417  pc=0.0000  tot=1825.3736  t=0.43s  tour=[11, 148, 70, 99, 100, 107, 97, 113, 94, 63, 84, 101, 129, 31, 66]
+    [train] s=6: tc=1499.8742  pc=202.7612  tot=1757.0673  t=0.43s  tour=[11, 101, 129, 31, 94, 113, 63, 84, 97, 107, 100, 70, 99, 66, 148]
+    [train] s=7: tc=1901.9818  pc=0.0000  tot=1956.4137  t=0.46s  tour=[11, 66, 148, 94, 113, 63, 97, 100, 107, 84, 99, 70, 31, 129, 101]
+    [train] s=8: tc=1587.0516  pc=272.7776  tot=1914.2611  t=0.44s  tour=[11, 31, 113, 94, 63, 84, 107, 100, 97, 70, 99, 129, 101, 66, 148]
+  [train] Local search completata: 8 scenari in 3.63s  (0.45s/scenario)
+
+  LS out-of-sample (150 scenari, seme=99) ...
+  Scenario 1 | PI = N/A
+  Scenario 2 | PI = N/A
+  Scenario 3 | PI = N/A
+  Scenario 4 | PI = N/A
+  Scenario 5 | PI = N/A
+  Scenario 6 | PI = N/A
+  Scenario 7 | PI = N/A
+  Scenario 8 | PI = N/A
+  Scenario 9 | PI = N/A
+  Scenario 10 | PI = N/A
+  Scenario 11 | PI = N/A
+  Scenario 12 | PI = N/A
+  Scenario 13 | PI = N/A
+  Scenario 14 | PI = N/A
+  Scenario 15 | PI = N/A
+  Scenario 16 | PI = N/A
+  Scenario 17 | PI = N/A
+  Scenario 18 | PI = N/A
+  Scenario 19 | PI = N/A
+  Scenario 20 | PI = N/A
+  Scenario 21 | PI = N/A
+  Scenario 22 | PI = N/A
+  Scenario 23 | PI = N/A
+  Scenario 24 | PI = N/A
+  Scenario 25 | PI = N/A
+  Scenario 26 | PI = N/A
+  Scenario 27 | PI = N/A
+  Scenario 28 | PI = N/A
+  Scenario 29 | PI = N/A
+  Scenario 30 | PI = N/A
+  Scenario 31 | PI = N/A
+  Scenario 32 | PI = N/A
+  Scenario 33 | PI = N/A
+  Scenario 34 | PI = N/A
+  Scenario 35 | PI = N/A
+  Scenario 36 | PI = N/A
+  Scenario 37 | PI = N/A
+  Scenario 38 | PI = N/A
+  Scenario 39 | PI = N/A
+  Scenario 40 | PI = N/A
+  Scenario 41 | PI = N/A
+  Scenario 42 | PI = N/A
+  Scenario 43 | PI = N/A
+  Scenario 44 | PI = N/A
+  Scenario 45 | PI = N/A
+  Scenario 46 | PI = N/A
+  Scenario 47 | PI = N/A
+  Scenario 48 | PI = N/A
+  Scenario 49 | PI = N/A
+  Scenario 50 | PI = N/A
+  Scenario 51 | PI = N/A
+  Scenario 52 | PI = N/A
+  Scenario 53 | PI = N/A
+  Scenario 54 | PI = N/A
+  Scenario 55 | PI = N/A
+  Scenario 56 | PI = N/A
+  Scenario 57 | PI = N/A
+  Scenario 58 | PI = N/A
+  Scenario 59 | PI = N/A
+  Scenario 60 | PI = N/A
+  Scenario 61 | PI = N/A
+  Scenario 62 | PI = N/A
+  Scenario 63 | PI = N/A
+  Scenario 64 | PI = N/A
+  Scenario 65 | PI = N/A
+  Scenario 66 | PI = N/A
+  Scenario 67 | PI = N/A
+  Scenario 68 | PI = N/A
+  Scenario 69 | PI = N/A
+  Scenario 70 | PI = N/A
+  Scenario 71 | PI = N/A
+  Scenario 72 | PI = N/A
+  Scenario 73 | PI = N/A
+  Scenario 74 | PI = N/A
+  Scenario 75 | PI = N/A
+  Scenario 76 | PI = N/A
+  Scenario 77 | PI = N/A
+  Scenario 78 | PI = N/A
+  Scenario 79 | PI = N/A
+  Scenario 80 | PI = N/A
+  Scenario 81 | PI = N/A
+  Scenario 82 | PI = N/A
+  Scenario 83 | PI = N/A
+  Scenario 84 | PI = N/A
+  Scenario 85 | PI = N/A
+  Scenario 86 | PI = N/A
+  Scenario 87 | PI = N/A
+  Scenario 88 | PI = N/A
+  Scenario 89 | PI = N/A
+  Scenario 90 | PI = N/A
+  Scenario 91 | PI = N/A
+  Scenario 92 | PI = N/A
+  Scenario 93 | PI = N/A
+  Scenario 94 | PI = N/A
+  Scenario 95 | PI = N/A
+  Scenario 96 | PI = N/A
+  Scenario 97 | PI = N/A
+  Scenario 98 | PI = N/A
+  Scenario 99 | PI = N/A
+  Scenario 100 | PI = N/A
+  Scenario 101 | PI = N/A
+  Scenario 102 | PI = N/A
+  Scenario 103 | PI = N/A
+  Scenario 104 | PI = N/A
+  Scenario 105 | PI = N/A
+  Scenario 106 | PI = N/A
+  Scenario 107 | PI = N/A
+  Scenario 108 | PI = N/A
+  Scenario 109 | PI = N/A
+  Scenario 110 | PI = N/A
+  Scenario 111 | PI = N/A
+  Scenario 112 | PI = N/A
+  Scenario 113 | PI = N/A
+  Scenario 114 | PI = N/A
+  Scenario 115 | PI = N/A
+  Scenario 116 | PI = N/A
+  Scenario 117 | PI = N/A
+  Scenario 118 | PI = N/A
+  Scenario 119 | PI = N/A
+  Scenario 120 | PI = N/A
+  Scenario 121 | PI = N/A
+  Scenario 122 | PI = N/A
+  Scenario 123 | PI = N/A
+  Scenario 124 | PI = N/A
+  Scenario 125 | PI = N/A
+  Scenario 126 | PI = N/A
+  Scenario 127 | PI = N/A
+  Scenario 128 | PI = N/A
+  Scenario 129 | PI = N/A
+  Scenario 130 | PI = N/A
+  Scenario 131 | PI = N/A
+  Scenario 132 | PI = N/A
+  Scenario 133 | PI = N/A
+  Scenario 134 | PI = N/A
+  Scenario 135 | PI = N/A
+  Scenario 136 | PI = N/A
+  Scenario 137 | PI = N/A
+  Scenario 138 | PI = N/A
+  Scenario 139 | PI = N/A
+  Scenario 140 | PI = N/A
+  Scenario 141 | PI = N/A
+  Scenario 142 | PI = N/A
+  Scenario 143 | PI = N/A
+  Scenario 144 | PI = N/A
+  Scenario 145 | PI = N/A
+  Scenario 146 | PI = N/A
+  Scenario 147 | PI = N/A
+  Scenario 148 | PI = N/A
+  Scenario 149 | PI = N/A
+  Scenario 150 | PI = N/A
+    [val] s=1: tc=1490.0237  pc=204.9829  tot=1749.4384  t=0.47s  tour=[11, 148, 66, 100, 97, 107, 84, 63, 113, 94, 129, 31, 101, 70, 99]
+    [val] s=2: tc=1574.7326  pc=89.2751  tot=1718.4396  t=0.50s  tour=[11, 107, 100, 97, 84, 63, 113, 94, 70, 99, 129, 31, 101, 66, 148]
+    [val] s=3: tc=1847.9547  pc=0.0000  tot=1902.3866  t=0.44s  tour=[11, 99, 70, 94, 113, 63, 84, 107, 97, 100, 101, 129, 31, 148, 66]
+    [val] s=4: tc=1809.7362  pc=0.0000  tot=1864.1681  t=0.48s  tour=[11, 66, 31, 129, 101, 94, 113, 63, 107, 100, 97, 99, 70, 84, 148]
+    [val] s=5: tc=1960.5232  pc=0.0000  tot=2014.9551  t=0.46s  tour=[11, 97, 100, 107, 84, 63, 94, 113, 70, 99, 101, 129, 31, 66, 148]
+    [val] s=6: tc=1897.2114  pc=0.0000  tot=1951.6433  t=0.44s  tour=[11, 148, 66, 113, 94, 63, 97, 100, 107, 84, 70, 99, 31, 129, 101]
+    [val] s=7: tc=1562.0850  pc=183.5025  tot=1800.0193  t=0.43s  tour=[11, 101, 94, 113, 63, 84, 107, 100, 97, 70, 99, 148, 31, 129, 66]
+    [val] s=8: tc=1815.2278  pc=89.2751  tot=1958.9348  t=0.48s  tour=[11, 148, 66, 101, 129, 31, 84, 107, 97, 100, 94, 63, 113, 70, 99]
+    [val] s=9: tc=1566.6173  pc=183.5025  tot=1804.5517  t=0.44s  tour=[11, 66, 99, 70, 97, 100, 107, 94, 113, 63, 84, 129, 31, 101, 148]
+    [val] s=10: tc=1969.7971  pc=89.2751  tot=2113.5042  t=0.44s  tour=[11, 99, 70, 107, 100, 97, 84, 113, 94, 63, 31, 129, 101, 66, 148]
+    [val] s=11: tc=1677.4371  pc=89.2751  tot=1821.1442  t=0.46s  tour=[11, 101, 66, 31, 129, 100, 107, 97, 84, 94, 63, 113, 99, 70, 148]
+    [val] s=12: tc=1782.5554  pc=0.0000  tot=1836.9873  t=0.46s  tour=[11, 101, 129, 31, 148, 70, 99, 100, 84, 63, 113, 94, 97, 107, 66]
+    [val] s=13: tc=1675.2819  pc=0.0000  tot=1729.7138  t=0.47s  tour=[11, 148, 70, 99, 84, 97, 100, 107, 63, 94, 113, 101, 31, 129, 66]
+    [val] s=14: tc=1893.3290  pc=0.0000  tot=1947.7609  t=0.49s  tour=[11, 66, 94, 84, 97, 100, 107, 63, 113, 99, 70, 148, 129, 31, 101]
+    [val] s=15: tc=1771.8751  pc=89.2751  tot=1915.5821  t=0.44s  tour=[11, 148, 66, 101, 129, 31, 94, 97, 100, 107, 63, 84, 113, 70, 99]
+    [val] s=16: tc=1786.2975  pc=0.0000  tot=1840.7294  t=0.46s  tour=[11, 66, 129, 31, 101, 97, 100, 107, 84, 63, 113, 94, 70, 99, 148]
+    [val] s=17: tc=1529.0157  pc=183.5025  tot=1766.9501  t=0.45s  tour=[11, 148, 66, 99, 70, 97, 107, 100, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=18: tc=1724.4831  pc=202.7612  tot=1981.6762  t=0.48s  tour=[11, 66, 129, 101, 31, 99, 70, 100, 63, 94, 113, 107, 97, 84, 148]
+    [val] s=19: tc=1749.1392  pc=0.0000  tot=1803.5710  t=0.44s  tour=[11, 66, 99, 70, 107, 100, 97, 84, 63, 113, 94, 31, 129, 101, 148]
+    [val] s=20: tc=1299.1969  pc=183.5025  tot=1537.1313  t=0.42s  tour=[11, 148, 31, 101, 129, 99, 70, 97, 100, 107, 84, 63, 113, 94, 66]
+    [val] s=21: tc=1906.8398  pc=0.0000  tot=1961.2716  t=0.47s  tour=[11, 148, 66, 31, 101, 99, 70, 113, 84, 63, 107, 100, 97, 94, 129]
+    [val] s=22: tc=1589.0244  pc=202.7612  tot=1846.2175  t=0.48s  tour=[11, 66, 148, 99, 70, 100, 97, 107, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=23: tc=1606.3167  pc=0.0000  tot=1660.7486  t=0.46s  tour=[11, 148, 66, 94, 113, 63, 84, 97, 100, 107, 70, 99, 31, 129, 101]
+    [val] s=24: tc=1647.8703  pc=202.7612  tot=1905.0634  t=0.45s  tour=[11, 99, 70, 100, 97, 107, 84, 63, 113, 94, 101, 129, 31, 66, 148]
+    [val] s=25: tc=1896.7611  pc=0.0000  tot=1951.1930  t=0.45s  tour=[11, 66, 148, 129, 101, 99, 70, 107, 100, 97, 84, 94, 113, 63, 31]
+    [val] s=26: tc=1558.6828  pc=202.7612  tot=1815.8759  t=0.44s  tour=[11, 148, 99, 70, 100, 97, 107, 84, 63, 113, 94, 101, 129, 31, 66]
+    [val] s=27: tc=1947.2885  pc=0.0000  tot=2001.7204  t=0.43s  tour=[11, 99, 70, 94, 113, 63, 84, 107, 100, 97, 101, 129, 31, 66, 148]
+    [val] s=28: tc=1822.6545  pc=0.0000  tot=1877.0863  t=0.44s  tour=[11, 101, 129, 31, 84, 97, 100, 107, 113, 94, 63, 70, 99, 66, 148]
+    [val] s=29: tc=1860.4544  pc=89.2751  tot=2004.1615  t=0.47s  tour=[11, 148, 66, 101, 129, 31, 107, 97, 100, 84, 63, 94, 113, 70, 99]
+    [val] s=30: tc=1941.7584  pc=0.0000  tot=1996.1903  t=0.45s  tour=[11, 148, 66, 70, 99, 107, 100, 63, 84, 97, 94, 113, 31, 101, 129]
+    [val] s=31: tc=1689.8772  pc=0.0000  tot=1744.3091  t=0.46s  tour=[11, 148, 113, 94, 63, 84, 107, 100, 97, 99, 70, 66, 31, 129, 101]
+    [val] s=32: tc=1571.6270  pc=292.0364  tot=1918.0952  t=0.52s  tour=[11, 148, 66, 101, 129, 31, 94, 113, 63, 84, 107, 97, 100, 70, 99]
+    [val] s=33: tc=1778.5061  pc=89.2751  tot=1922.2131  t=0.52s  tour=[11, 148, 129, 31, 94, 63, 84, 97, 100, 107, 113, 70, 99, 101, 66]
+    [val] s=34: tc=1328.9132  pc=218.4469  tot=1601.7921  t=0.46s  tour=[11, 70, 99, 129, 101, 31, 94, 113, 63, 84, 107, 100, 97, 66, 148]
+    [val] s=35: tc=1668.0862  pc=0.0000  tot=1722.5181  t=0.49s  tour=[11, 101, 99, 70, 31, 129, 97, 100, 107, 84, 94, 113, 63, 148, 66]
+    [val] s=36: tc=1959.7447  pc=0.0000  tot=2014.1766  t=0.44s  tour=[11, 66, 129, 31, 99, 70, 84, 97, 100, 107, 113, 63, 94, 101, 148]
+    [val] s=37: tc=1972.0663  pc=0.0000  tot=2026.4982  t=0.44s  tour=[11, 148, 101, 129, 31, 113, 94, 63, 84, 97, 107, 100, 99, 70, 66]
+    [val] s=38: tc=1714.2798  pc=89.2751  tot=1857.9868  t=0.45s  tour=[11, 99, 70, 107, 100, 97, 84, 63, 113, 94, 31, 129, 101, 66, 148]
+    [val] s=39: tc=1691.5917  pc=183.5025  tot=1929.5261  t=0.45s  tour=[11, 99, 70, 97, 107, 100, 84, 63, 113, 94, 101, 129, 31, 148, 66]
+    [val] s=40: tc=1896.9772  pc=0.0000  tot=1951.4091  t=0.45s  tour=[11, 148, 66, 129, 31, 94, 113, 63, 84, 100, 97, 107, 70, 99, 101]
+    [val] s=41: tc=1648.0452  pc=0.0000  tot=1702.4771  t=0.49s  tour=[11, 66, 31, 129, 70, 99, 84, 107, 97, 100, 63, 113, 94, 101, 148]
+    [val] s=42: tc=1841.1813  pc=0.0000  tot=1895.6132  t=0.44s  tour=[11, 101, 99, 70, 84, 97, 100, 107, 63, 113, 94, 129, 31, 66, 148]
+    [val] s=43: tc=1658.2620  pc=0.0000  tot=1712.6939  t=0.46s  tour=[11, 148, 107, 100, 97, 84, 63, 113, 94, 70, 99, 101, 129, 31, 66]
+    [val] s=44: tc=1679.8630  pc=183.5025  tot=1917.7974  t=0.52s  tour=[11, 148, 66, 129, 101, 31, 94, 113, 63, 84, 107, 100, 97, 70, 99]
+    [val] s=45: tc=1718.8141  pc=183.5025  tot=1956.7485  t=0.46s  tour=[11, 99, 70, 97, 100, 107, 84, 63, 94, 113, 101, 129, 31, 66, 148]
+    [val] s=46: tc=1722.6895  pc=0.0000  tot=1777.1214  t=0.47s  tour=[11, 66, 70, 99, 129, 31, 101, 113, 94, 63, 84, 97, 100, 107, 148]
+    [val] s=47: tc=1644.7254  pc=202.7612  tot=1901.9185  t=0.48s  tour=[11, 148, 66, 129, 31, 94, 113, 84, 63, 97, 107, 100, 70, 99, 101]
+    [val] s=48: tc=1564.4074  pc=0.0000  tot=1618.8393  t=0.48s  tour=[11, 66, 148, 99, 70, 107, 97, 100, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=49: tc=1600.7071  pc=204.9829  tot=1860.1218  t=0.45s  tour=[11, 148, 66, 31, 129, 63, 113, 94, 107, 100, 97, 84, 99, 70, 101]
+    [val] s=50: tc=1742.3291  pc=89.2751  tot=1886.0361  t=0.45s  tour=[11, 148, 70, 99, 97, 100, 107, 84, 63, 113, 94, 31, 129, 101, 66]
+    [val] s=51: tc=1947.1261  pc=0.0000  tot=2001.5580  t=0.46s  tour=[11, 148, 101, 129, 31, 94, 113, 63, 84, 97, 100, 107, 70, 99, 66]
+    [val] s=52: tc=1709.9531  pc=204.9829  tot=1969.3678  t=0.46s  tour=[11, 101, 70, 99, 100, 107, 113, 94, 63, 84, 97, 31, 129, 66, 148]
+    [val] s=53: tc=1590.8845  pc=0.0000  tot=1645.3164  t=0.47s  tour=[11, 94, 63, 113, 100, 107, 97, 84, 70, 99, 66, 31, 129, 101, 148]
+    [val] s=54: tc=1728.1828  pc=0.0000  tot=1782.6147  t=0.44s  tour=[11, 101, 31, 129, 99, 70, 94, 113, 63, 84, 97, 100, 107, 66, 148]
+    [val] s=55: tc=1663.6606  pc=202.7612  tot=1920.8537  t=0.44s  tour=[11, 148, 99, 70, 100, 97, 107, 84, 63, 94, 113, 101, 129, 31, 66]
+    [val] s=56: tc=1933.0480  pc=0.0000  tot=1987.4798  t=0.45s  tour=[11, 66, 70, 99, 100, 107, 97, 84, 63, 94, 113, 31, 129, 101, 148]
+    [val] s=57: tc=1329.5154  pc=89.2751  tot=1473.2224  t=0.44s  tour=[11, 31, 129, 63, 99, 70, 107, 100, 97, 84, 94, 113, 101, 66, 148]
+    [val] s=58: tc=1850.2805  pc=89.2751  tot=1993.9875  t=0.45s  tour=[11, 66, 101, 99, 70, 84, 94, 113, 63, 100, 97, 107, 129, 31, 148]
+    [val] s=59: tc=1617.5860  pc=183.5025  tot=1855.5204  t=0.48s  tour=[11, 148, 66, 31, 129, 101, 113, 94, 63, 84, 107, 100, 97, 70, 99]
+    [val] s=60: tc=1829.7218  pc=0.0000  tot=1884.1536  t=0.43s  tour=[11, 94, 113, 84, 107, 100, 97, 99, 70, 63, 101, 31, 129, 66, 148]
+    [val] s=61: tc=1626.9036  pc=0.0000  tot=1681.3355  t=0.42s  tour=[11, 99, 70, 63, 97, 100, 107, 94, 113, 84, 101, 129, 31, 66, 148]
+    [val] s=62: tc=1658.1645  pc=0.0000  tot=1712.5964  t=0.43s  tour=[11, 107, 100, 97, 99, 70, 84, 63, 113, 94, 101, 129, 31, 66, 148]
+    [val] s=63: tc=1871.0543  pc=0.0000  tot=1925.4862  t=0.47s  tour=[11, 148, 66, 107, 100, 97, 84, 99, 70, 63, 113, 94, 31, 129, 101]
+    [val] s=64: tc=1800.0121  pc=0.0000  tot=1854.4440  t=0.43s  tour=[11, 99, 70, 94, 113, 63, 84, 107, 97, 100, 101, 31, 129, 66, 148]
+    [val] s=65: tc=1596.5548  pc=183.5025  tot=1834.4892  t=0.43s  tour=[11, 148, 66, 99, 70, 97, 100, 107, 63, 113, 94, 84, 129, 31, 101]
+    [val] s=66: tc=1516.4419  pc=183.5025  tot=1754.3763  t=0.43s  tour=[11, 99, 70, 97, 100, 107, 84, 63, 113, 94, 101, 129, 31, 66, 148]
+    [val] s=67: tc=1610.1060  pc=204.9829  tot=1869.5207  t=0.46s  tour=[11, 148, 97, 100, 107, 94, 113, 63, 84, 99, 70, 101, 129, 31, 66]
+    [val] s=68: tc=1603.9048  pc=183.5025  tot=1841.8391  t=0.43s  tour=[11, 148, 99, 70, 97, 100, 107, 84, 63, 94, 113, 101, 129, 31, 66]
+    [val] s=69: tc=1671.0205  pc=0.0000  tot=1725.4524  t=0.50s  tour=[11, 148, 66, 113, 94, 63, 107, 100, 97, 84, 70, 99, 129, 31, 101]
+    [val] s=70: tc=1437.7535  pc=202.7612  tot=1694.9466  t=0.44s  tour=[11, 148, 66, 99, 70, 100, 97, 107, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=71: tc=1566.4882  pc=0.0000  tot=1620.9200  t=0.44s  tour=[11, 63, 113, 94, 97, 100, 107, 84, 70, 99, 101, 129, 31, 66, 148]
+    [val] s=72: tc=1895.7967  pc=0.0000  tot=1950.2286  t=0.42s  tour=[11, 66, 129, 31, 94, 113, 63, 84, 107, 100, 97, 99, 70, 148, 101]
+    [val] s=73: tc=1746.8432  pc=0.0000  tot=1801.2751  t=0.46s  tour=[11, 148, 66, 70, 99, 100, 107, 97, 63, 113, 94, 84, 101, 129, 31]
+    [val] s=74: tc=1906.1645  pc=0.0000  tot=1960.5964  t=0.42s  tour=[11, 66, 31, 129, 101, 94, 113, 63, 84, 107, 100, 97, 99, 70, 148]
+    [val] s=75: tc=1832.6137  pc=0.0000  tot=1887.0456  t=0.47s  tour=[11, 66, 148, 99, 70, 107, 97, 100, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=76: tc=1837.1898  pc=0.0000  tot=1891.6216  t=0.45s  tour=[11, 66, 99, 70, 84, 107, 97, 100, 113, 94, 63, 101, 129, 31, 148]
+    [val] s=77: tc=1858.7810  pc=0.0000  tot=1913.2129  t=0.45s  tour=[11, 148, 70, 99, 101, 129, 31, 63, 94, 113, 84, 100, 97, 107, 66]
+    [val] s=78: tc=1634.8013  pc=183.5025  tot=1872.7356  t=0.43s  tour=[11, 101, 99, 70, 97, 100, 107, 84, 63, 113, 94, 31, 129, 66, 148]
+    [val] s=79: tc=1792.0072  pc=204.9829  tot=2051.4220  t=0.43s  tour=[11, 101, 70, 99, 97, 100, 107, 94, 113, 63, 84, 31, 129, 66, 148]
+    [val] s=80: tc=1388.8489  pc=307.7221  tot=1751.0029  t=0.43s  tour=[11, 148, 66, 101, 129, 31, 94, 113, 63, 84, 100, 107, 97, 99, 70]
+    [val] s=81: tc=1612.3454  pc=89.2751  tot=1756.0525  t=0.47s  tour=[11, 148, 66, 101, 129, 31, 70, 99, 97, 100, 107, 84, 113, 94, 63]
+    [val] s=82: tc=1816.5109  pc=0.0000  tot=1870.9428  t=0.44s  tour=[11, 101, 99, 70, 63, 84, 107, 100, 97, 113, 94, 66, 31, 129, 148]
+    [val] s=83: tc=1830.0891  pc=0.0000  tot=1884.5210  t=0.48s  tour=[11, 148, 101, 97, 100, 107, 94, 113, 63, 84, 70, 99, 129, 31, 66]
+    [val] s=84: tc=1286.7694  pc=204.9829  tot=1546.1841  t=0.48s  tour=[11, 101, 70, 99, 97, 100, 107, 84, 63, 113, 94, 129, 31, 66, 148]
+    [val] s=85: tc=1537.1621  pc=202.7612  tot=1794.3552  t=0.47s  tour=[11, 66, 31, 94, 113, 63, 84, 107, 97, 100, 70, 99, 101, 129, 148]
+    [val] s=86: tc=1725.3942  pc=0.0000  tot=1779.8260  t=0.40s  tour=[11, 66, 99, 70, 84, 94, 113, 63, 97, 107, 100, 101, 129, 31, 148]
+    [val] s=87: tc=1855.6818  pc=0.0000  tot=1910.1137  t=0.45s  tour=[11, 99, 70, 94, 113, 63, 97, 100, 107, 84, 31, 129, 101, 148, 66]
+    [val] s=88: tc=1672.0666  pc=204.9829  tot=1931.4813  t=0.44s  tour=[11, 84, 107, 100, 97, 63, 113, 94, 99, 70, 101, 31, 129, 66, 148]
+    [val] s=89: tc=1442.8547  pc=0.0000  tot=1497.2865  t=0.43s  tour=[11, 97, 100, 107, 113, 63, 94, 84, 70, 99, 101, 129, 31, 66, 148]
+    [val] s=90: tc=1998.7194  pc=0.0000  tot=2053.1513  t=0.44s  tour=[11, 99, 70, 107, 100, 97, 84, 94, 113, 63, 31, 129, 101, 148, 66]
+    [val] s=91: tc=1925.1790  pc=0.0000  tot=1979.6108  t=0.44s  tour=[11, 101, 31, 129, 66, 148, 63, 107, 100, 97, 84, 94, 113, 70, 99]
+    [val] s=92: tc=1894.9470  pc=0.0000  tot=1949.3788  t=0.44s  tour=[11, 148, 99, 70, 107, 100, 97, 84, 63, 94, 113, 101, 129, 31, 66]
+    [val] s=93: tc=1682.1678  pc=202.7612  tot=1939.3609  t=0.46s  tour=[11, 66, 129, 101, 31, 107, 94, 113, 63, 84, 97, 100, 70, 99, 148]
+    [val] s=94: tc=1872.8329  pc=0.0000  tot=1927.2648  t=0.46s  tour=[11, 148, 31, 129, 101, 94, 113, 63, 84, 97, 107, 100, 99, 70, 66]
+    [val] s=95: tc=1793.6080  pc=0.0000  tot=1848.0398  t=0.44s  tour=[11, 66, 31, 101, 129, 84, 107, 100, 97, 113, 63, 94, 70, 99, 148]
+    [val] s=96: tc=1728.8816  pc=183.5025  tot=1966.8160  t=0.44s  tour=[11, 148, 66, 31, 129, 101, 100, 107, 84, 63, 94, 113, 97, 70, 99]
+    [val] s=97: tc=1741.8605  pc=183.5025  tot=1979.7949  t=0.41s  tour=[11, 148, 66, 99, 70, 97, 100, 107, 84, 63, 113, 94, 129, 31, 101]
+    [val] s=98: tc=1984.8690  pc=0.0000  tot=2039.3009  t=0.43s  tour=[11, 66, 31, 129, 101, 97, 100, 107, 94, 113, 63, 84, 99, 70, 148]
+    [val] s=99: tc=1653.4113  pc=0.0000  tot=1707.8432  t=0.46s  tour=[11, 101, 31, 129, 63, 94, 113, 84, 107, 100, 97, 66, 148, 70, 99]
+    [val] s=100: tc=1818.3442  pc=0.0000  tot=1872.7760  t=0.45s  tour=[11, 66, 100, 107, 84, 70, 99, 97, 63, 113, 94, 129, 31, 101, 148]
+    [val] s=101: tc=1700.4245  pc=0.0000  tot=1754.8564  t=0.44s  tour=[11, 66, 31, 129, 101, 94, 113, 84, 63, 100, 97, 107, 99, 70, 148]
+    [val] s=102: tc=1619.0320  pc=0.0000  tot=1673.4639  t=0.46s  tour=[11, 148, 66, 70, 99, 94, 113, 63, 84, 97, 100, 107, 101, 129, 31]
+    [val] s=103: tc=1748.3393  pc=0.0000  tot=1802.7712  t=0.44s  tour=[11, 148, 99, 70, 107, 100, 97, 84, 63, 113, 94, 31, 101, 129, 66]
+    [val] s=104: tc=1609.6724  pc=0.0000  tot=1664.1043  t=0.43s  tour=[11, 101, 31, 129, 94, 113, 63, 107, 100, 97, 84, 70, 99, 148, 66]
+    [val] s=105: tc=1723.9506  pc=0.0000  tot=1778.3825  t=0.45s  tour=[11, 148, 66, 31, 107, 84, 63, 113, 94, 100, 97, 99, 70, 129, 101]
+    [val] s=106: tc=1844.8473  pc=0.0000  tot=1899.2791  t=0.43s  tour=[11, 66, 100, 107, 94, 97, 84, 113, 63, 70, 99, 101, 129, 31, 148]
+    [val] s=107: tc=1666.9530  pc=204.9829  tot=1926.3677  t=0.47s  tour=[11, 66, 148, 31, 129, 94, 113, 63, 84, 107, 100, 97, 99, 70, 101]
+    [val] s=108: tc=1919.2280  pc=0.0000  tot=1973.6599  t=0.45s  tour=[11, 97, 100, 107, 84, 63, 113, 94, 70, 99, 129, 101, 31, 66, 148]
+    [val] s=109: tc=1608.4769  pc=0.0000  tot=1662.9088  t=0.42s  tour=[11, 148, 66, 99, 70, 63, 113, 94, 84, 100, 107, 97, 31, 129, 101]
+    [val] s=110: tc=1810.2070  pc=0.0000  tot=1864.6389  t=0.46s  tour=[11, 129, 31, 101, 94, 113, 63, 84, 97, 100, 107, 70, 99, 66, 148]
+    [val] s=111: tc=2006.2960  pc=0.0000  tot=2060.7279  t=0.46s  tour=[11, 101, 148, 66, 129, 31, 94, 113, 63, 84, 97, 100, 107, 70, 99]
+    [val] s=112: tc=1661.3553  pc=0.0000  tot=1715.7872  t=0.50s  tour=[11, 66, 148, 129, 31, 113, 63, 84, 100, 107, 97, 94, 70, 99, 101]
+    [val] s=113: tc=1820.6650  pc=0.0000  tot=1875.0969  t=0.47s  tour=[11, 66, 148, 107, 97, 100, 84, 63, 113, 94, 70, 99, 129, 31, 101]
+    [val] s=114: tc=1848.6458  pc=0.0000  tot=1903.0777  t=0.46s  tour=[11, 66, 31, 129, 94, 113, 63, 97, 100, 107, 84, 70, 99, 101, 148]
+    [val] s=115: tc=1700.4455  pc=89.2751  tot=1844.1525  t=0.48s  tour=[11, 148, 66, 101, 31, 129, 63, 107, 97, 100, 84, 113, 94, 70, 99]
+    [val] s=116: tc=1760.8851  pc=0.0000  tot=1815.3170  t=0.48s  tour=[11, 66, 70, 99, 100, 107, 97, 84, 113, 94, 63, 101, 129, 31, 148]
+    [val] s=117: tc=1840.9972  pc=0.0000  tot=1895.4291  t=0.46s  tour=[11, 148, 70, 99, 100, 107, 97, 84, 63, 113, 94, 101, 129, 31, 66]
+    [val] s=118: tc=1725.1377  pc=0.0000  tot=1779.5696  t=0.42s  tour=[11, 66, 129, 101, 99, 70, 94, 113, 63, 84, 107, 97, 100, 31, 148]
+    [val] s=119: tc=1640.6368  pc=0.0000  tot=1695.0687  t=0.45s  tour=[11, 101, 129, 31, 99, 70, 63, 113, 94, 84, 107, 100, 97, 66, 148]
+    [val] s=120: tc=1830.0533  pc=0.0000  tot=1884.4852  t=0.43s  tour=[11, 66, 70, 107, 97, 100, 84, 63, 113, 94, 31, 129, 101, 99, 148]
+    [val] s=121: tc=1889.3719  pc=0.0000  tot=1943.8037  t=0.44s  tour=[11, 66, 99, 70, 107, 97, 100, 84, 63, 113, 94, 101, 129, 31, 148]
+    [val] s=122: tc=1669.1353  pc=0.0000  tot=1723.5671  t=0.44s  tour=[11, 148, 66, 70, 99, 84, 100, 97, 107, 94, 63, 113, 31, 129, 101]
+    [val] s=123: tc=1912.1856  pc=0.0000  tot=1966.6174  t=0.48s  tour=[11, 66, 129, 31, 101, 94, 113, 63, 84, 107, 100, 97, 99, 70, 148]
+    [val] s=124: tc=1546.8826  pc=0.0000  tot=1601.3144  t=0.48s  tour=[11, 148, 113, 94, 63, 84, 97, 100, 107, 70, 99, 101, 31, 129, 66]
+    [val] s=125: tc=1628.4805  pc=0.0000  tot=1682.9123  t=0.43s  tour=[11, 84, 100, 97, 107, 63, 113, 94, 70, 99, 101, 31, 129, 66, 148]
+    [val] s=126: tc=1587.0561  pc=272.7776  tot=1914.2656  t=0.46s  tour=[11, 66, 101, 129, 31, 99, 70, 97, 100, 107, 84, 63, 113, 94, 148]
+    [val] s=127: tc=1607.6495  pc=204.9829  tot=1867.0643  t=0.46s  tour=[11, 129, 31, 101, 70, 99, 107, 100, 97, 84, 63, 94, 113, 66, 148]
+    [val] s=128: tc=1771.0720  pc=89.2751  tot=1914.7791  t=0.46s  tour=[11, 101, 66, 148, 31, 129, 99, 70, 113, 94, 63, 84, 100, 97, 107]
+    [val] s=129: tc=1454.7894  pc=0.0000  tot=1509.2213  t=0.44s  tour=[11, 66, 100, 107, 84, 97, 94, 113, 63, 70, 99, 31, 101, 129, 148]
+    [val] s=130: tc=1660.0938  pc=202.7612  tot=1917.2870  t=0.47s  tour=[11, 101, 31, 129, 94, 113, 63, 84, 107, 97, 100, 70, 99, 148, 66]
+    [val] s=131: tc=1779.2023  pc=0.0000  tot=1833.6341  t=0.45s  tour=[11, 148, 101, 129, 31, 94, 63, 113, 100, 97, 107, 84, 70, 99, 66]
+    [val] s=132: tc=1738.6582  pc=0.0000  tot=1793.0900  t=0.43s  tour=[11, 148, 66, 70, 99, 107, 100, 97, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=133: tc=1869.2144  pc=0.0000  tot=1923.6462  t=0.46s  tour=[11, 66, 148, 99, 70, 107, 100, 97, 84, 63, 113, 94, 129, 101, 31]
+    [val] s=134: tc=1902.7222  pc=0.0000  tot=1957.1541  t=0.44s  tour=[11, 99, 70, 107, 100, 97, 84, 94, 113, 63, 101, 129, 31, 66, 148]
+    [val] s=135: tc=1647.8453  pc=183.5025  tot=1885.7796  t=0.45s  tour=[11, 66, 99, 70, 97, 100, 94, 113, 63, 84, 107, 101, 129, 31, 148]
+    [val] s=136: tc=1969.7018  pc=0.0000  tot=2024.1337  t=0.42s  tour=[11, 148, 66, 107, 100, 97, 84, 63, 113, 94, 101, 129, 31, 70, 99]
+    [val] s=137: tc=1624.7596  pc=0.0000  tot=1679.1915  t=0.46s  tour=[11, 101, 99, 70, 107, 84, 63, 94, 113, 97, 100, 31, 129, 66, 148]
+    [val] s=138: tc=1741.0094  pc=0.0000  tot=1795.4412  t=0.48s  tour=[11, 63, 113, 94, 84, 97, 100, 107, 70, 99, 31, 129, 101, 148, 66]
+    [val] s=139: tc=1730.3519  pc=183.5025  tot=1968.2862  t=0.49s  tour=[11, 66, 31, 129, 101, 99, 70, 97, 107, 100, 84, 63, 94, 113, 148]
+    [val] s=140: tc=1732.3338  pc=0.0000  tot=1786.7657  t=0.48s  tour=[11, 99, 70, 31, 129, 101, 94, 113, 63, 84, 107, 100, 97, 66, 148]
+    [val] s=141: tc=1707.2557  pc=89.2751  tot=1850.9628  t=0.48s  tour=[11, 148, 66, 101, 31, 129, 97, 100, 107, 113, 63, 84, 94, 70, 99]
+    [val] s=142: tc=1654.4613  pc=89.2751  tot=1798.1683  t=0.46s  tour=[11, 99, 70, 94, 113, 63, 84, 107, 97, 100, 31, 129, 101, 66, 148]
+    [val] s=143: tc=1792.4546  pc=202.7612  tot=2049.6477  t=0.42s  tour=[11, 148, 66, 129, 31, 101, 97, 63, 94, 113, 84, 107, 100, 70, 99]
+    [val] s=144: tc=1777.3675  pc=0.0000  tot=1831.7994  t=0.45s  tour=[11, 99, 70, 107, 113, 94, 63, 97, 100, 84, 101, 31, 129, 66, 148]
+    [val] s=145: tc=1809.2361  pc=0.0000  tot=1863.6680  t=0.44s  tour=[11, 66, 129, 31, 99, 70, 107, 100, 97, 63, 94, 113, 84, 101, 148]
+    [val] s=146: tc=1833.7474  pc=0.0000  tot=1888.1793  t=0.45s  tour=[11, 101, 99, 70, 63, 84, 107, 100, 97, 94, 113, 129, 31, 66, 148]
+    [val] s=147: tc=1672.7162  pc=0.0000  tot=1727.1481  t=0.45s  tour=[11, 148, 66, 94, 99, 70, 84, 63, 113, 100, 107, 97, 31, 129, 101]
+    [val] s=148: tc=1488.6585  pc=89.2751  tot=1632.3655  t=0.47s  tour=[11, 148, 66, 101, 100, 107, 97, 84, 113, 63, 94, 70, 99, 31, 129]
+    [val] s=149: tc=1711.6591  pc=89.2751  tot=1855.3662  t=0.46s  tour=[11, 148, 63, 84, 113, 94, 100, 97, 107, 99, 70, 129, 31, 101, 66]
+    [val] s=150: tc=1897.7353  pc=0.0000  tot=1952.1672  t=0.45s  tour=[11, 101, 99, 70, 107, 100, 97, 84, 63, 113, 94, 129, 31, 66, 148]
+  [val] Local search completata: 150 scenari in 68.07s  (0.45s/scenario)
+
+============================================================
+VALIDAZIONE OUT-OF-SAMPLE
+  Scenari: 150 | seme: VALIDATION_SEED=99
+  Politica STO: [(70, 99)] (1 archi prenotati)
+  Politica EEV: [(70, 97), (70, 99)] (2 archi prenotati)
+  Scenario 1 | PI = N/A
+  Scenario 2 | PI = N/A
+  Scenario 3 | PI = N/A
+  Scenario 4 | PI = N/A
+  Scenario 5 | PI = N/A
+  Scenario 6 | PI = N/A
+  Scenario 7 | PI = N/A
+  Scenario 8 | PI = N/A
+  Scenario 9 | PI = N/A
+  Scenario 10 | PI = N/A
+  Scenario 11 | PI = N/A
+  Scenario 12 | PI = N/A
+  Scenario 13 | PI = N/A
+  Scenario 14 | PI = N/A
+  Scenario 15 | PI = N/A
+  Scenario 16 | PI = N/A
+  Scenario 17 | PI = N/A
+  Scenario 18 | PI = N/A
+  Scenario 19 | PI = N/A
+  Scenario 20 | PI = N/A
+  Scenario 21 | PI = N/A
+  Scenario 22 | PI = N/A
+  Scenario 23 | PI = N/A
+  Scenario 24 | PI = N/A
+  Scenario 25 | PI = N/A
+  Scenario 26 | PI = N/A
+  Scenario 27 | PI = N/A
+  Scenario 28 | PI = N/A
+  Scenario 29 | PI = N/A
+  Scenario 30 | PI = N/A
+  Scenario 31 | PI = N/A
+  Scenario 32 | PI = N/A
+  Scenario 33 | PI = N/A
+  Scenario 34 | PI = N/A
+  Scenario 35 | PI = N/A
+  Scenario 36 | PI = N/A
+  Scenario 37 | PI = N/A
+  Scenario 38 | PI = N/A
+  Scenario 39 | PI = N/A
+  Scenario 40 | PI = N/A
+  Scenario 41 | PI = N/A
+  Scenario 42 | PI = N/A
+  Scenario 43 | PI = N/A
+  Scenario 44 | PI = N/A
+  Scenario 45 | PI = N/A
+  Scenario 46 | PI = N/A
+  Scenario 47 | PI = N/A
+  Scenario 48 | PI = N/A
+  Scenario 49 | PI = N/A
+  Scenario 50 | PI = N/A
+  Scenario 51 | PI = N/A
+  Scenario 52 | PI = N/A
+  Scenario 53 | PI = N/A
+  Scenario 54 | PI = N/A
+  Scenario 55 | PI = N/A
+  Scenario 56 | PI = N/A
+  Scenario 57 | PI = N/A
+  Scenario 58 | PI = N/A
+  Scenario 59 | PI = N/A
+  Scenario 60 | PI = N/A
+  Scenario 61 | PI = N/A
+  Scenario 62 | PI = N/A
+  Scenario 63 | PI = N/A
+  Scenario 64 | PI = N/A
+  Scenario 65 | PI = N/A
+  Scenario 66 | PI = N/A
+  Scenario 67 | PI = N/A
+  Scenario 68 | PI = N/A
+  Scenario 69 | PI = N/A
+  Scenario 70 | PI = N/A
+  Scenario 71 | PI = N/A
+  Scenario 72 | PI = N/A
+  Scenario 73 | PI = N/A
+  Scenario 74 | PI = N/A
+  Scenario 75 | PI = N/A
+  Scenario 76 | PI = N/A
+  Scenario 77 | PI = N/A
+  Scenario 78 | PI = N/A
+  Scenario 79 | PI = N/A
+  Scenario 80 | PI = N/A
+  Scenario 81 | PI = N/A
+  Scenario 82 | PI = N/A
+  Scenario 83 | PI = N/A
+  Scenario 84 | PI = N/A
+  Scenario 85 | PI = N/A
+  Scenario 86 | PI = N/A
+  Scenario 87 | PI = N/A
+  Scenario 88 | PI = N/A
+  Scenario 89 | PI = N/A
+  Scenario 90 | PI = N/A
+  Scenario 91 | PI = N/A
+  Scenario 92 | PI = N/A
+  Scenario 93 | PI = N/A
+  Scenario 94 | PI = N/A
+  Scenario 95 | PI = N/A
+  Scenario 96 | PI = N/A
+  Scenario 97 | PI = N/A
+  Scenario 98 | PI = N/A
+  Scenario 99 | PI = N/A
+  Scenario 100 | PI = N/A
+  Scenario 101 | PI = N/A
+  Scenario 102 | PI = N/A
+  Scenario 103 | PI = N/A
+  Scenario 104 | PI = N/A
+  Scenario 105 | PI = N/A
+  Scenario 106 | PI = N/A
+  Scenario 107 | PI = N/A
+  Scenario 108 | PI = N/A
+  Scenario 109 | PI = N/A
+  Scenario 110 | PI = N/A
+  Scenario 111 | PI = N/A
+  Scenario 112 | PI = N/A
+  Scenario 113 | PI = N/A
+  Scenario 114 | PI = N/A
+  Scenario 115 | PI = N/A
+  Scenario 116 | PI = N/A
+  Scenario 117 | PI = N/A
+  Scenario 118 | PI = N/A
+  Scenario 119 | PI = N/A
+  Scenario 120 | PI = N/A
+  Scenario 121 | PI = N/A
+  Scenario 122 | PI = N/A
+  Scenario 123 | PI = N/A
+  Scenario 124 | PI = N/A
+  Scenario 125 | PI = N/A
+  Scenario 126 | PI = N/A
+  Scenario 127 | PI = N/A
+  Scenario 128 | PI = N/A
+  Scenario 129 | PI = N/A
+  Scenario 130 | PI = N/A
+  Scenario 131 | PI = N/A
+  Scenario 132 | PI = N/A
+  Scenario 133 | PI = N/A
+  Scenario 134 | PI = N/A
+  Scenario 135 | PI = N/A
+  Scenario 136 | PI = N/A
+  Scenario 137 | PI = N/A
+  Scenario 138 | PI = N/A
+  Scenario 139 | PI = N/A
+  Scenario 140 | PI = N/A
+  Scenario 141 | PI = N/A
+  Scenario 142 | PI = N/A
+  Scenario 143 | PI = N/A
+  Scenario 144 | PI = N/A
+  Scenario 145 | PI = N/A
+  Scenario 146 | PI = N/A
+  Scenario 147 | PI = N/A
+  Scenario 148 | PI = N/A
+  Scenario 149 | PI = N/A
+  Scenario 150 | PI = N/A
+
+  DETTAGLIO PER SCENARIO DI VALIDAZIONE
+  Scen |         PI |    STO_val [perc, multa] |    EEV_val [perc, multa]
+     1 |        N/A |  1717.1260 [1490.0237, 204.9829] |  1808.8773 [1490.0237, 204.9829]
+     2 |        N/A |  1686.1272 [1574.7326, 89.2751] |  1777.8785 [1574.7326, 89.2751]
+     3 |        N/A |  1887.1836 [1865.0641, 0.0000] |  1903.5487 [1725.0532, 64.6248]
+     4 |        N/A |  1896.4805 [1809.7362, 64.6248] |  1825.4399 [1646.9443, 64.6248]
+     5 |        N/A |  2004.6575 [1734.4107, 248.1273] |  1912.9063 [1734.4107, 64.6248]
+     6 |        N/A |  1953.8426 [1867.0984, 64.6248] |  1919.0601 [1715.9143, 89.2751]
+     7 |        N/A |  1767.7069 [1562.0850, 183.5025] |  1675.9557 [1562.0850, 0.0000]
+     8 |        N/A |  1937.6552 [1915.5357, 0.0000] |  2029.4064 [1915.5357, 0.0000]
+     9 |        N/A |  1772.2393 [1566.6173, 183.5025] |  1680.4880 [1566.6173, 0.0000]
+    10 |        N/A |  2064.0847 [1669.6184, 372.3469] |  1983.1892 [1780.0433, 89.2751]
+    11 |        N/A |  1780.8112 [1758.6918, 0.0000] |  1872.5625 [1758.6918, 0.0000]
+    12 |        N/A |  1841.3088 [1729.9142, 89.2751] |  1933.0600 [1729.9142, 89.2751]
+    13 |        N/A |  1697.4014 [1675.2819, 0.0000] |  1789.1526 [1675.2819, 0.0000]
+    14 |        N/A |  1915.4485 [1893.3290, 0.0000] |  2007.1998 [1893.3290, 0.0000]
+    15 |        N/A |  1841.5397 [1665.5203, 153.8999] |  1851.7214 [1583.9507, 153.8999]
+    16 |        N/A |  1808.4170 [1786.2975, 0.0000] |  1900.1682 [1786.2975, 0.0000]
+    17 |        N/A |  1799.2625 [1529.0157, 248.1273] |  1707.5113 [1529.0157, 64.6248]
+    18 |        N/A |  1965.7131 [1738.6108, 204.9829] |  1928.9647 [1815.0939, 0.0000]
+    19 |        N/A |  1835.8834 [1749.1392, 64.6248] |  1775.5801 [1597.0846, 64.6248]
+    20 |        N/A |  1528.0591 [1322.4371, 183.5025] |  1436.3078 [1322.4371, 0.0000]
+    21 |        N/A |  1928.9592 [1906.8398, 0.0000] |  1982.7400 [1868.8693, 0.0000]
+    22 |        N/A |  1739.8272 [1717.7077, 0.0000] |  1831.5785 [1717.7077, 0.0000]
+    23 |        N/A |  1693.0610 [1606.3167, 64.6248] |  1784.8122 [1606.3167, 64.6248]
+    24 |        N/A |  1831.7317 [1809.6122, 0.0000] |  1923.4830 [1809.6122, 0.0000]
+    25 |        N/A |  1961.7716 [1875.0273, 64.6248] |  2053.5228 [1875.0273, 64.6248]
+    26 |        N/A |  1848.1883 [1558.6828, 267.3860] |  1931.1439 [1752.6484, 64.6248]
+    27 |        N/A |  2026.4722 [2004.3527, 0.0000] |  2010.0003 [1896.1296, 0.0000]
+    28 |        N/A |  1713.0806 [1690.9611, 0.0000] |  1804.8319 [1690.9611, 0.0000]
+    29 |        N/A |  1937.0411 [1914.9216, 0.0000] |  2028.7924 [1914.9216, 0.0000]
+    30 |        N/A |  2028.5027 [1941.7584, 64.6248] |  2120.2540 [1941.7584, 64.6248]
+    31 |        N/A |  1776.6215 [1689.8772, 64.6248] |  1868.3727 [1689.8772, 64.6248]
+    32 |        N/A |  1945.7419 [1720.8612, 202.7612] |  2037.4932 [1720.8612, 202.7612]
+    33 |        N/A |  1889.9007 [1778.5061, 89.2751] |  1981.6520 [1778.5061, 89.2751]
+    34 |        N/A |  1634.1045 [1328.9132, 283.0717] |  1579.9213 [1376.7754, 89.2751]
+    35 |        N/A |  1690.2057 [1668.0862, 0.0000] |  1781.9570 [1668.0862, 0.0000]
+    36 |        N/A |  1923.2187 [1836.4745, 64.6248] |  2014.9700 [1836.4745, 64.6248]
+    37 |        N/A |  2050.0401 [1963.2959, 64.6248] |  2108.9533 [1930.4578, 64.6248]
+    38 |        N/A |  1890.2992 [1714.2798, 153.8999] |  1982.0505 [1714.2798, 153.8999]
+    39 |        N/A |  1961.8385 [1691.5917, 248.1273] |  1870.0872 [1691.5917, 64.6248]
+    40 |        N/A |  1850.6975 [1828.5780, 0.0000] |  1800.7266 [1686.8558, 0.0000]
+    41 |        N/A |  1670.1647 [1648.0452, 0.0000] |  1761.9160 [1648.0452, 0.0000]
+    42 |        N/A |  1792.8881 [1770.7686, 0.0000] |  1884.6393 [1770.7686, 0.0000]
+    43 |        N/A |  1709.4477 [1687.3283, 0.0000] |  1755.7855 [1641.9148, 0.0000]
+    44 |        N/A |  1950.1098 [1679.8630, 248.1273] |  1858.3585 [1679.8630, 64.6248]
+    45 |        N/A |  1989.0609 [1718.8141, 248.1273] |  1897.3096 [1718.8141, 64.6248]
+    46 |        N/A |  1744.8090 [1722.6895, 0.0000] |  1836.5602 [1722.6895, 0.0000]
+    47 |        N/A |  1869.6061 [1644.7254, 202.7612] |  1835.0983 [1721.2276, 0.0000]
+    48 |        N/A |  1630.8206 [1608.7012, 0.0000] |  1612.8790 [1434.3835, 64.6248]
+    49 |        N/A |  1827.8094 [1600.7071, 204.9829] |  1919.5607 [1600.7071, 204.9829]
+    50 |        N/A |  1896.3686 [1784.9740, 89.2751] |  1948.1756 [1745.0297, 89.2751]
+    51 |        N/A |  1993.5911 [1971.4716, 0.0000] |  1948.2964 [1834.4256, 0.0000]
+    52 |        N/A |  1937.0554 [1709.9531, 204.9829] |  1993.8552 [1815.3596, 64.6248]
+    53 |        N/A |  1590.0936 [1567.9741, 0.0000] |  1681.8448 [1567.9741, 0.0000]
+    54 |        N/A |  1750.3023 [1728.1828, 0.0000] |  1745.5657 [1631.6949, 0.0000]
+    55 |        N/A |  1953.1661 [1663.6606, 267.3860] |  1886.5294 [1708.0339, 64.6248]
+    56 |        N/A |  2019.7922 [1933.0480, 64.6248] |  1946.2688 [1767.7733, 64.6248]
+    57 |        N/A |  1440.9100 [1329.5154, 89.2751] |  1532.6612 [1329.5154, 89.2751]
+    58 |        N/A |  1961.6751 [1850.2805, 89.2751] |  1972.6516 [1769.5057, 89.2751]
+    59 |        N/A |  1860.5796 [1838.4602, 0.0000] |  1796.0815 [1617.5860, 64.6248]
+    60 |        N/A |  1851.8412 [1829.7218, 0.0000] |  1943.5925 [1829.7218, 0.0000]
+    61 |        N/A |  1713.6479 [1626.9036, 64.6248] |  1782.5395 [1604.0439, 64.6248]
+    62 |        N/A |  1744.9088 [1658.1645, 64.6248] |  1836.6600 [1658.1645, 64.6248]
+    63 |        N/A |  1933.2853 [1706.1829, 204.9829] |  1986.2149 [1718.4443, 153.8999]
+    64 |        N/A |  1822.1316 [1800.0121, 0.0000] |  1913.8828 [1800.0121, 0.0000]
+    65 |        N/A |  1802.1768 [1596.5548, 183.5025] |  1710.4256 [1596.5548, 0.0000]
+    66 |        N/A |  1786.6887 [1516.4419, 248.1273] |  1694.9375 [1516.4419, 64.6248]
+    67 |        N/A |  1851.3811 [1624.2788, 204.9829] |  1943.1324 [1624.2788, 204.9829]
+    68 |        N/A |  1874.1515 [1603.9048, 248.1273] |  1782.4003 [1603.9048, 64.6248]
+    69 |        N/A |  1693.1400 [1671.0205, 0.0000] |  1784.8913 [1671.0205, 0.0000]
+    70 |        N/A |  1644.2665 [1557.5222, 64.6248] |  1736.0177 [1557.5222, 64.6248]
+    71 |        N/A |  1625.8828 [1603.7633, 0.0000] |  1717.6340 [1603.7633, 0.0000]
+    72 |        N/A |  1751.1915 [1639.7968, 89.2751] |  1842.9427 [1639.7968, 89.2751]
+    73 |        N/A |  1833.5875 [1746.8432, 64.6248] |  1925.3387 [1746.8432, 64.6248]
+    74 |        N/A |  1742.0252 [1630.6305, 89.2751] |  1833.7764 [1630.6305, 89.2751]
+    75 |        N/A |  1919.3580 [1832.6137, 64.6248] |  1920.7380 [1742.2425, 64.6248]
+    76 |        N/A |  1854.3987 [1832.2792, 0.0000] |  1946.1500 [1832.2792, 0.0000]
+    77 |        N/A |  1945.5253 [1858.7810, 64.6248] |  1878.9081 [1765.0374, 0.0000]
+    78 |        N/A |  1840.4232 [1634.8013, 183.5025] |  1748.6720 [1634.8013, 0.0000]
+    79 |        N/A |  1887.8754 [1660.7731, 204.9829] |  1936.1561 [1733.0102, 89.2751]
+    80 |        N/A |  1783.3153 [1388.8489, 372.3469] |  1719.3256 [1605.4549, 0.0000]
+    81 |        N/A |  1788.3649 [1612.3454, 153.8999] |  1880.1161 [1612.3454, 153.8999]
+    82 |        N/A |  1838.6304 [1816.5109, 0.0000] |  1930.3816 [1816.5109, 0.0000]
+    83 |        N/A |  1852.2086 [1830.0891, 0.0000] |  1943.9599 [1830.0891, 0.0000]
+    84 |        N/A |  1513.8717 [1286.7694, 204.9829] |  1599.6640 [1485.7932, 0.0000]
+    85 |        N/A |  1722.8966 [1498.0159, 202.7612] |  1814.6479 [1498.0159, 202.7612]
+    86 |        N/A |  1773.4892 [1662.0946, 89.2751] |  1865.2405 [1662.0946, 89.2751]
+    87 |        N/A |  1869.0491 [1846.9297, 0.0000] |  1868.8547 [1754.9840, 0.0000]
+    88 |        N/A |  1899.1689 [1672.0666, 204.9829] |  1914.3780 [1800.5073, 0.0000]
+    89 |        N/A |  1529.5989 [1442.8547, 64.6248] |  1621.3502 [1442.8547, 64.6248]
+    90 |        N/A |  2071.7288 [2049.6093, 0.0000] |  2031.6670 [1917.7962, 0.0000]
+    91 |        N/A |  1947.2984 [1925.1790, 0.0000] |  2039.0497 [1925.1790, 0.0000]
+    92 |        N/A |  1919.6434 [1808.2488, 89.2751] |  1924.3378 [1656.5671, 153.8999]
+    93 |        N/A |  1925.9341 [1701.0534, 202.7612] |  2017.6854 [1701.0534, 202.7612]
+    94 |        N/A |  1959.5772 [1872.8329, 64.6248] |  1986.0314 [1807.5358, 64.6248]
+    95 |        N/A |  1880.3522 [1793.6080, 64.6248] |  1972.1035 [1793.6080, 64.6248]
+    96 |        N/A |  1988.8973 [1902.1530, 64.6248] |  1907.3772 [1728.8816, 64.6248]
+    97 |        N/A |  1944.6607 [1833.2661, 89.2751] |  1855.7312 [1741.8605, 0.0000]
+    98 |        N/A |  2016.2820 [1994.1625, 0.0000] |  1970.0999 [1856.2292, 0.0000]
+    99 |        N/A |  1675.5308 [1653.4113, 0.0000] |  1767.2820 [1653.4113, 0.0000]
+   100 |        N/A |  1840.4636 [1818.3442, 0.0000] |  1848.2727 [1734.4019, 0.0000]
+   101 |        N/A |  1765.7464 [1654.3518, 89.2751] |  1857.4977 [1654.3518, 89.2751]
+   102 |        N/A |  1705.7763 [1619.0320, 64.6248] |  1797.5276 [1619.0320, 64.6248]
+   103 |        N/A |  1778.0932 [1666.6986, 89.2751] |  1689.1753 [1486.0295, 89.2751]
+   104 |        N/A |  1631.7919 [1609.6724, 0.0000] |  1669.7751 [1555.9043, 0.0000]
+   105 |        N/A |  1631.6337 [1609.5142, 0.0000] |  1723.3849 [1609.5142, 0.0000]
+   106 |        N/A |  1816.1535 [1794.0340, 0.0000] |  1898.4365 [1784.5658, 0.0000]
+   107 |        N/A |  1894.0553 [1666.9530, 204.9829] |  1985.8066 [1666.9530, 204.9829]
+   108 |        N/A |  1915.2551 [1688.1528, 204.9829] |  2000.4634 [1886.5926, 0.0000]
+   109 |        N/A |  1695.2212 [1608.4769, 64.6248] |  1786.9724 [1608.4769, 64.6248]
+   110 |        N/A |  1832.3265 [1810.2070, 0.0000] |  1878.6213 [1764.7505, 0.0000]
+   111 |        N/A |  2019.9539 [1997.8344, 0.0000] |  1974.9199 [1861.0492, 0.0000]
+   112 |        N/A |  1683.4748 [1661.3553, 0.0000] |  1685.5277 [1571.6569, 0.0000]
+   113 |        N/A |  1779.0764 [1756.9569, 0.0000] |  1870.8276 [1756.9569, 0.0000]
+   114 |        N/A |  1870.7653 [1848.6458, 0.0000] |  1827.5330 [1713.6622, 0.0000]
+   115 |        N/A |  1811.8401 [1700.4455, 89.2751] |  1903.5914 [1700.4455, 89.2751]
+   116 |        N/A |  1818.0966 [1731.3523, 64.6248] |  1909.8479 [1731.3523, 64.6248]
+   117 |        N/A |  1903.8403 [1792.4457, 89.2751] |  1995.5916 [1792.4457, 89.2751]
+   118 |        N/A |  1805.0805 [1693.6858, 89.2751] |  1834.0095 [1630.8636, 89.2751]
+   119 |        N/A |  1727.3811 [1640.6368, 64.6248] |  1690.2837 [1511.7881, 64.6248]
+   120 |        N/A |  1830.8849 [1744.1406, 64.6248] |  1922.6361 [1744.1406, 64.6248]
+   121 |        N/A |  1976.1161 [1889.3719, 64.6248] |  1967.4143 [1788.9188, 64.6248]
+   122 |        N/A |  1716.2744 [1421.3772, 272.7776] |  1624.5231 [1421.3772, 89.2751]
+   123 |        N/A |  1934.3050 [1912.1856, 0.0000] |  1990.4831 [1787.3372, 89.2751]
+   124 |        N/A |  1569.0020 [1546.8826, 0.0000] |  1660.7533 [1546.8826, 0.0000]
+   125 |        N/A |  1650.5999 [1628.4805, 0.0000] |  1742.3512 [1628.4805, 0.0000]
+   126 |        N/A |  1946.5780 [1587.0561, 337.4024] |  1854.8267 [1587.0561, 153.8999]
+   127 |        N/A |  1834.7519 [1607.6495, 204.9829] |  1926.5031 [1607.6495, 204.9829]
+   128 |        N/A |  1882.4667 [1771.0720, 89.2751] |  1974.2179 [1771.0720, 89.2751]
+   129 |        N/A |  1485.8911 [1374.4965, 89.2751] |  1577.6424 [1374.4965, 89.2751]
+   130 |        N/A |  1884.9746 [1660.0938, 202.7612] |  1877.9135 [1764.0428, 0.0000]
+   131 |        N/A |  1865.9465 [1779.2023, 64.6248] |  1880.5391 [1766.6684, 0.0000]
+   132 |        N/A |  1825.4024 [1738.6582, 64.6248] |  1917.1537 [1738.6582, 64.6248]
+   133 |        N/A |  1928.2144 [1906.0949, 0.0000] |  1956.2043 [1842.3336, 0.0000]
+   134 |        N/A |  1939.0935 [1916.9740, 0.0000] |  1929.0178 [1750.5223, 64.6248]
+   135 |        N/A |  1867.1989 [1661.5769, 183.5025] |  1775.4476 [1661.5769, 0.0000]
+   136 |        N/A |  1993.4145 [1971.2950, 0.0000] |  2085.1657 [1971.2950, 0.0000]
+   137 |        N/A |  1646.8791 [1624.7596, 0.0000] |  1738.6304 [1624.7596, 0.0000]
+   138 |        N/A |  1697.6018 [1610.8575, 64.6248] |  1789.3530 [1610.8575, 64.6248]
+   139 |        N/A |  1947.6278 [1742.0058, 183.5025] |  1855.8766 [1742.0058, 0.0000]
+   140 |        N/A |  1768.2219 [1681.4776, 64.6248] |  1846.5210 [1732.6503, 0.0000]
+   141 |        N/A |  1818.6504 [1707.2557, 89.2751] |  1748.5458 [1545.3999, 89.2751]
+   142 |        N/A |  1830.0894 [1602.9871, 204.9829] |  1898.8073 [1695.6614, 89.2751]
+   143 |        N/A |  1964.4941 [1942.3746, 0.0000] |  1941.4453 [1827.5746, 0.0000]
+   144 |        N/A |  1799.4870 [1777.3675, 0.0000] |  1891.2382 [1777.3675, 0.0000]
+   145 |        N/A |  1786.5958 [1764.4763, 0.0000] |  1867.9630 [1754.0923, 0.0000]
+   146 |        N/A |  1855.8669 [1833.7474, 0.0000] |  1907.6756 [1793.8049, 0.0000]
+   147 |        N/A |  1759.4605 [1672.7162, 64.6248] |  1851.2117 [1672.7162, 64.6248]
+   148 |        N/A |  1600.0531 [1488.6585, 89.2751] |  1691.8044 [1488.6585, 89.2751]
+   149 |        N/A |  1823.0538 [1711.6591, 89.2751] |  1914.8050 [1711.6591, 89.2751]
+   150 |        N/A |  1919.8548 [1897.7353, 0.0000] |  2011.6060 [1897.7353, 0.0000]
+
+  MEDIE VALIDAZIONE OUT-OF-SAMPLE
+  PI_val  = 0.0000
+  STO_val = 1826.0264  (politica x_sto applicata out-of-sample)
+  EEV_val = 1859.8066  (politica x_ev  applicata out-of-sample)
+  VSS_val = EEV_val - STO_val = 33.7802 (1.8163%)
+  Gap PI-STO_val = nan%
+============================================================
+
+IMPATTO ARCHI CASUALI - VALIDAZIONE
+  Scenari analizzati = 150
+  Estrazioni casuali totali scenario-specifiche = 4500
+  Archi casuali distinti = 92
+
+  Conteggio degli archi casuali che compaiono nei tour
+  PI : distinti usati almeno una volta = 0/92 (0.00%) | occorrenze scenario-specifiche = 0/4500 (0.00%)
+  STO: distinti usati almeno una volta = 88/92 (95.65%) | occorrenze scenario-specifiche = 773/4500 (17.18%)
+  EEV: distinti usati almeno una volta = 88/92 (95.65%) | occorrenze scenario-specifiche = 708/4500 (15.73%)
+  ANY: distinti usati in almeno un tour PI/STO/EEV = 88/92 (95.65%) | occorrenze scenario-specifiche = 879/4500 (19.53%)
+
+  Dettaglio per scenario: sid | casuali | PI | STO | EEV | ANY
+     1 |      30 |  0 |   4 |   4 |   4
+     2 |      30 |  0 |   5 |   5 |   5
+     3 |      30 |  0 |   5 |   3 |   7
+     4 |      30 |  0 |   5 |   5 |   6
+     5 |      30 |  0 |   3 |   3 |   3
+     6 |      30 |  0 |   4 |   6 |   9
+     7 |      30 |  0 |   7 |   7 |   7
+     8 |      30 |  0 |   6 |   6 |   6
+     9 |      30 |  0 |   3 |   3 |   3
+    10 |      30 |  0 |   4 |   4 |   7
+    11 |      30 |  0 |   6 |   6 |   6
+    12 |      30 |  0 |   4 |   4 |   4
+    13 |      30 |  0 |   6 |   6 |   6
+    14 |      30 |  0 |   7 |   7 |   7
+    15 |      30 |  0 |   7 |   4 |   8
+    16 |      30 |  0 |   5 |   5 |   5
+    17 |      30 |  0 |   4 |   4 |   4
+    18 |      30 |  0 |   8 |   5 |  11
+    19 |      30 |  0 |   4 |   3 |   4
+    20 |      30 |  0 |   5 |   5 |   5
+    21 |      30 |  0 |   7 |   4 |   7
+    22 |      30 |  0 |   7 |   7 |   7
+    23 |      30 |  0 |   3 |   3 |   3
+    24 |      30 |  0 |   7 |   7 |   7
+    25 |      30 |  0 |   6 |   6 |   6
+    26 |      30 |  0 |   3 |   2 |   3
+    27 |      30 |  0 |   4 |   3 |   5
+    28 |      30 |  0 |   4 |   4 |   4
+    29 |      30 |  0 |   7 |   7 |   7
+    30 |      30 |  0 |   7 |   7 |   7
+    31 |      30 |  0 |   6 |   6 |   6
+    32 |      30 |  0 |   7 |   7 |   7
+    33 |      30 |  0 |   4 |   4 |   4
+    34 |      30 |  0 |   5 |   5 |   6
+    35 |      30 |  0 |   5 |   5 |   5
+    36 |      30 |  0 |   3 |   3 |   3
+    37 |      30 |  0 |   5 |   4 |   8
+    38 |      30 |  0 |   3 |   3 |   3
+    39 |      30 |  0 |   7 |   7 |   7
+    40 |      30 |  0 |   6 |   5 |   6
+    41 |      30 |  0 |   6 |   6 |   6
+    42 |      30 |  0 |   6 |   6 |   6
+    43 |      30 |  0 |   4 |   5 |   6
+    44 |      30 |  0 |   3 |   3 |   3
+    45 |      30 |  0 |   2 |   2 |   2
+    46 |      30 |  0 |   5 |   5 |   5
+    47 |      30 |  0 |   6 |   4 |   6
+    48 |      30 |  0 |   6 |   4 |   7
+    49 |      30 |  0 |   7 |   7 |   7
+    50 |      30 |  0 |   7 |   5 |  10
+    51 |      30 |  0 |   3 |   3 |   4
+    52 |      30 |  0 |   6 |   4 |   9
+    53 |      30 |  0 |   6 |   6 |   6
+    54 |      30 |  0 |   3 |   5 |   7
+    55 |      30 |  0 |   6 |   5 |   6
+    56 |      30 |  0 |   4 |   4 |   6
+    57 |      30 |  0 |   6 |   6 |   6
+    58 |      30 |  0 |   6 |   4 |   8
+    59 |      30 |  0 |   4 |   4 |   8
+    60 |      30 |  0 |   4 |   4 |   4
+    61 |      30 |  0 |   6 |   4 |   6
+    62 |      30 |  0 |   5 |   5 |   5
+    63 |      30 |  0 |   6 |   3 |   8
+    64 |      30 |  0 |   5 |   5 |   5
+    65 |      30 |  0 |   4 |   4 |   4
+    66 |      30 |  0 |   5 |   5 |   5
+    67 |      30 |  0 |   4 |   4 |   4
+    68 |      30 |  0 |   3 |   3 |   3
+    69 |      30 |  0 |   6 |   6 |   6
+    70 |      30 |  0 |   4 |   4 |   4
+    71 |      30 |  0 |   5 |   5 |   5
+    72 |      30 |  0 |   7 |   7 |   7
+    73 |      30 |  0 |   7 |   7 |   7
+    74 |      30 |  0 |   4 |   4 |   4
+    75 |      30 |  0 |   5 |   4 |   6
+    76 |      30 |  0 |   6 |   6 |   6
+    77 |      30 |  0 |   6 |   5 |   7
+    78 |      30 |  0 |   2 |   2 |   2
+    79 |      30 |  0 |   4 |   2 |   4
+    80 |      30 |  0 |   2 |   5 |   7
+    81 |      30 |  0 |   3 |   3 |   3
+    82 |      30 |  0 |   7 |   7 |   7
+    83 |      30 |  0 |   5 |   5 |   5
+    84 |      30 |  0 |   3 |   3 |   5
+    85 |      30 |  0 |   5 |   5 |   5
+    86 |      30 |  0 |   5 |   5 |   5
+    87 |      30 |  0 |   5 |   5 |   5
+    88 |      30 |  0 |   6 |   3 |   7
+    89 |      30 |  0 |   7 |   7 |   7
+    90 |      30 |  0 |   5 |   3 |   6
+    91 |      30 |  0 |   8 |   8 |   8
+    92 |      30 |  0 |   6 |   2 |   6
+    93 |      30 |  0 |   4 |   4 |   4
+    94 |      30 |  0 |   4 |   3 |   7
+    95 |      30 |  0 |   6 |   6 |   6
+    96 |      30 |  0 |   5 |   7 |   7
+    97 |      30 |  0 |   4 |   3 |   6
+    98 |      30 |  0 |   5 |   7 |  10
+    99 |      30 |  0 |   8 |   8 |   8
+   100 |      30 |  0 |   6 |   4 |   7
+   101 |      30 |  0 |   6 |   6 |   6
+   102 |      30 |  0 |   4 |   4 |   4
+   103 |      30 |  0 |   4 |   3 |   4
+   104 |      30 |  0 |   5 |   3 |   5
+   105 |      30 |  0 |   7 |   7 |   7
+   106 |      30 |  0 |   7 |   7 |  11
+   107 |      30 |  0 |   5 |   5 |   5
+   108 |      30 |  0 |   5 |   3 |   6
+   109 |      30 |  0 |   5 |   5 |   5
+   110 |      30 |  0 |   3 |   2 |   3
+   111 |      30 |  0 |   8 |   5 |  10
+   112 |      30 |  0 |   8 |   7 |   8
+   113 |      30 |  0 |   4 |   4 |   4
+   114 |      30 |  0 |   5 |   4 |   7
+   115 |      30 |  0 |   8 |   8 |   8
+   116 |      30 |  0 |   6 |   6 |   6
+   117 |      30 |  0 |   6 |   6 |   6
+   118 |      30 |  0 |   7 |   5 |   7
+   119 |      30 |  0 |   3 |   3 |   6
+   120 |      30 |  0 |   5 |   5 |   5
+   121 |      30 |  0 |   6 |   4 |  10
+   122 |      30 |  0 |   5 |   5 |   5
+   123 |      30 |  0 |   3 |   2 |   5
+   124 |      30 |  0 |   4 |   4 |   4
+   125 |      30 |  0 |   7 |   7 |   7
+   126 |      30 |  0 |   2 |   2 |   2
+   127 |      30 |  0 |   6 |   6 |   6
+   128 |      30 |  0 |   5 |   5 |   5
+   129 |      30 |  0 |   7 |   7 |   7
+   130 |      30 |  0 |   5 |   4 |   7
+   131 |      30 |  0 |   6 |   4 |   8
+   132 |      30 |  0 |   3 |   3 |   3
+   133 |      30 |  0 |   5 |   2 |   6
+   134 |      30 |  0 |   4 |   3 |   5
+   135 |      30 |  0 |   5 |   5 |   5
+   136 |      30 |  0 |   5 |   5 |   5
+   137 |      30 |  0 |   6 |   6 |   6
+   138 |      30 |  0 |   4 |   4 |   4
+   139 |      30 |  0 |   4 |   4 |   4
+   140 |      30 |  0 |   5 |   2 |   6
+   141 |      30 |  0 |   5 |   5 |   8
+   142 |      30 |  0 |   4 |   4 |   7
+   143 |      30 |  0 |   4 |   4 |   7
+   144 |      30 |  0 |   8 |   8 |   8
+   145 |      30 |  0 |   6 |   4 |   8
+   146 |      30 |  0 |   4 |   4 |   6
+   147 |      30 |  0 |   6 |   6 |   6
+   148 |      30 |  0 |   8 |   8 |   8
+   149 |      30 |  0 |   6 |   6 |   6
+   150 |      30 |  0 |   3 |   3 |   3
+
+─────────────────────────────────────────────────────────────────
+RIEPILOGO ESPERIMENTO B — UTSP LOCAL SEARCH
+  x_ls = [(70, 99), (101, 129)]
+
+  TRAINING (8 scenari)
+    PI      = 1626.0996
+    STO     = 1866.4312
+    EEV     = 1875.1359
+    UTSP_LS = 1872.3278
+
+  VALIDAZIONE (150 scenari, seme=99)
+    PI_val      = 0.0000
+    STO_val     = 1826.0264
+    EEV_val     = 1859.8066
+    UTSP_LS_val = 1846.3067
+
+  Gap LS vs STO (val) = +1.11%
+  Gap LS vs EEV (val) = -0.73%
+  Gap LS vs PI  (val) = +nan%
+─────────────────────────────────────────────────────────────────
+
+=================================================================
+ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH (2-stadi, per-scenario)
+=================================================================
+
+Primo stadio x_ls : [(70, 99), (101, 129)]
+
+TEST
+  Scen |         PI |    UTSP_LS [perc, multa] | tour
+     1 |  1666.7056 |  1945.2251 [1890.7932, 0.0000] | [11, 148, 66, 31, 129, 70, 99, 100, 97, 107, 84, 63, 113, 94, 101]
+     2 |  1449.5976 |  1758.2597 [1520.3253, 183.5025] | [11, 66, 148, 99, 70, 97, 100, 107, 84, 63, 94, 113, 31, 129, 101]
+     3 |  1598.6225 |  1960.7765 [1598.6225, 307.7221] | [11, 148, 66, 101, 129, 31, 113, 94, 100, 107, 97, 63, 84, 99, 70]
+     4 |  1680.3332 |  1861.2452 [1717.5382, 89.2751] | [11, 99, 70, 107, 84, 94, 113, 63, 100, 97, 31, 129, 101, 66, 148]
+     5 |  1770.9417 |  1825.3736 [1770.9417, 0.0000] | [11, 148, 70, 99, 100, 107, 97, 113, 94, 63, 84, 101, 129, 31, 66]
+     6 |  1499.8742 |  1757.0673 [1499.8742, 202.7612] | [11, 101, 129, 31, 94, 113, 63, 84, 97, 107, 100, 70, 99, 66, 148]
+     7 |  1755.6706 |  1956.4137 [1901.9818, 0.0000] | [11, 66, 148, 94, 113, 63, 97, 100, 107, 84, 99, 70, 31, 129, 101]
+     8 |  1587.0516 |  1914.2611 [1587.0516, 272.7776] | [11, 31, 113, 94, 63, 84, 107, 100, 97, 70, 99, 129, 101, 66, 148]
+
+  PI      (train) = 1626.0996
+  STO     (train) = 1866.4312
+  EEV     (train) = 1875.1359
+  UTSP_LS (train) = 1872.3278
+
+VALIDAZIONE (150 scenari, seme=99)
+  UTSP_LS_val = 1846.3067
+  PI_val      = 0.0000
+  STO_val     = 1826.0264
+  EEV_val     = 1859.8066
+
+  Gap LS vs STO (val) = +1.1106%
+  Gap LS vs EEV (val) = -0.7259%
+  Gap LS vs PI  (val) = +nan%
+
+TRAINING GNN
+  Epoche         = 50
+  Temperatura T  = 0.527088
+  Loss iniziale  = 18.23010
+  Loss finale    = 8.24760
+  Loss minima    = 8.24760 (ep 50)
+=================================================================
+
+  → Salvato: ./risultati_espB_UTSP_LS.txt
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_1_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_2_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_3_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_4_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_5_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_6_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_7_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_8_confronto.png

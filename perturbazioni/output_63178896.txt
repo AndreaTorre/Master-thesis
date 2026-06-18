@@ -1,0 +1,711 @@
+Python usato:
+/home/atorre/UTSP/unione/git/venv/bin/python
+/home/atorre/UTSP/unione/git/venv/bin/python
+Controllo numpy:
+2.4.2
+Set parameter TokenServer to value "license1.computecanada.ca"
+Carico res_B da file .pkl: /home/atorre/UTSP/unione/git/pert/res_B_cached_15.pkl
+
+======================================================================
+ESPERIMENTO B — UTSP 2-STADI | mode=local_search
+
+Generazione 300 scenari di training → 10 batch da 30 scenari
+  Scenario 1 | PI = 1666.7056
+  Scenario 2 | PI = 1449.5976
+  Scenario 3 | PI = 1598.6225
+  Scenario 4 | PI = 1680.3332
+  Scenario 5 | PI = 1770.9417
+  Scenario 6 | PI = 1499.8742
+  Scenario 7 | PI = 1755.6706
+  Scenario 8 | PI = 1587.0516
+  Scenario 9 | PI = 1575.3425
+  Scenario 10 | PI = 1773.8349
+  Scenario 11 | PI = 1349.9369
+  Scenario 12 | PI = 1646.2238
+  Scenario 13 | PI = 1826.8868
+  Scenario 14 | PI = 1664.1257
+  Scenario 15 | PI = 1618.8488
+  Scenario 16 | PI = 1613.4691
+  Scenario 17 | PI = 1453.9887
+  Scenario 18 | PI = 1651.5664
+  Scenario 19 | PI = 1737.8315
+  Scenario 20 | PI = 1534.3686
+  Scenario 21 | PI = 1542.2191
+  Scenario 22 | PI = 1766.2134
+  Scenario 23 | PI = 1516.0713
+  Scenario 24 | PI = 1580.9310
+  Scenario 25 | PI = 1741.8322
+  Scenario 26 | PI = 1596.9264
+  Scenario 27 | PI = 1707.7968
+  Scenario 28 | PI = 1824.6096
+  Scenario 29 | PI = 1583.1080
+  Scenario 30 | PI = 1557.8358
+  Scenario 31 | PI = 1661.8076
+  Scenario 32 | PI = 1612.1473
+  Scenario 33 | PI = 1993.3903
+  Scenario 34 | PI = 1636.8810
+  Scenario 35 | PI = 1730.6035
+  Scenario 36 | PI = 1601.5481
+  Scenario 37 | PI = 1812.2941
+  Scenario 38 | PI = 1733.2253
+  Scenario 39 | PI = 1668.7614
+  Scenario 40 | PI = 1605.5324
+  Scenario 41 | PI = 1611.4780
+  Scenario 42 | PI = 1470.9763
+  Scenario 43 | PI = 1753.4003
+  Scenario 44 | PI = 1638.2291
+  Scenario 45 | PI = 1585.5533
+  Scenario 46 | PI = 1511.2991
+  Scenario 47 | PI = 1816.4284
+  Scenario 48 | PI = 1567.5358
+  Scenario 49 | PI = 1688.8411
+  Scenario 50 | PI = 1641.5183
+  Scenario 51 | PI = 1757.4670
+  Scenario 52 | PI = 1751.6434
+  Scenario 53 | PI = 1632.7672
+  Scenario 54 | PI = 1728.4262
+  Scenario 55 | PI = 1525.0230
+  Scenario 56 | PI = 1849.0930
+  Scenario 57 | PI = 1699.0551
+  Scenario 58 | PI = 1490.0237
+  Scenario 59 | PI = 1574.7326
+  Scenario 60 | PI = 1725.0532
+  Scenario 61 | PI = 1646.9443
+  Scenario 62 | PI = 1734.4107
+  Scenario 63 | PI = 1701.5052
+  Scenario 64 | PI = 1487.4332
+  Scenario 65 | PI = 1755.9355
+  Scenario 66 | PI = 1482.5271
+  Scenario 67 | PI = 1669.6184
+  Scenario 68 | PI = 1638.1129
+  Scenario 69 | PI = 1686.8051
+  Scenario 70 | PI = 1675.2819
+  Scenario 71 | PI = 1586.5659
+  Scenario 72 | PI = 1583.2326
+  Scenario 73 | PI = 1714.2937
+  Scenario 74 | PI = 1505.5491
+  Scenario 75 | PI = 1713.0222
+  Scenario 76 | PI = 1597.0846
+  Scenario 77 | PI = 1296.7926
+  Scenario 78 | PI = 1814.6277
+  Scenario 79 | PI = 1589.0244
+  Scenario 80 | PI = 1606.3167
+  Scenario 81 | PI = 1647.8703
+  Scenario 82 | PI = 1691.7823
+  Scenario 83 | PI = 1558.6828
+  Scenario 84 | PI = 1833.0329
+  Scenario 85 | PI = 1690.9611
+  Scenario 86 | PI = 1770.5438
+  Scenario 87 | PI = 1856.0967
+  Scenario 88 | PI = 1489.8193
+  Scenario 89 | PI = 1571.6270
+  Scenario 90 | PI = 1714.7481
+  Scenario 91 | PI = 1328.9132
+  Scenario 92 | PI = 1596.2207
+  Scenario 93 | PI = 1836.4745
+  Scenario 94 | PI = 1843.6047
+  Scenario 95 | PI = 1714.2798
+  Scenario 96 | PI = 1691.5917
+  Scenario 97 | PI = 1686.8558
+  Scenario 98 | PI = 1641.2549
+  Scenario 99 | PI = 1588.6888
+  Scenario 100 | PI = 1576.6377
+  Scenario 101 | PI = 1623.4914
+  Scenario 102 | PI = 1718.8141
+  Scenario 103 | PI = 1722.6895
+  Scenario 104 | PI = 1575.2129
+  Scenario 105 | PI = 1434.3835
+  Scenario 106 | PI = 1600.7071
+  Scenario 107 | PI = 1717.7835
+  Scenario 108 | PI = 1832.3858
+  Scenario 109 | PI = 1627.0884
+  Scenario 110 | PI = 1436.6960
+  Scenario 111 | PI = 1610.1302
+  Scenario 112 | PI = 1663.6606
+  Scenario 113 | PI = 1683.4257
+  Scenario 114 | PI = 1329.5154
+  Scenario 115 | PI = 1757.5896
+  Scenario 116 | PI = 1617.5860
+  Scenario 117 | PI = 1734.1250
+  Scenario 118 | PI = 1572.8102
+  Scenario 119 | PI = 1575.7930
+  Scenario 120 | PI = 1706.1829
+  Scenario 121 | PI = 1589.0867
+  Scenario 122 | PI = 1596.5548
+  Scenario 123 | PI = 1516.2099
+  Scenario 124 | PI = 1610.1060
+  Scenario 125 | PI = 1603.9048
+  Scenario 126 | PI = 1671.0205
+  Scenario 127 | PI = 1437.7535
+  Scenario 128 | PI = 1566.4882
+  Scenario 129 | PI = 1639.7968
+  Scenario 130 | PI = 1737.5412
+  Scenario 131 | PI = 1630.6305
+  Scenario 132 | PI = 1632.3549
+  Scenario 133 | PI = 1832.2792
+  Scenario 134 | PI = 1753.1468
+  Scenario 135 | PI = 1624.1201
+  Scenario 136 | PI = 1660.7731
+  Scenario 137 | PI = 1388.8489
+  Scenario 138 | PI = 1469.3939
+  Scenario 139 | PI = 1729.3451
+  Scenario 140 | PI = 1726.9942
+  Scenario 141 | PI = 1286.7694
+  Scenario 142 | PI = 1498.0159
+  Scenario 143 | PI = 1655.6125
+  Scenario 144 | PI = 1722.5038
+  Scenario 145 | PI = 1672.0666
+  Scenario 146 | PI = 1292.3998
+  Scenario 147 | PI = 1738.9856
+  Scenario 148 | PI = 1756.7973
+  Scenario 149 | PI = 1656.5671
+  Scenario 150 | PI = 1636.3908
+  Scenario 151 | PI = 1807.5358
+  Scenario 152 | PI = 1622.8059
+  Scenario 153 | PI = 1612.7344
+  Scenario 154 | PI = 1668.3234
+  Scenario 155 | PI = 1856.2292
+  Scenario 156 | PI = 1513.8377
+  Scenario 157 | PI = 1601.3717
+  Scenario 158 | PI = 1654.3518
+  Scenario 159 | PI = 1599.8549
+  Scenario 160 | PI = 1486.0295
+  Scenario 161 | PI = 1555.9043
+  Scenario 162 | PI = 1562.2010
+  Scenario 163 | PI = 1641.3141
+  Scenario 164 | PI = 1666.9530
+  Scenario 165 | PI = 1688.1528
+  Scenario 166 | PI = 1608.4769
+  Scenario 167 | PI = 1764.7505
+  Scenario 168 | PI = 1788.5497
+  Scenario 169 | PI = 1566.6585
+  Scenario 170 | PI = 1610.3632
+  Scenario 171 | PI = 1654.1446
+  Scenario 172 | PI = 1698.7009
+  Scenario 173 | PI = 1678.7060
+  Scenario 174 | PI = 1648.9448
+  Scenario 175 | PI = 1522.9810
+  Scenario 176 | PI = 1459.7108
+  Scenario 177 | PI = 1744.1406
+  Scenario 178 | PI = 1788.9188
+  Scenario 179 | PI = 1421.3772
+  Scenario 180 | PI = 1716.7750
+  Scenario 181 | PI = 1546.8826
+  Scenario 182 | PI = 1628.4805
+  Scenario 183 | PI = 1587.0561
+  Scenario 184 | PI = 1607.6495
+  Scenario 185 | PI = 1700.4185
+  Scenario 186 | PI = 1374.4965
+  Scenario 187 | PI = 1561.3920
+  Scenario 188 | PI = 1766.2089
+  Scenario 189 | PI = 1738.6582
+  Scenario 190 | PI = 1826.7527
+  Scenario 191 | PI = 1750.5223
+  Scenario 192 | PI = 1647.8453
+  Scenario 193 | PI = 1824.0483
+  Scenario 194 | PI = 1612.2180
+  Scenario 195 | PI = 1608.4338
+  Scenario 196 | PI = 1682.7987
+  Scenario 197 | PI = 1681.4776
+  Scenario 198 | PI = 1545.3999
+  Scenario 199 | PI = 1602.9871
+  Scenario 200 | PI = 1744.3784
+  Scenario 201 | PI = 1777.3675
+  Scenario 202 | PI = 1733.1331
+  Scenario 203 | PI = 1676.9201
+  Scenario 204 | PI = 1672.7162
+  Scenario 205 | PI = 1488.6585
+  Scenario 206 | PI = 1606.4283
+  Scenario 207 | PI = 1721.5730
+  Scenario 208 | PI = 1727.5580
+  Scenario 209 | PI = 1747.1740
+  Scenario 210 | PI = 1472.2573
+  Scenario 211 | PI = 1467.8877
+  Scenario 212 | PI = 1411.0117
+  Scenario 213 | PI = 1917.3516
+  Scenario 214 | PI = 1257.3631
+  Scenario 215 | PI = 1547.4711
+  Scenario 216 | PI = 1672.3603
+  Scenario 217 | PI = 1495.0130
+  Scenario 218 | PI = 1496.3279
+  Scenario 219 | PI = 1761.3491
+  Scenario 220 | PI = 1540.3451
+  Scenario 221 | PI = 1764.2565
+  Scenario 222 | PI = 1770.3856
+  Scenario 223 | PI = 1686.3202
+  Scenario 224 | PI = 1662.0898
+  Scenario 225 | PI = 1668.0698
+  Scenario 226 | PI = 1581.7399
+  Scenario 227 | PI = 1717.1809
+  Scenario 228 | PI = 1656.6609
+  Scenario 229 | PI = 1766.4075
+  Scenario 230 | PI = 1763.2542
+  Scenario 231 | PI = 1472.4814
+  Scenario 232 | PI = 1519.5259
+  Scenario 233 | PI = 1501.1555
+  Scenario 234 | PI = 1728.5192
+  Scenario 235 | PI = 1633.4002
+  Scenario 236 | PI = 1851.1523
+  Scenario 237 | PI = 1936.2458
+  Scenario 238 | PI = 1613.2309
+  Scenario 239 | PI = 1665.0571
+  Scenario 240 | PI = 1689.6260
+  Scenario 241 | PI = 1700.0374
+  Scenario 242 | PI = 1600.6236
+  Scenario 243 | PI = 1605.3019
+  Scenario 244 | PI = 1811.5447
+  Scenario 245 | PI = 1549.6531
+  Scenario 246 | PI = 1793.7499
+  Scenario 247 | PI = 1516.4957
+  Scenario 248 | PI = 1615.6925
+  Scenario 249 | PI = 1646.9225
+  Scenario 250 | PI = 1773.8623
+  Scenario 251 | PI = 1762.2151
+  Scenario 252 | PI = 1787.7780
+  Scenario 253 | PI = 1595.2929
+  Scenario 254 | PI = 1719.9760
+  Scenario 255 | PI = 1779.1067
+  Scenario 256 | PI = 1501.8224
+  Scenario 257 | PI = 1730.6316
+  Scenario 258 | PI = 1806.2990
+  Scenario 259 | PI = 1510.0598
+  Scenario 260 | PI = 1552.0881
+  Scenario 261 | PI = 1428.0753
+  Scenario 262 | PI = 1444.2006
+  Scenario 263 | PI = 1765.0721
+  Scenario 264 | PI = 1589.4906
+  Scenario 265 | PI = 1553.4072
+  Scenario 266 | PI = 1639.1583
+  Scenario 267 | PI = 1760.1919
+  Scenario 268 | PI = 1703.9912
+  Scenario 269 | PI = 1726.5144
+  Scenario 270 | PI = 1670.0730
+  Scenario 271 | PI = 1339.7583
+  Scenario 272 | PI = 1684.3518
+  Scenario 273 | PI = 1802.4015
+  Scenario 274 | PI = 1815.3712
+  Scenario 275 | PI = 1542.8605
+  Scenario 276 | PI = 1686.0564
+  Scenario 277 | PI = 1592.2522
+  Scenario 278 | PI = 1493.9300
+  Scenario 279 | PI = 1651.7153
+  Scenario 280 | PI = 1409.3864
+  Scenario 281 | PI = 1323.7959
+  Scenario 282 | PI = 1593.6375
+  Scenario 283 | PI = 1702.0611
+  Scenario 284 | PI = 1677.3018
+  Scenario 285 | PI = 1676.9655
+  Scenario 286 | PI = 1787.0049
+  Scenario 287 | PI = 1418.4377
+  Scenario 288 | PI = 1620.2092
+  Scenario 289 | PI = 1575.6260
+  Scenario 290 | PI = 1718.8585
+  Scenario 291 | PI = 1728.7137
+  Scenario 292 | PI = 1877.5968
+  Scenario 293 | PI = 1909.0870
+  Scenario 294 | PI = 1707.6905
+  Scenario 295 | PI = 1468.9163
+  Scenario 296 | PI = 1583.7585
+  Scenario 297 | PI = 1322.2897
+  Scenario 298 | PI = 1645.7385
+  Scenario 299 | PI = 1692.2645
+  Scenario 300 | PI = 1612.5110
+  Batch 00: scenari 1..30
+  Batch 01: scenari 31..60
+  Batch 02: scenari 61..90
+  Batch 03: scenari 91..120
+  Batch 04: scenari 121..150
+  Batch 05: scenari 151..180
+  Batch 06: scenari 181..210
+  Batch 07: scenari 211..240
+  Batch 08: scenari 241..270
+  Batch 09: scenari 271..300
+Archi in I: 7 coppie non orientate
+p_mat nonzero: 14 celle
+p_mat range: [0.0529, 0.2612]
+dist_scale: 418.1562
+
+  Setup: |I|=7  n_nodi=15  K_train_UTSP=300 (10 batch × 30)  device=cpu
+  Scenari B per grafici/benchmark = 8
+  I = [(11, 70), (66, 101), (70, 97), (70, 99), (70, 100), (70, 101), (101, 129)]
+[SEED_CHECK] torch.initial_seed()=42
+[SEED_CHECK] np.random state[0]=42
+
+  Training UTSP 2-stage | device=cpu | n_params=30,415
+  GNN(15→64×2) | K_total=300 (10 batch × 30) | T=0.5312 | scale=418.1562
+  Epoche=500  lr=0.001  λ1=5.0  λ2=1.0  λe=0.5  
+  Ep    1 | total=105.0291 | dist=13.9623 | book=0.0462 | cons=0.0000 | asym=30.0000 | pen=0.0000 | row=0.0040 | diag=1.0004 avg=105.03547 ★
+  Ep   25 | total=92.7964 | dist=8.2425 | book=0.0345 | cons=0.2392 | asym=26.6731 | pen=0.0000 | row=0.4881 | diag=2.0594 avg=93.37993 ★
+  Ep   50 | total=52.4715 | dist=9.5560 | book=0.0343 | cons=0.5039 | asym=1.0210 | pen=0.0000 | row=7.8951 | diag=0.3426 avg=50.26319 ★
+  Ep   75 | total=39.0934 | dist=9.6553 | book=0.0330 | cons=0.5942 | asym=-4.5621 | pen=0.0000 | row=8.5862 | diag=0.1604 avg=37.90173
+  Ep  100 | total=35.2429 | dist=9.6239 | book=0.0338 | cons=0.6978 | asym=-5.9210 | pen=0.0000 | row=8.6345 | diag=0.1759 avg=36.40017
+  Ep  125 | total=35.2935 | dist=9.3628 | book=0.0363 | cons=0.7963 | asym=-5.5288 | pen=0.0000 | row=8.4651 | diag=0.1553 avg=33.78929
+  Ep  150 | total=33.4165 | dist=9.5861 | book=0.0351 | cons=0.7636 | asym=-6.5258 | pen=0.0000 | row=8.6409 | diag=0.1682 avg=32.93551
+  Ep  175 | total=33.2508 | dist=9.7770 | book=0.0354 | cons=0.7189 | asym=-7.7425 | pen=0.0000 | row=9.3009 | diag=0.1612 avg=32.48672
+  Ep  200 | total=32.2727 | dist=9.5830 | book=0.0348 | cons=0.7584 | asym=-7.2531 | pen=0.0000 | row=8.8514 | diag=0.1574 avg=31.70339
+  Ep  225 | total=31.9526 | dist=9.6158 | book=0.0336 | cons=0.7356 | asym=-7.7073 | pen=0.0000 | row=9.0489 | diag=0.1803 avg=30.14326
+  Ep  250 | total=32.2790 | dist=9.4064 | book=0.0378 | cons=0.8484 | asym=-7.0402 | pen=0.0000 | row=8.7627 | diag=0.1420 avg=30.27392
+  Ep  275 | total=30.1963 | dist=9.4950 | book=0.0368 | cons=0.8290 | asym=-7.9903 | pen=0.0000 | row=8.8992 | diag=0.1399 avg=29.54519
+  Ep  300 | total=30.4974 | dist=9.5503 | book=0.0352 | cons=0.7843 | asym=-8.0204 | pen=0.0000 | row=8.9680 | diag=0.1330 avg=28.90954 ★
+  Ep  325 | total=29.8652 | dist=9.5539 | book=0.0353 | cons=0.8077 | asym=-8.3179 | pen=0.0000 | row=9.0199 | diag=0.1302 avg=28.42609 ★
+  Ep  350 | total=29.9582 | dist=9.5346 | book=0.0355 | cons=0.8196 | asym=-8.2344 | pen=0.0000 | row=8.9905 | diag=0.1387 avg=28.47862
+  Ep  375 | total=29.2577 | dist=9.5211 | book=0.0345 | cons=0.7758 | asym=-8.2097 | pen=0.0000 | row=8.8395 | diag=0.1338 avg=28.44286
+  Ep  400 | total=29.1870 | dist=9.5157 | book=0.0351 | cons=0.8029 | asym=-8.3262 | pen=0.0000 | row=8.8973 | diag=0.1281 avg=28.59738
+  Ep  425 | total=28.7428 | dist=9.5274 | book=0.0350 | cons=0.7937 | asym=-8.3823 | pen=0.0000 | row=8.8401 | diag=0.1267 avg=27.83768 ★
+  Ep  450 | total=28.9136 | dist=9.4864 | book=0.0357 | cons=0.8103 | asym=-7.9066 | pen=0.0000 | row=8.5953 | diag=0.1347 avg=28.32140
+  Ep  475 | total=27.8774 | dist=9.5114 | book=0.0350 | cons=0.7980 | asym=-8.5677 | pen=0.0000 | row=8.7840 | diag=0.1140 avg=27.55707
+  Ep  500 | total=27.8333 | dist=9.5026 | book=0.0351 | cons=0.7992 | asym=-8.5149 | pen=0.0000 | row=8.7460 | diag=0.1102 avg=27.57675
+
+═════════════════════════════════════════════════════════════════
+  TRAINING COMPLETATO
+  Tempo totale          = 474.06s  (948.1ms/epoca)
+  Miglior loss          = 27.43862  (ep 498)
+  Loss iniziale→finale  = 105.03547 → 27.57675
+  Riduzione loss        = 73.9%
+═════════════════════════════════════════════════════════════════
+DEBUG decode_booking_policy: len(H_list)=300, H_list[0].shape=torch.Size([1, 15, 15])
+
+[dopo training UTSP] T medio
+  min fuori diagonale   = 0.000000e+00
+  max fuori diagonale   = 9.666171e-01
+  media fuori diagonale = 6.928637e-02
+  std fuori diagonale   = 1.613160e-01
+  p50 fuori diagonale   = 2.749437e-15
+  p90 fuori diagonale   = 2.459168e-01
+  p99 fuori diagonale   = 7.039508e-01
+  somma righe min/max   = 0.560555 / 1.575135
+  somma colonne min/max = 1.000000 / 1.000000
+  diagonale somma       = 4.498628e-01
+
+[dopo training UTSP] H medio
+  min fuori diagonale   = 3.503246e-44
+  max fuori diagonale   = 9.628201e-01
+  media fuori diagonale = 7.117898e-02
+  std fuori diagonale   = 1.261593e-01
+  p50 fuori diagonale   = 3.335311e-03
+  p90 fuori diagonale   = 2.025680e-01
+  p99 fuori diagonale   = 6.673354e-01
+  somma righe min/max   = 0.560555 / 1.575135
+  somma colonne min/max = 0.560555 / 1.575135
+  diagonale somma       = 5.241431e-02
+
+═════════════════════════════════════════════════════════════════
+  Matrice adiacenza GNN (media scenari training)
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     i→j |      11      31      63      66      70      84      94      97      99     100     101     107     113     129     148
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      11 |       —  0.2138  0.0621  0.5566  0.2090  0.0739  0.0954  0.0743  0.1957  0.0616  0.4207  0.0542  0.0674  0.2692  0.8123
+      31 |  0.2217       —  0.1399  0.3094  0.0850  0.1275  0.2219  0.1004  0.0933  0.0786  0.4214  0.0796  0.1758  0.7445  0.2392
+      63 |  0.0696  0.1350       —  0.0625  0.1071  0.7220  0.6172  0.4174  0.0930  0.3788  0.1219  0.4344  0.7583  0.1453  0.0604
+      66 |  0.5492  0.3217  0.0764       —  0.1082  0.0738  0.1008  0.0674  0.1305  0.0638  0.4863  0.0522  0.0798  0.3658  0.6559
+      70 |  0.1945  0.0921  0.1220  0.1134       —  0.1421  0.1191  0.2649  0.6831  0.2216  0.2152  0.1351  0.1098  0.1148  0.1377
+      84 |  0.0652  0.1261  0.7277  0.0684  0.1398       —  0.5061  0.5686  0.1060  0.5135  0.1299  0.5687  0.5716  0.1364  0.0672
+      94 |  0.0820  0.2090  0.6237  0.0948  0.1183  0.4930       —  0.3332  0.1010  0.2765  0.1835  0.2873  0.7869  0.2207  0.0894
+      97 |  0.0754  0.1086  0.4132  0.0728  0.2233  0.5710  0.3271       —  0.1497  0.7530  0.1255  0.5881  0.3498  0.1196  0.0726
+      99 |  0.1993  0.0998  0.0961  0.1277  0.6809  0.1151  0.1041  0.1538       —  0.1364  0.1965  0.1009  0.0855  0.1279  0.1659
+     100 |  0.0585  0.0913  0.3761  0.0447  0.2194  0.5146  0.2756  0.7466  0.1193       —  0.1007  0.7218  0.2982  0.0906  0.0583
+     101 |  0.4271  0.4271  0.1344  0.4676  0.2184  0.1229  0.1880  0.1388  0.1898  0.1110       —  0.0865  0.1466  0.5691  0.4161
+     107 |  0.0527  0.0820  0.4378  0.0465  0.1276  0.5703  0.3009  0.6016  0.0925  0.7158  0.0850       —  0.3469  0.0921  0.0478
+     113 |  0.0779  0.1743  0.7618  0.0875  0.1078  0.5621  0.7925  0.3377  0.0936  0.3010  0.1542  0.3294       —  0.1859  0.0680
+     129 |  0.2782  0.7519  0.1475  0.3635  0.1139  0.1408  0.2230  0.1233  0.1206  0.0958  0.5840  0.0839  0.1726       —  0.2771
+     148 |  0.8182  0.2323  0.0727  0.6608  0.1269  0.0622  0.0797  0.0651  0.1711  0.0509  0.4151  0.0499  0.0716  0.2906       —
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  min=0.0447  max=0.8182  media=0.2490  std=0.2117
+═════════════════════════════════════════════════════════════════
+
+═════════════════════════════════════════════════════════════════
+  Heatmap diagnostica (media scenari training)
+  Entropia Shannon         = 4.2673
+  Entropia normalizzata    = 0.8673  (1.0=uniforme, 0.0=concentrata)
+  H_avg: min=0.0000  max=0.9628  media=0.0712
+  Archi con H > 0.05        = 84/210 (40.0%)
+  Archi con H > 0.10        = 56/210 (26.7%)
+  Archi con H > 0.20        = 22/210 (10.5%)
+═════════════════════════════════════════════════════════════════
+  Salvato heatmap: ./espB_UTSP_heatmap.png
+  Salvato grafo pesato: ./espB_UTSP_graph_weights.png
+
+Decisioni di prenotazione NN:
+  {11,70}  x̃=0.0190  ✗ non prenota
+  {66,101}  x̃=0.4283  ✗ non prenota
+  {70,97}  x̃=0.0099  ✗ non prenota
+  {70,99}  x̃=0.9443  ✓ PRENOTA
+  {70,100}  x̃=0.0000  ✗ non prenota
+  {70,101}  x̃=0.0770  ✗ non prenota
+  {101,129}  x̃=0.4075  ✗ non prenota
+  Totale prenotazioni: 1/7
+
+  Costo prenotazione UTSP : 22.1195
+  Salvato heatmap: ./espB_UTSP_adj_kernel_heatmap.png
+  Salvato grafo pesato: ./espB_UTSP_adj_kernel_graph_weights.png
+
+======================================================================
+ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH (2-stadi, per-scenario)
+
+  Primo stadio x_ls (= x_utsp) : [(70, 99)]
+  Costo prenotazione            : 22.1195
+
+  LS su 8 scenari di training ...
+    [train] s=1: tc=1666.7056  pc=202.7612  tot=1891.5864  t=0.49s  tour=[11, 66, 94, 113, 63, 84, 97, 107, 100, 70, 99, 101, 31, 129, 148]
+    [train] s=2: tc=1536.5349  pc=183.5025  tot=1742.1569  t=0.44s  tour=[11, 101, 31, 129, 148, 99, 70, 97, 100, 107, 84, 63, 94, 113, 66]
+    [train] s=3: tc=1732.9876  pc=183.5025  tot=1938.6096  t=0.48s  tour=[11, 148, 66, 129, 31, 113, 94, 63, 84, 99, 70, 97, 100, 107, 101]
+    [train] s=4: tc=1850.4936  pc=0.0000  tot=1872.6131  t=0.47s  tour=[11, 97, 100, 107, 84, 94, 113, 63, 70, 99, 101, 31, 129, 66, 148]
+    [train] s=5: tc=1770.9417  pc=64.6248  tot=1857.6860  t=0.48s  tour=[11, 148, 70, 99, 100, 107, 97, 113, 94, 63, 84, 101, 129, 31, 66]
+    [train] s=6: tc=1499.8742  pc=267.3860  tot=1789.3797  t=0.43s  tour=[11, 101, 129, 31, 94, 113, 63, 84, 97, 107, 100, 70, 99, 66, 148]
+    [train] s=7: tc=1967.7315  pc=0.0000  tot=1989.8510  t=0.48s  tour=[11, 148, 101, 107, 100, 97, 94, 113, 63, 84, 99, 70, 31, 129, 66]
+    [train] s=8: tc=1763.4916  pc=89.2751  tot=1874.8863  t=0.45s  tour=[11, 148, 101, 66, 70, 99, 63, 113, 94, 84, 107, 97, 100, 31, 129]
+  [train] Local search completata: 8 scenari in 3.72s  (0.47s/scenario)
+
+  LS out-of-sample (30 scenari, seme=99) ...
+  Scenario 1 | PI = 1490.0237
+  Scenario 2 | PI = 1574.7326
+  Scenario 3 | PI = 1725.0532
+  Scenario 4 | PI = 1646.9443
+  Scenario 5 | PI = 1734.4107
+  Scenario 6 | PI = 1701.5052
+  Scenario 7 | PI = 1487.4332
+  Scenario 8 | PI = 1755.9355
+  Scenario 9 | PI = 1482.5271
+  Scenario 10 | PI = 1669.6184
+  Scenario 11 | PI = 1638.1129
+  Scenario 12 | PI = 1686.8051
+  Scenario 13 | PI = 1675.2819
+  Scenario 14 | PI = 1586.5659
+  Scenario 15 | PI = 1583.2326
+  Scenario 16 | PI = 1714.2937
+  Scenario 17 | PI = 1505.5491
+  Scenario 18 | PI = 1713.0222
+  Scenario 19 | PI = 1597.0846
+  Scenario 20 | PI = 1296.7926
+  Scenario 21 | PI = 1814.6277
+  Scenario 22 | PI = 1589.0244
+  Scenario 23 | PI = 1606.3167
+  Scenario 24 | PI = 1647.8703
+  Scenario 25 | PI = 1691.7823
+  Scenario 26 | PI = 1558.6828
+  Scenario 27 | PI = 1833.0329
+  Scenario 28 | PI = 1690.9611
+  Scenario 29 | PI = 1770.5438
+  Scenario 30 | PI = 1856.0967
+    [val] s=1: tc=1747.6559  pc=0.0000  tot=1769.7753  t=0.41s  tour=[11, 148, 101, 31, 129, 66, 100, 107, 84, 97, 94, 63, 113, 70, 99]
+    [val] s=2: tc=1574.7326  pc=89.2751  tot=1686.1272  t=0.50s  tour=[11, 107, 100, 97, 84, 63, 113, 94, 70, 99, 129, 31, 101, 66, 148]
+    [val] s=3: tc=1865.0641  pc=0.0000  tot=1887.1836  t=0.43s  tour=[11, 99, 70, 94, 113, 63, 84, 107, 97, 100, 101, 31, 129, 66, 148]
+    [val] s=4: tc=1809.7362  pc=64.6248  tot=1896.4805  t=0.46s  tour=[11, 66, 31, 129, 101, 94, 113, 63, 107, 100, 97, 99, 70, 84, 148]
+    [val] s=5: tc=1960.5232  pc=64.6248  tot=2047.2675  t=0.43s  tour=[11, 97, 100, 107, 84, 63, 94, 113, 70, 99, 101, 129, 31, 66, 148]
+    [val] s=6: tc=1867.0984  pc=64.6248  tot=1953.8426  t=0.45s  tour=[11, 148, 66, 113, 94, 63, 84, 97, 100, 107, 99, 70, 31, 129, 101]
+    [val] s=7: tc=1562.0850  pc=183.5025  tot=1767.7069  t=0.45s  tour=[11, 101, 94, 113, 63, 84, 107, 100, 97, 70, 99, 148, 31, 129, 66]
+    [val] s=8: tc=1915.5357  pc=0.0000  tot=1937.6552  t=0.45s  tour=[11, 148, 66, 129, 31, 84, 107, 97, 100, 94, 63, 113, 70, 99, 101]
+    [val] s=9: tc=1566.6173  pc=183.5025  tot=1772.2393  t=0.43s  tour=[11, 66, 99, 70, 97, 100, 107, 94, 113, 63, 84, 129, 31, 101, 148]
+    [val] s=10: tc=1780.0433  pc=272.7776  tot=2074.9404  t=0.46s  tour=[11, 101, 66, 148, 129, 31, 113, 94, 63, 84, 107, 100, 97, 70, 99]
+    [val] s=11: tc=1758.6918  pc=0.0000  tot=1780.8112  t=0.45s  tour=[11, 66, 31, 129, 100, 107, 70, 99, 97, 113, 94, 63, 84, 101, 148]
+    [val] s=12: tc=1729.9142  pc=89.2751  tot=1841.3088  t=0.44s  tour=[11, 148, 70, 99, 100, 107, 84, 63, 113, 94, 97, 129, 31, 101, 66]
+    [val] s=13: tc=1675.2819  pc=0.0000  tot=1697.4014  t=0.48s  tour=[11, 148, 70, 99, 84, 97, 100, 107, 63, 94, 113, 101, 31, 129, 66]
+    [val] s=14: tc=1893.3290  pc=0.0000  tot=1915.4485  t=0.45s  tour=[11, 66, 94, 84, 97, 100, 107, 63, 113, 99, 70, 148, 129, 31, 101]
+    [val] s=15: tc=1665.5203  pc=153.8999  tot=1841.5397  t=0.49s  tour=[11, 148, 66, 101, 129, 31, 100, 97, 107, 63, 84, 94, 113, 70, 99]
+    [val] s=16: tc=1786.2975  pc=0.0000  tot=1808.4170  t=0.49s  tour=[11, 66, 129, 31, 101, 97, 100, 107, 84, 63, 113, 94, 70, 99, 148]
+    [val] s=17: tc=1529.0157  pc=248.1273  tot=1799.2625  t=0.44s  tour=[11, 148, 66, 99, 70, 97, 107, 100, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=18: tc=1963.2260  pc=0.0000  tot=1985.3455  t=0.43s  tour=[11, 101, 31, 99, 70, 84, 63, 94, 113, 107, 100, 97, 129, 66, 148]
+    [val] s=19: tc=1749.1392  pc=64.6248  tot=1835.8834  t=0.45s  tour=[11, 66, 99, 70, 107, 100, 97, 84, 63, 113, 94, 31, 129, 101, 148]
+    [val] s=20: tc=1322.4371  pc=183.5025  tot=1528.0591  t=0.47s  tour=[11, 148, 101, 31, 129, 99, 70, 97, 100, 107, 84, 63, 113, 94, 66]
+    [val] s=21: tc=2001.6624  pc=0.0000  tot=2023.7819  t=0.44s  tour=[11, 148, 101, 99, 70, 113, 84, 63, 107, 100, 97, 94, 66, 31, 129]
+    [val] s=22: tc=1589.0244  pc=267.3860  tot=1878.5299  t=0.45s  tour=[11, 66, 148, 99, 70, 100, 97, 107, 84, 63, 113, 94, 31, 129, 101]
+    [val] s=23: tc=1606.3167  pc=64.6248  tot=1693.0610  t=0.47s  tour=[11, 148, 66, 94, 113, 63, 84, 97, 100, 107, 70, 99, 31, 129, 101]
+    [val] s=24: tc=1809.6122  pc=0.0000  tot=1831.7317  t=0.42s  tour=[11, 148, 66, 70, 99, 84, 113, 94, 63, 107, 100, 97, 129, 31, 101]
+    [val] s=25: tc=1941.8560  pc=0.0000  tot=1963.9755  t=0.43s  tour=[11, 148, 129, 31, 101, 99, 70, 107, 100, 97, 84, 94, 113, 63, 66]
+    [val] s=26: tc=1558.6828  pc=267.3860  tot=1848.1883  t=0.42s  tour=[11, 148, 99, 70, 100, 97, 107, 84, 63, 113, 94, 101, 129, 31, 66]
+    [val] s=27: tc=2004.3527  pc=0.0000  tot=2026.4722  t=0.46s  tour=[11, 66, 129, 31, 101, 99, 70, 94, 113, 97, 100, 107, 63, 84, 148]
+    [val] s=28: tc=1690.9611  pc=0.0000  tot=1713.0806  t=0.47s  tour=[11, 148, 66, 31, 129, 70, 99, 94, 113, 63, 84, 107, 100, 97, 101]
+    [val] s=29: tc=1941.0481  pc=0.0000  tot=1963.1675  t=0.47s  tour=[11, 148, 66, 129, 31, 101, 63, 84, 97, 100, 107, 94, 113, 70, 99]
+    [val] s=30: tc=2080.4521  pc=0.0000  tot=2102.5716  t=0.45s  tour=[11, 148, 66, 70, 99, 97, 100, 63, 94, 113, 84, 107, 101, 31, 129]
+  [val] Local search completata: 30 scenari in 13.55s  (0.45s/scenario)
+
+============================================================
+VALIDAZIONE OUT-OF-SAMPLE
+  Scenari: 30 | seme: VALIDATION_SEED=99
+  Politica STO: [(70, 99)] (1 archi prenotati)
+  Politica EEV: [(70, 97), (70, 99)] (2 archi prenotati)
+  Scenario 1 | PI = 1490.0237
+  Scenario 2 | PI = 1574.7326
+  Scenario 3 | PI = 1725.0532
+  Scenario 4 | PI = 1646.9443
+  Scenario 5 | PI = 1734.4107
+  Scenario 6 | PI = 1701.5052
+  Scenario 7 | PI = 1487.4332
+  Scenario 8 | PI = 1755.9355
+  Scenario 9 | PI = 1482.5271
+  Scenario 10 | PI = 1669.6184
+  Scenario 11 | PI = 1638.1129
+  Scenario 12 | PI = 1686.8051
+  Scenario 13 | PI = 1675.2819
+  Scenario 14 | PI = 1586.5659
+  Scenario 15 | PI = 1583.2326
+  Scenario 16 | PI = 1714.2937
+  Scenario 17 | PI = 1505.5491
+  Scenario 18 | PI = 1713.0222
+  Scenario 19 | PI = 1597.0846
+  Scenario 20 | PI = 1296.7926
+  Scenario 21 | PI = 1814.6277
+  Scenario 22 | PI = 1589.0244
+  Scenario 23 | PI = 1606.3167
+  Scenario 24 | PI = 1647.8703
+  Scenario 25 | PI = 1691.7823
+  Scenario 26 | PI = 1558.6828
+  Scenario 27 | PI = 1833.0329
+  Scenario 28 | PI = 1690.9611
+  Scenario 29 | PI = 1770.5438
+  Scenario 30 | PI = 1856.0967
+
+  DETTAGLIO PER SCENARIO DI VALIDAZIONE
+  Scen |         PI |    STO_val [perc, multa] |    EEV_val [perc, multa]
+     1 |  1490.0237 |  1717.1260 [1490.0237, 204.9829] |  1808.8773 [1490.0237, 204.9829]
+     2 |  1574.7326 |  1686.1272 [1574.7326, 89.2751] |  1777.8785 [1574.7326, 89.2751]
+     3 |  1725.0532 |  1887.1836 [1865.0641, 0.0000] |  1903.5487 [1725.0532, 64.6248]
+     4 |  1646.9443 |  1896.4805 [1809.7362, 64.6248] |  1825.4399 [1646.9443, 64.6248]
+     5 |  1734.4107 |  2004.6575 [1734.4107, 248.1273] |  1912.9063 [1734.4107, 64.6248]
+     6 |  1701.5052 |  1953.8426 [1867.0984, 64.6248] |  1919.0601 [1715.9143, 89.2751]
+     7 |  1487.4332 |  1767.7069 [1562.0850, 183.5025] |  1675.9557 [1562.0850, 0.0000]
+     8 |  1755.9355 |  1937.6552 [1915.5357, 0.0000] |  2029.4064 [1915.5357, 0.0000]
+     9 |  1482.5271 |  1772.2393 [1566.6173, 183.5025] |  1680.4880 [1566.6173, 0.0000]
+    10 |  1669.6184 |  2064.0847 [1669.6184, 372.3469] |  1983.1892 [1780.0433, 89.2751]
+    11 |  1638.1129 |  1780.8112 [1758.6918, 0.0000] |  1872.5625 [1758.6918, 0.0000]
+    12 |  1686.8051 |  1841.3088 [1729.9142, 89.2751] |  1933.0600 [1729.9142, 89.2751]
+    13 |  1675.2819 |  1697.4014 [1675.2819, 0.0000] |  1789.1526 [1675.2819, 0.0000]
+    14 |  1586.5659 |  1915.4485 [1893.3290, 0.0000] |  2007.1998 [1893.3290, 0.0000]
+    15 |  1583.2326 |  1841.5397 [1665.5203, 153.8999] |  1851.7214 [1583.9507, 153.8999]
+    16 |  1714.2937 |  1808.4170 [1786.2975, 0.0000] |  1900.1682 [1786.2975, 0.0000]
+    17 |  1505.5491 |  1799.2625 [1529.0157, 248.1273] |  1707.5113 [1529.0157, 64.6248]
+    18 |  1713.0222 |  1965.7131 [1738.6108, 204.9829] |  1928.9647 [1815.0939, 0.0000]
+    19 |  1597.0846 |  1835.8834 [1749.1392, 64.6248] |  1775.5801 [1597.0846, 64.6248]
+    20 |  1296.7926 |  1528.0591 [1322.4371, 183.5025] |  1436.3078 [1322.4371, 0.0000]
+    21 |  1814.6277 |  1928.9592 [1906.8398, 0.0000] |  1982.7400 [1868.8693, 0.0000]
+    22 |  1589.0244 |  1739.8272 [1717.7077, 0.0000] |  1831.5785 [1717.7077, 0.0000]
+    23 |  1606.3167 |  1693.0610 [1606.3167, 64.6248] |  1784.8122 [1606.3167, 64.6248]
+    24 |  1647.8703 |  1831.7317 [1809.6122, 0.0000] |  1923.4830 [1809.6122, 0.0000]
+    25 |  1691.7823 |  1961.7716 [1875.0273, 64.6248] |  2053.5228 [1875.0273, 64.6248]
+    26 |  1558.6828 |  1848.1883 [1558.6828, 267.3860] |  1931.1439 [1752.6484, 64.6248]
+    27 |  1833.0329 |  2026.4722 [2004.3527, 0.0000] |  2010.0003 [1896.1296, 0.0000]
+    28 |  1690.9611 |  1713.0806 [1690.9611, 0.0000] |  1804.8319 [1690.9611, 0.0000]
+    29 |  1770.5438 |  1937.0411 [1914.9216, 0.0000] |  2028.7924 [1914.9216, 0.0000]
+    30 |  1856.0967 |  2028.5027 [1941.7584, 64.6248] |  2120.2540 [1941.7584, 64.6248]
+
+  MEDIE VALIDAZIONE OUT-OF-SAMPLE
+  PI_val  = 1644.1288
+  STO_val = 1846.9861  (politica x_sto applicata out-of-sample)
+  EEV_val = 1873.0046  (politica x_ev  applicata out-of-sample)
+  VSS_val = EEV_val - STO_val = 26.0184 (1.3891%)
+  Gap PI-STO_val = 12.3383%
+============================================================
+
+IMPATTO ARCHI CASUALI - VALIDAZIONE
+  Scenari analizzati = 30
+  Estrazioni casuali totali scenario-specifiche = 900
+  Archi casuali distinti = 92
+
+  Conteggio degli archi casuali che compaiono nei tour
+  PI : distinti usati almeno una volta = 54/92 (58.70%) | occorrenze scenario-specifiche = 115/900 (12.78%)
+  STO: distinti usati almeno una volta = 65/92 (70.65%) | occorrenze scenario-specifiche = 157/900 (17.44%)
+  EEV: distinti usati almeno una volta = 63/92 (68.48%) | occorrenze scenario-specifiche = 145/900 (16.11%)
+  ANY: distinti usati in almeno un tour PI/STO/EEV = 70/92 (76.09%) | occorrenze scenario-specifiche = 196/900 (21.78%)
+
+  Dettaglio per scenario: sid | casuali | PI | STO | EEV | ANY
+     1 |      30 |  4 |   4 |   4 |   4
+     2 |      30 |  5 |   5 |   5 |   5
+     3 |      30 |  3 |   5 |   3 |   7
+     4 |      30 |  5 |   5 |   5 |   6
+     5 |      30 |  3 |   3 |   3 |   3
+     6 |      30 |  4 |   4 |   6 |  10
+     7 |      30 |  5 |   7 |   7 |   7
+     8 |      30 |  2 |   6 |   6 |   6
+     9 |      30 |  3 |   3 |   3 |   5
+    10 |      30 |  4 |   4 |   4 |   7
+    11 |      30 |  3 |   6 |   6 |   8
+    12 |      30 |  3 |   4 |   4 |   4
+    13 |      30 |  6 |   6 |   6 |   6
+    14 |      30 |  4 |   7 |   7 |   7
+    15 |      30 |  2 |   7 |   4 |   8
+    16 |      30 |  5 |   5 |   5 |   9
+    17 |      30 |  2 |   4 |   4 |   4
+    18 |      30 |  7 |   8 |   5 |  14
+    19 |      30 |  3 |   4 |   3 |   4
+    20 |      30 |  4 |   5 |   5 |   6
+    21 |      30 |  2 |   7 |   4 |   7
+    22 |      30 |  4 |   7 |   7 |   9
+    23 |      30 |  3 |   3 |   3 |   3
+    24 |      30 |  4 |   7 |   7 |  10
+    25 |      30 |  4 |   6 |   6 |   6
+    26 |      30 |  3 |   3 |   2 |   3
+    27 |      30 |  3 |   4 |   3 |   5
+    28 |      30 |  4 |   4 |   4 |   4
+    29 |      30 |  4 |   7 |   7 |   9
+    30 |      30 |  7 |   7 |   7 |  10
+
+─────────────────────────────────────────────────────────────────
+RIEPILOGO ESPERIMENTO B — UTSP LOCAL SEARCH
+  x_ls = [(70, 99)]
+
+  TRAINING (8 scenari)
+    PI      = 1626.0996
+    STO     = 1866.4312
+    EEV     = 1875.1359
+    UTSP_LS = 1869.5961
+
+  VALIDAZIONE (30 scenari, seme=99)
+    PI_val      = 1644.1288
+    STO_val     = 1846.9861
+    EEV_val     = 1873.0046
+    UTSP_LS_val = 1862.3752
+
+  Gap LS vs STO (val) = +0.83%
+  Gap LS vs EEV (val) = -0.57%
+  Gap LS vs PI  (val) = +13.27%
+─────────────────────────────────────────────────────────────────
+
+=================================================================
+ESPERIMENTO B — UTSP HEATMAP + LOCAL SEARCH (2-stadi, per-scenario)
+=================================================================
+
+Primo stadio x_ls : [(70, 99)]
+
+TEST
+  Scen |         PI |    UTSP_LS [perc, multa] | tour
+     1 |  1666.7056 |  1891.5864 [1666.7056, 202.7612] | [11, 66, 94, 113, 63, 84, 97, 107, 100, 70, 99, 101, 31, 129, 148]
+     2 |  1449.5976 |  1742.1569 [1536.5349, 183.5025] | [11, 101, 31, 129, 148, 99, 70, 97, 100, 107, 84, 63, 94, 113, 66]
+     3 |  1598.6225 |  1938.6096 [1732.9876, 183.5025] | [11, 148, 66, 129, 31, 113, 94, 63, 84, 99, 70, 97, 100, 107, 101]
+     4 |  1680.3332 |  1872.6131 [1850.4936, 0.0000] | [11, 97, 100, 107, 84, 94, 113, 63, 70, 99, 101, 31, 129, 66, 148]
+     5 |  1770.9417 |  1857.6860 [1770.9417, 64.6248] | [11, 148, 70, 99, 100, 107, 97, 113, 94, 63, 84, 101, 129, 31, 66]
+     6 |  1499.8742 |  1789.3797 [1499.8742, 267.3860] | [11, 101, 129, 31, 94, 113, 63, 84, 97, 107, 100, 70, 99, 66, 148]
+     7 |  1755.6706 |  1989.8510 [1967.7315, 0.0000] | [11, 148, 101, 107, 100, 97, 94, 113, 63, 84, 99, 70, 31, 129, 66]
+     8 |  1587.0516 |  1874.8863 [1763.4916, 89.2751] | [11, 148, 101, 66, 70, 99, 63, 113, 94, 84, 107, 97, 100, 31, 129]
+
+  PI      (train) = 1626.0996
+  STO     (train) = 1866.4312
+  EEV     (train) = 1875.1359
+  UTSP_LS (train) = 1869.5961
+
+VALIDAZIONE (30 scenari, seme=99)
+  UTSP_LS_val = 1862.3752
+  PI_val      = 1644.1288
+  STO_val     = 1846.9861
+  EEV_val     = 1873.0046
+
+  Gap LS vs STO (val) = +0.8332%
+  Gap LS vs EEV (val) = -0.5675%
+  Gap LS vs PI  (val) = +13.2743%
+
+TRAINING GNN
+  Epoche         = 500
+  Temperatura T  = 0.531151
+  Loss iniziale  = 105.03547
+  Loss finale    = 27.57675
+  Loss minima    = 27.43862 (ep 498)
+=================================================================
+
+  → Salvato: ./risultati_espB_UTSP_LS.txt
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_1_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_2_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_3_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_4_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_5_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_6_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_7_confronto.png
+  Salvato grafico 4 pannelli: ./espB_UTSP_LS_scenario_8_confronto.png
