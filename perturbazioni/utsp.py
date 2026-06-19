@@ -1482,6 +1482,43 @@ def _run_policy_branch(
         "gap_utsp_pi": gap_utsp_pi,
     }
 
+
+def _compute_bookings_from_tours(tours, scenario_ids, nodes, I, p, C):
+    """
+    Prenotazioni ottimali post-LS: prenoto arco (i,j) ∈ I se la frequenza
+    d'uso nei tour supera la soglia analitica p/C.
+    """
+    from tsp_utils import canon_edge as _ce
+
+    I_set = {_ce(i, j) for (i, j) in I}
+    n_scenarios = len(scenario_ids)
+
+    usage_count = {edge: 0 for edge in I_set}
+    for sid in scenario_ids:
+        tour = tours[sid]
+        arcs = [(tour[k], tour[(k + 1) % len(tour)]) for k in range(len(tour))]
+        for (a, b) in arcs:
+            ce = _ce(a, b)
+            if ce in I_set:
+                usage_count[ce] += 1
+
+    x_opt = []
+    print("    Prenotazioni post-LS (f > p/C):")
+    for edge in sorted(I_set):
+        i, j = edge
+        f = usage_count[edge] / n_scenarios
+        p_val = get_edge_value(p, i, j)
+        C_val = get_edge_value(C, i, j)
+        soglia = p_val / C_val if C_val > 0 else float('inf')
+        book = f > soglia
+        if book:
+            x_opt.append(edge)
+        flag = "✓ PRENOTA" if book else "✗ no"
+        print(f"      {{{i},{j}}}  f={f:.3f}  soglia={soglia:.3f}  {flag}")
+    print(f"    Totale: {len(x_opt)}/{len(I_set)}")
+    return x_opt
+
+
 def _run_local_search_branch(
     nodes, coords, E, root, env, res_B,
     results, scenario_ids, H_list,
@@ -1498,12 +1535,10 @@ def _run_local_search_branch(
     scenario_probs = res_B["scenario_probs"]
     frequent_arcs  = res_B["frequent_arcs"]
 
-    x_ls   = list(x_utsp)
-    reserv = sum(get_edge_value(p, i, j) for (i, j) in x_ls)
-    print(f"\n  Primo stadio x_ls (= x_utsp) : {sorted(x_ls)}")
-    print(f"  Costo prenotazione            : {reserv:.4f}")
+    # LS senza prenotazioni — decise post-hoc con formula f > p/C
+    print(f"\n  Primo stadio: prenotazioni decise post-LS (formula f > p/C)")
 
-    # Secondo stadio LS su scenari di training  
+    # Secondo stadio LS su scenari di training (senza prenotazioni)
     print(f"\n  LS su {len(scenario_ids)} scenari di training ...")
     (costs_train, tc_train, pc_train,
      tours_train, solutions_train, UTSP_LS_train) = _run_ls_on_scenarios(
@@ -1511,11 +1546,24 @@ def _run_local_search_branch(
         results, scenario_ids, scenario_probs,
         H_list_precomputed=H_list,
         dist_scale=dist_scale, temperature=temperature,
-        device=device, x_ls=x_ls, label="train",
+        device=device, x_ls=[], label="train",
     )
 
-    # Validazione: genera scenari nuovi, forward GNN, LS  
-    # Validazione: batch indipendenti, forward GNN batchato, LS per scenario
+    # Prenotazioni ottimali dai tour di training
+    x_ls = _compute_bookings_from_tours(tours_train, scenario_ids, nodes, I, p, C)
+    reserv = sum(get_edge_value(p, i, j) for (i, j) in x_ls)
+    print(f"  Costo prenotazione post-LS: {reserv:.4f}")
+
+    # Ricalcolo costi training con prenotazioni ottimali
+    for sid in scenario_ids:
+        tc, pc = _ls_cost_with_penalty(tours_train[sid], results[sid]["scenario_dist"],
+                                        nodes, I, x_ls, C)
+        costs_train[sid] = reserv + tc + pc
+        tc_train[sid] = tc
+        pc_train[sid] = pc
+    UTSP_LS_train = sum(scenario_probs[sid] * costs_train[sid] for sid in scenario_ids)
+
+    # Validazione: batch indipendenti, booking post-LS per batch
     print(f"\n  LS out-of-sample ({N_VALIDATION_SCENARIOS} scenari, "
           f"{N_VALIDATION_SCENARIOS // UTSP_BATCH_SIZE} batch × {UTSP_BATCH_SIZE}, "
           f"seme={VALIDATION_SEED}) ...")
@@ -1538,7 +1586,7 @@ def _run_local_search_branch(
         b_results = batch["results"]
         K_b       = len(b_sids)
 
-        # Forward GNN batchato su UTSP_BATCH_SIZE scenari
+        # Forward GNN batchato
         dist_tensors = []
         for sid in b_sids:
             sd = b_results[sid]["scenario_dist"]
@@ -1557,15 +1605,32 @@ def _run_local_search_branch(
             T_batch  = model(xy_tile_b, adj_stack_b, device)
             H_list_b = [compute_heatmap(T_batch[k:k+1]) for k in range(K_b)]
 
-        # LS per scenario con heatmap precomputata dal batch
-        (c_b, tc_b, pc_b, t_b, sol_b, mean_b) = _run_ls_on_scenarios(
+        # LS senza prenotazioni
+        (c_b, tc_b, pc_b, t_b, sol_b, _) = _run_ls_on_scenarios(
             model, xy, nodes, root, I, p, C,
             b_results, b_sids, batch["scenario_probs"],
             H_list_precomputed=H_list_b,
             dist_scale=dist_scale, temperature=temperature,
-            device=device, x_ls=x_ls, label=f"val_b{b_idx}",
+            device=device, x_ls=[], label=f"val_b{b_idx}",
         )
 
+        # Prenotazioni ottimali post-LS per questo batch
+        x_batch = _compute_bookings_from_tours(t_b, b_sids, nodes, I, p, C)
+        reserv_b = sum(get_edge_value(p, i, j) for (i, j) in x_batch)
+
+        # Ricalcolo costi con prenotazioni ottimali
+        batch_costs = []
+        for sid in b_sids:
+            tc, pc = _ls_cost_with_penalty(
+                t_b[sid], b_results[sid]["scenario_dist"],
+                nodes, I, x_batch, C
+            )
+            c_b[sid]  = reserv_b + tc + pc
+            tc_b[sid] = tc
+            pc_b[sid] = pc
+            batch_costs.append(c_b[sid])
+
+        mean_b = sum(batch_costs) / len(batch_costs)
         costs_val.update(c_b)
         tc_val.update(tc_b)
         pc_val.update(pc_b)
@@ -1573,11 +1638,12 @@ def _run_local_search_branch(
         solutions_val.update(sol_b)
         results_val.update(b_results)
         batch_means.append(mean_b)
-        print(f"    Val batch {b_idx+1}/{len(batches_val)}: media={mean_b:.4f}")
+        print(f"    Val batch {b_idx+1}/{len(batches_val)}: "
+              f"media={mean_b:.4f}  x_opt={sorted(x_batch)}")
 
     UTSP_LS_val = sum(batch_means) / len(batch_means)
-    print(f"  Val globale ({N_VALIDATION_SCENARIOS} scenari, "
-          f"{len(batches_val)} batch × {UTSP_BATCH_SIZE}): media={UTSP_LS_val:.4f}")
+    print(f"\n  Val globale ({N_VALIDATION_SCENARIOS} scenari, "
+          f"{len(batches_val)} batch): media={UTSP_LS_val:.4f}")
     scenario_ids_val = list(costs_val.keys())
 
     #  Benchmark PI/STO/EEV di validazione  

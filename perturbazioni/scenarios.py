@@ -156,7 +156,7 @@ def generate_scenarios(
     scenario_ids, nodes, E, base_dist, I, frequent_arcs,
     n_extra_arcs, mean_frac, sigma_frac, base_seed,
     root, env, p, C,
-    solve_pi=False,
+    solve_pi=True,
 ):
     scenario_probs = {s: 1.0 / len(scenario_ids) for s in scenario_ids}
     results = {}
@@ -192,7 +192,6 @@ def generate_scenarios(
             "random_edges" : sorted(random_edges),
         }
 
-        pi_str = (f"{exact_free['length']:.4f}"
         if exact_free["length"] is not None:
             print(f"  Scenario {scenario_id} | PI = {exact_free['length']:.4f}")
 

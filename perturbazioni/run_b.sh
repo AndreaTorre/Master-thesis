@@ -5,7 +5,6 @@
 #SBATCH --mem=32G
 #SBATCH --output=output_B_%j.txt
 #SBATCH --error=error_B_%j.txt
-#SBATCH --signal=B:USR1@600
 
 module load python
 module load gurobi

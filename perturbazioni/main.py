@@ -10,7 +10,7 @@ import hashlib
 
 
 
-CACHE_PATH = "/home/atorre/UTSP/unione/git/pert/res_B_cached_15.pkl"
+CACHE_PATH = "/home/atorre/UTSP/unione/git/pert/res_B_cached.pkl"
 def main():
     parser = argparse.ArgumentParser(description="Esegue Esperimento B e le varianti UTSP.")
     parser.add_argument(

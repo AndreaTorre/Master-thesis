@@ -3,8 +3,8 @@
 import os
 
 # Percorsi
-DATA_FILE_PRIMARY = os.getenv("TESI_DATA_FILE", "/home/atorre/UTSP/unione/git/pert/nodi_ch_15.json")
-DATA_FILE_FALLBACK = os.getenv("TESI_DATA_FILE_FALLBACK", "nodi_ch_15.json")
+DATA_FILE_PRIMARY = os.getenv("TESI_DATA_FILE", "/home/atorre/UTSP/unione/git/pert/nodi_40.json")
+DATA_FILE_FALLBACK = os.getenv("TESI_DATA_FILE_FALLBACK", "nodi_40.json")
 OUTPUT_DIR = os.getenv("TESI_OUTPUT_DIR", ".")
 
 # Esperimenti da eseguire nel main
@@ -35,20 +35,20 @@ N_FREQUENT_ARCS = 6
 MIN_FREQ_FREQUENT = 0.80
 
 # Parametri STO Gurobi
-STO_TIME_LIMIT = 600 # per il 15 nodi
-#STO_TIME_LIMIT = 43200 #12h per il 40 nodi
-STO_MIP_GAP = 0.0001
+#STO_TIME_LIMIT = 600 # per il 15 nodi
+STO_TIME_LIMIT = 43200 #12h per il 40 nodi
+STO_MIP_GAP = 0.005
 
 # K-medoids: nodi ottenuti esternamente
 #per ch=15
-K_MEDOID_NODES = [70, 101, 84]
+#K_MEDOID_NODES = [70, 101, 84]
 #per ch=25 
 #K_MEDOID_NODES = [16, 12, 30, 44, 19]
 
 #per 40
-#K_MEDOID_NODES = [34, 26, 20, 10, 7, 51, 18, 6, 33, 14]
+K_MEDOID_NODES = [34, 26, 20, 10, 7, 51, 18, 6, 33, 14]
 
-MAX_KMEDOID_I_ARCS = 7 # 7 per ch15 14 per ch25 25 per 40
+MAX_KMEDOID_I_ARCS = 25 # 7 per ch15 14 per ch25 25 per 40
 KMEDOID_ARCS_PER_NODE = 5 # 5 per ch12 10 per ch25 20 per 40 nodi
 
 # Iperparametri UTSP 2-stage
