@@ -18,12 +18,10 @@ def main():
     parser.add_argument(
         "--only",
         choices=["B", "B_UTSP_LS"],
-        default="ALL",
+        default="B_UTSP_LS",
         help=(
             "B = solo esperimento B; "
-            "B_UTSP = B + politica x_utsp + ricorso Gurobi; "
-            "B_UTSP_LS = B + heatmap UTSP + local search; "
-            "ALL = B + entrambe le varianti UTSP."
+            "B_UTSP_LS = B + heatmap UTSP + local search."
         ),
     )
     args = parser.parse_args()
