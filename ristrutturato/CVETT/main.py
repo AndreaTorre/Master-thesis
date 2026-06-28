@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description="Esegue Esperimento B e le varianti UTSP.")
     parser.add_argument(
         "--only",
-        choices=["B", "B_UTSP", "B_UTSP_LS", "ALL"],
+        choices=["B", "B_UTSP_LS"],
         default="ALL",
         help=(
             "B = solo esperimento B; "
@@ -67,15 +67,18 @@ def main():
     if args.only == "B":
         return risultati
 
-    if args.only == "B_UTSP":
-        mode = "policy"
-    elif args.only == "B_UTSP_LS":
+    if args.only == "B_UTSP_LS":
         mode = "local_search"
     else:
-        mode = "both"
+        mode = "local_search"
 
-    risultati["B_UTSP"] = risultati["B_UTSP"] = run_esperimento_B_UTSP( nodes, coords, base_dist, E, root, env,
-                                                res_B=risultati["B"], wind=wind,alpha=alpha,mode=mode,)
+    risultati["B_UTSP"] = run_esperimento_B_UTSP(
+        nodes, coords, base_dist, E, root, env,
+        res_B=risultati["B"],
+        mode=mode,
+        scenario_kwargs={"wind": wind, "alpha": alpha},
+        exp_name="espB_wind_UTSP_LS",
+    )
 
     return risultati
 

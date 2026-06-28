@@ -4,7 +4,7 @@ import pickle
 from common import load_data, load_env, set_seed
 from experiment_B import run_esperimento_B
 import torch  
-from common.utsp import run_esperimento_B_UTSP
+from utsp import run_esperimento_B_UTSP
 import os
 import hashlib
 
@@ -17,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser(description="Esegue Esperimento B e le varianti UTSP.")
     parser.add_argument(
         "--only",
-        choices=["B", "B_UTSP", "B_UTSP_LS", "ALL"],
+        choices=["B", "B_UTSP_LS"],
         default="ALL",
         help=(
             "B = solo esperimento B; "
@@ -54,12 +54,10 @@ def main():
     if args.only == "B":
         return risultati
 
-    if args.only == "B_UTSP":
-        mode = "policy"
-    elif args.only == "B_UTSP_LS":
+    if args.only == "B_UTSP_LS":
         mode = "local_search"
     else:
-        mode = "both"
+        mode = "local_search"
 
     risultati["B_UTSP"] = run_esperimento_B_UTSP(
         nodes, coords, base_dist, E, root, env, res_B=risultati["B"],

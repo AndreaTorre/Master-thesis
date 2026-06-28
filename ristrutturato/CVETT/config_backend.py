@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 
 # Percorsi
 DATA_FILE_PRIMARY = os.getenv("TESI_DATA_FILE", "/home/atorre/UTSP/unione/git/UTSP/data/pert/nodi_15.json")
 DATA_FILE_FALLBACK = os.getenv("TESI_DATA_FILE_FALLBACK", "/home/atorre/UTSP/unione/git/UTSP/data/pert/nodi_15.json")
 OUTPUT_DIR = os.getenv("TESI_OUTPUT_DIR", "/home/atorre/UTSP/unione/git/UTSP/CVETT/RISULTATI_15")
+
+_match = re.search(r'nodi_(\d+)', DATA_FILE_PRIMARY)
+INSTANCE_TAG = _match.group(1) if _match else "unknown"
+N_NODES = int(INSTANCE_TAG) if INSTANCE_TAG.isdigit() else 0
 
 
 # Esperimenti da eseguire nel main
@@ -58,22 +63,30 @@ N_CALIBRATION_SCENARIOS = 30
 N_FREQUENT_ARCS = 6
 MIN_FREQ_FREQUENT = 0.80
 
-# Parametri STO Gurobi
-STO_TIME_LIMIT = 2700 # per il 15 nodi
-#STO_TIME_LIMIT = 3600 # per il 25 nodi
-#STO_TIME_LIMIT = 43200 #12h per il 40 nodi
-STO_MIP_GAP = 0.0001
+# Parametri dipendenti dall'istanza
+if N_NODES == 15:
+    K_MEDOID_NODES = [70, 101, 84]
+    MAX_KMEDOID_I_ARCS = 7
+    KMEDOID_ARCS_PER_NODE = 5
+    STO_TIME_LIMIT = 2700
+    STO_MIP_GAP = 0.0001
 
-# K-medoids: nodi ottenuti esternamente
-#per ch=15
-K_MEDOID_NODES = [70, 101, 84]
-#per ch=25 
-#K_MEDOID_NODES = [16, 12, 30, 44, 19]
-#per 40
-#K_MEDOID_NODES = [34, 26, 20, 10, 7, 51, 18, 6, 33, 14]
+elif N_NODES == 25:
+    K_MEDOID_NODES = [16, 12, 30, 44, 19]
+    MAX_KMEDOID_I_ARCS = 14
+    KMEDOID_ARCS_PER_NODE = 5
+    STO_TIME_LIMIT = 3600
+    STO_MIP_GAP = 0.0001
 
-MAX_KMEDOID_I_ARCS =7 # 7 per ch15 14 per ch25 25 per 40
-KMEDOID_ARCS_PER_NODE = 5 # 5 per ch12 10 per ch25 20 per 40 nodi
+elif N_NODES == 40:
+    K_MEDOID_NODES = [34, 26, 20, 10, 7, 51, 18, 6, 33, 14]
+    MAX_KMEDOID_I_ARCS = 25
+    KMEDOID_ARCS_PER_NODE = 5
+    STO_TIME_LIMIT = 43200
+    STO_MIP_GAP = 0.005
+
+else:
+    raise ValueError(f"Istanza non configurata: nodi_{INSTANCE_TAG}")
 
 # Iperparametri UTSP 2-stage
 UTSP2_HIDDEN = 64
