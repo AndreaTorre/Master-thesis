@@ -1,0 +1,33 @@
+
+# Risultati esperimenti
+ristrutturato/**/RISULTATI_*/
+ristrutturato/**/results/
+ristrutturato/**/outputs/
+ristrutturato/**/output/
+ristrutturato/**/grafici/
+ristrutturato/**/*.png
+ristrutturato/**/*.jpg
+ristrutturato/**/*.jpeg
+ristrutturato/**/*.pdf
+
+# Log e file SLURM
+ristrutturato/**/*.out
+ristrutturato/**/*.err
+ristrutturato/**/slurm-*.out
+ristrutturato/**/*error*.txt
+ristrutturato/**/*output*.txt
+
+# Cache Python
+ristrutturato/**/__pycache__/
+ristrutturato/**/*.pyc
+ristrutturato/**/.ipynb_checkpoints/
+
+# File pesanti
+ristrutturato/**/*.nc
+ristrutturato/**/*.h5
+ristrutturato/**/*.pt
+ristrutturato/**/*.pth
+ristrutturato/**/*.pkl
+ristrutturato/**/*.npy
+ristrutturato/**/*.npz
+ristrutturato/**/*.zip
