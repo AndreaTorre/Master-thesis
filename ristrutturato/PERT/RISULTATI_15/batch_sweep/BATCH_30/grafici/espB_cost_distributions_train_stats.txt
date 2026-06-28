@@ -1,0 +1,33 @@
+Statistiche descrittive — espB (train)
+============================================================
+
+[EEV]
+  n              = 8
+  media          = 1875.1359
+  mediana        = 1863.9947
+  moda (approx)  = 1845.2588
+  std            = 125.9970
+  skewness       = -0.2984
+  curtosi        = -0.4424
+  CI95% media    = [1769.7998, 1980.4719]
+
+[STO]
+  n              = 8
+  media          = 1866.4313
+  mediana        = 1873.7497
+  moda (approx)  = 1872.5179
+  std            = 72.9933
+  skewness       = -0.3823
+  curtosi        = -0.6680
+  CI95% media    = [1805.4073, 1927.4552]
+
+[UTSP]
+  n              = 8
+  media          = 1875.9589
+  mediana        = 1879.4336
+  moda (approx)  = 1872.5179
+  std            = 68.0988
+  skewness       = -0.6828
+  curtosi        = 0.1379
+  CI95% media    = [1819.0269, 1932.8910]
+

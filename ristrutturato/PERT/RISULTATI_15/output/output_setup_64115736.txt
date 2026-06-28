@@ -1,0 +1,41 @@
+
+============================================================
+gurobi_parallelo.py — fase: setup
+  Istanza:      nodi_15
+  Dati in:      /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/
+  Cache finale: /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/res_B_cached.pkl
+============================================================
+
+============================================================
+SETUP: costruzione I + calibrazione + perturbazioni
+============================================================
+Set parameter TokenServer to value "license1.computecanada.ca"
+
+NODI MEDOIDI FISSATI: [70, 101, 84]
+Tratte non orientate in I: 7
+
+TRATTE SELEZIONATE IN I:
+  {11,70} | b=436.8939 | p=109.2235 | C=218.4469
+  {66,101} | b=178.5503 | p=44.6376 | C=89.2751
+  {70,97} | b=367.0050 | p=91.7512 | C=183.5025
+  {70,99} | b=88.4779 | p=22.1195 | C=44.2390
+  {70,100} | b=405.5225 | p=101.3806 | C=202.7612
+  {70,101} | b=409.9657 | p=102.4914 | C=204.9829
+  {101,129} | b=129.2496 | p=32.3124 | C=64.6248
+
+Calibrazione archi frequenti...
+
+CALIBRAZIONE ARCHI FREQUENTI (30 scenari, seme=30):
+  Scenari validi: 30/30
+  Archi frequenti selezionati (freq >= 80%): 6
+    (11, 148)  freq=96.67%  (29/30)  costo=46.2648
+    (94, 113)  freq=93.33%  (28/30)  costo=53.7124
+    (31, 129)  freq=90.00%  (27/30)  costo=66.4722
+    (100, 107)  freq=86.67%  (26/30)  costo=75.9220
+    (63, 113)  freq=83.33%  (25/30)  costo=62.5645
+    (63, 84)  freq=80.00%  (24/30)  costo=73.9856
+
+Generazione perturbazioni (senza PI)...
+  Salvato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/setup.pkl (0.0 MB)
+
+SETUP completato in 7.5s

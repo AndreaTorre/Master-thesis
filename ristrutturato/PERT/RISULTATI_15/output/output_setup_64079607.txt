@@ -1,0 +1,12 @@
+
+============================================================
+gurobi_parallelo.py — fase: setup
+  Istanza:      nodi_15
+  Dati in:      /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/
+  Cache finale: /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/res_B_cached.pkl
+============================================================
+
+============================================================
+SETUP: costruzione I + calibrazione + perturbazioni
+============================================================
+Set parameter TokenServer to value "license1.computecanada.ca"

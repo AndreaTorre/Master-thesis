@@ -1,0 +1,22 @@
+Python usato:
+/home/atorre/UTSP/unione/git/UTSP/venv/bin/python
+/home/atorre/UTSP/unione/git/UTSP/venv/bin/python
+Controllo numpy:
+2.4.2
+=== UTSP COMMON MAIN ===
+EXPERIMENT      = CVETT
+N_NODES         = 25
+INSTANCE_TAG    = 25
+DATA_FILE       = /home/atorre/UTSP/unione/git/UTSP/data/pert/nodi_25.json
+OUTPUT_DIR      = /home/atorre/UTSP/unione/git/UTSP/CVETT/RISULTATI_25/batch_sweep/BATCH_50
+WIND_NC_PATH    = /home/atorre/UTSP/unione/git/UTSP/data/cvett/cvett.nc
+config file     = /home/atorre/UTSP/unione/git/UTSP/common/config.py
+========================
+Set parameter TokenServer to value "license1.computecanada.ca"
+[WIND] istanti temporali: 3048
+[WIND] griglia: 5 lat x 7 lon
+[WIND] velocita media: 5.10 m/s | max: 8.79 m/s
+File .pkl non trovato. Eseguo esperimento B...
+ESPERIMENTO B WIND: perturbazioni da campo vettoriale ERA5
+
+[STEP 1/5] Costruzione I dai medoidi...

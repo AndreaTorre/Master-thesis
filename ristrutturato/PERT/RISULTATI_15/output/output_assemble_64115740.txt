@@ -1,0 +1,98 @@
+
+============================================================
+gurobi_parallelo.py — fase: assemble
+  Istanza:      nodi_15
+  Dati in:      /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/
+  Cache finale: /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/res_B_cached.pkl
+============================================================
+
+============================================================
+ASSEMBLE: unione risultati → res_B_cached.pkl
+============================================================
+  Caricato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/setup.pkl
+  Caricato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/pi.pkl
+  Caricato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/eev.pkl
+  Caricato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/sto.pkl
+
+Controllo STO:
+  STO da modello     = 1866.431177
+  STO ricalcolato    = 1866.431253
+  differenza assoluta = 0.00007603
+
+RIASSUNTO PER SCENARIO
+Scenario 1 | PI: 1666.7056 | PI+pren: 1790.2057 | STO: 1891.5864 [perc=1666.7056, pren=22.1195, multa=202.7612] | EEV: 1983.3376 [perc=1666.7056, pren=113.8707, multa=202.7612]
+Scenario 2 | PI: 1449.5976 | PI+pren: 1608.1059 | STO: 1742.1569 [perc=1536.5349, pren=22.1195, multa=183.5025] | EEV: 1650.4056 [perc=1536.5349, pren=113.8707, multa=0.0000]
+Scenario 3 | PI: 1598.6225 | PI+pren: 1806.9155 | STO: 1934.2700 [perc=1912.1506, pren=22.1195, multa=0.0000] | EEV: 1846.8583 [perc=1732.9876, pren=113.8707, multa=0.0000]
+Scenario 4 | PI: 1680.3332 | PI+pren: 1794.2040 | STO: 1872.6131 [perc=1850.4936, pren=22.1195, multa=0.0000] | EEV: 1794.2040 [perc=1680.3332, pren=113.8707, multa=0.0000]
+Scenario 5 | PI: 1770.9417 | PI+pren: 1825.3736 | STO: 1857.6860 [perc=1770.9417, pren=22.1195, multa=64.6248] | EEV: 1949.4372 [perc=1770.9417, pren=113.8707, multa=64.6248]
+Scenario 6 | PI: 1499.8742 | PI+pren: 1655.6867 | STO: 1789.3797 [perc=1499.8742, pren=22.1195, multa=267.3860] | EEV: 1881.1310 [perc=1499.8742, pren=113.8707, multa=267.3860]
+Scenario 7 | PI: 1755.6706 | PI+pren: 1880.2815 | STO: 1968.8717 [perc=1882.1274, pren=22.1195, multa=64.6248] | EEV: 2060.6229 [perc=1882.1274, pren=113.8707, multa=64.6248]
+Scenario 8 | PI: 1587.0516 | PI+pren: 1777.8723 | STO: 1874.8863 [perc=1763.4916, pren=22.1195, multa=89.2751] | EEV: 1835.0902 [perc=1721.2195, pren=113.8707, multa=0.0000]
+
+BENCHMARK MEDI SUI SCENARI
+PI: 1626.0996
+PI (con prenotazioni): 1767.3306
+STO: 1866.4312
+EEV: 1875.1359
+
+DIAGNOSTICA SOLVER STO GUROBI
+Status        : TIME_LIMIT
+Soluzioni     : 10
+ObjVal        : 1866.4312
+ObjBound      : 1822.0050
+MIPGap        : 2.3803%
+Runtime       : 600.00s
+Nodi esplorati: 205351
+
+GAP
+VSS = EEV - STO = 8.7047 (0.4642%)
+Distanza diagnostica PI-STO = 14.7796%
+
+TRATTE I, PRENOTAZIONE E MULTA
+  {11,70} | b=436.8939 | p=109.2235 | C=218.4469
+  {66,101} | b=178.5503 | p=44.6376 | C=89.2751
+  {70,97} | b=367.0050 | p=91.7512 | C=183.5025
+  {70,99} | b=88.4779 | p=22.1195 | C=44.2390
+  {70,100} | b=405.5225 | p=101.3806 | C=202.7612
+  {70,101} | b=409.9657 | p=102.4914 | C=204.9829
+  {101,129} | b=129.2496 | p=32.3124 | C=64.6248
+
+ARCHI FREQUENTI AGGIUNTI ALLA PERTURBAZIONE: 6
+  (11, 148)
+  (94, 113)
+  (31, 129)
+  (100, 107)
+  (63, 113)
+  (63, 84)
+
+USO ARCHI RANDOM (aggregato su 8 scenari di training)
+  Totale inserimenti = 240
+  Media per scenario = 30.0
+
+IMPATTO ARCHI CASUALI - ADDESTRAMENTO
+  Scenari analizzati = 8
+  Estrazioni casuali totali scenario-specifiche = 240
+  Archi casuali distinti = 87
+
+  Conteggio degli archi casuali che compaiono nei tour
+  PI : distinti usati almeno una volta = 29/87 (33.33%) | occorrenze scenario-specifiche = 34/240 (14.17%)
+  STO: distinti usati almeno una volta = 30/87 (34.48%) | occorrenze scenario-specifiche = 38/240 (15.83%)
+  EEV: distinti usati almeno una volta = 27/87 (31.03%) | occorrenze scenario-specifiche = 37/240 (15.42%)
+  ANY: distinti usati in almeno un tour PI/STO/EEV = 39/87 (44.83%) | occorrenze scenario-specifiche = 51/240 (21.25%)
+
+  Dettaglio per scenario: sid | casuali | PI | STO | EEV | ANY
+     1 |      30 |  3 |   3 |   3 |   3
+     2 |      30 |  3 |   4 |   4 |   4
+     3 |      30 |  5 |   5 |   5 |   9
+     4 |      30 |  6 |   5 |   6 |   9
+     5 |      30 |  6 |   6 |   6 |   6
+     6 |      30 |  3 |   3 |   3 |   3
+     7 |      30 |  5 |   6 |   6 |   7
+     8 |      30 |  3 |   6 |   4 |  10
+
+  → Risultati salvati in: /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/risultati_espB.txt
+
+  res_B_cached.pkl salvato: /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/res_B_cached.pkl (0.0 MB)
+  Chiavi: 26
+
+ASSEMBLE completato in 0.0s

@@ -1,0 +1,20 @@
+/cvmfs/soft.computecanada.ca/custom/software/lua/bin/lua: ...om/software/lmod/lmod/libexec/../tools/i18n/init.lua:179: cannot read /cvmfs/soft.computecanada.ca/custom/software/lmod/lmod/libexec/../messageDir/en.lua: Input/output error
+stack traceback:
+	[C]: in function 'assert'
+	...om/software/lmod/lmod/libexec/../tools/i18n/init.lua:179: in function 'loadFile'
+	...anada.ca/custom/software/lmod/lmod/libexec/utils.lua:202: in function 'build_i18n_messages'
+	...anada.ca/custom/software/lmod/lmod/libexec/utils.lua:1127: in function 'initialize_lmod'
+	...putecanada.ca/custom/software/lmod/lmod/libexec/lmod:358: in function 'main'
+	...putecanada.ca/custom/software/lmod/lmod/libexec/lmod:588: in main chunk
+	[C]: ?
+/cvmfs/soft.computecanada.ca/custom/software/lua/bin/lua: ...om/software/lmod/lmod/libexec/../tools/i18n/init.lua:179: cannot read /cvmfs/soft.computecanada.ca/custom/software/lmod/lmod/libexec/../messageDir/en.lua: Input/output error
+stack traceback:
+	[C]: in function 'assert'
+	...om/software/lmod/lmod/libexec/../tools/i18n/init.lua:179: in function 'loadFile'
+	...anada.ca/custom/software/lmod/lmod/libexec/utils.lua:202: in function 'build_i18n_messages'
+	...anada.ca/custom/software/lmod/lmod/libexec/utils.lua:1127: in function 'initialize_lmod'
+	...putecanada.ca/custom/software/lmod/lmod/libexec/lmod:358: in function 'main'
+	...putecanada.ca/custom/software/lmod/lmod/libexec/lmod:588: in main chunk
+	[C]: ?
+/localscratch/spool/slurmd/job63910553/slurm_script: line 13: 4177204 Bus error               (core dumped) python main.py --only B
+/opt/software/etc/slurm/slurm.epilog.clean: line 14: 4177216 Bus error               (core dumped) xauth remove $(hostname -f)/unix:${un_xauth%%.*}

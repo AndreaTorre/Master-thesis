@@ -1,0 +1,24 @@
+
+============================================================
+gurobi_parallelo.py — fase: pi
+  Istanza:      nodi_15
+  Dati in:      /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/
+  Cache finale: /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/res_B_cached.pkl
+============================================================
+
+============================================================
+PI: TSP esatto per ogni scenario
+============================================================
+Set parameter TokenServer to value "license1.computecanada.ca"
+  Caricato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/setup.pkl
+  PI scenario 1 (1/8)... OK | PI = 1666.7056440007707 | 0.2s
+  PI scenario 2 (2/8)... OK | PI = 1449.597554583692 | 0.0s
+  PI scenario 3 (3/8)... OK | PI = 1598.6225271850105 | 0.0s
+  PI scenario 4 (4/8)... OK | PI = 1680.3332403128572 | 0.1s
+  PI scenario 5 (5/8)... OK | PI = 1770.9417087034465 | 0.2s
+  PI scenario 6 (6/8)... OK | PI = 1499.8742171257625 | 0.0s
+  PI scenario 7 (7/8)... OK | PI = 1755.6705916888686 | 0.2s
+  PI scenario 8 (8/8)... OK | PI = 1587.0516013824188 | 0.2s
+  Salvato /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/pkl/parallel_data/pi.pkl (0.0 MB)
+
+PI completato in 4.3s

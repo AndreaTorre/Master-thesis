@@ -1,0 +1,14 @@
+Python usato:
+/home/atorre/UTSP/unione/git/UTSP/venv/bin/python
+/home/atorre/UTSP/unione/git/UTSP/venv/bin/python
+Controllo numpy:
+2.4.2
+=== UTSP COMMON MAIN ===
+EXPERIMENT      = PERT
+N_NODES         = 15
+INSTANCE_TAG    = 15
+DATA_FILE       = /home/atorre/UTSP/unione/git/UTSP/data/pert/nodi_15.json
+OUTPUT_DIR      = /home/atorre/UTSP/unione/git/UTSP/PERT/RISULTATI_15/batch_sweep/BATCH_40
+config file     = /home/atorre/UTSP/unione/git/UTSP/common/config.py
+========================
+Set parameter TokenServer to value "license1.computecanada.ca"
