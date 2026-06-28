@@ -29,7 +29,7 @@ from collections import defaultdict
 
 # ── Import dal progetto ──────────────────────────────────────────────
 from config import (
-    WIND_ALPHA, WIND_MIN_FACTOR, WIND_MAX_FACTOR,
+    WIND_ALPHA, WIND_TURB_SIGMA,
     ERA5_NC_PATH, K_MEDOID_NODES, MAX_KMEDOID_I_ARCS,
     PRENOTAZIONE_FRAC, PENALTY_FRAC,
 )
@@ -55,7 +55,7 @@ set_seed()
 nodes, coords, base_dist, E, root = load_data()
 n = len(nodes)
 print(f"\nNodi: {n},  Root: {root}")
-print(f"Alpha vento: {WIND_ALPHA},  min_factor: {WIND_MIN_FACTOR},  max_factor: {WIND_MAX_FACTOR}")
+print(f"Alpha vento: {WIND_ALPHA},  turb_sigma: {WIND_TURB_SIGMA}")
 
 wind = load_wind_field(ERA5_NC_PATH)
 print(f"Campo vettoriale: {wind['n_times']} istanti temporali, "
@@ -71,9 +71,12 @@ print(f"Magnitudine vento globale: "
 
 # Costruisci I
 try:
-    I = build_I_from_medoid_outgoing_nodes(
-        K_MEDOID_NODES, nodes, base_dist, MAX_KMEDOID_I_ARCS
+    I, medoid_info = build_I_from_medoid_outgoing_nodes(
+        nodes, E, base_dist,
+        medoid_nodes=K_MEDOID_NODES,
+        max_arcs=MAX_KMEDOID_I_ARCS,
     )
+    print(f"Metodo I: {medoid_info.get('source', 'n/a')}")
 except Exception as exc:
     print(f"ATTENZIONE: build_I fallita ({exc}), uso I = []")
     I = []
@@ -116,8 +119,7 @@ for sid in range(1, N_DIAG_SCENARIOS + 1):
         coords=coords,
         wind=wind,
         alpha=WIND_ALPHA,
-        min_factor=WIND_MIN_FACTOR,
-        max_factor=WIND_MAX_FACTOR,
+        turb_sigma=WIND_TURB_SIGMA,
     )
 
     d_abs, d_pct = compute_delta_stats(base_dist, pert, nodes)

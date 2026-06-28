@@ -21,7 +21,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from config import WIND_ALPHA, WIND_MIN_FACTOR, WIND_MAX_FACTOR, ERA5_NC_PATH
+from config import WIND_ALPHA, ERA5_NC_PATH
 from common import load_data, set_seed
 from wind_perturbation import load_wind_field, build_wind_perturbation
 
@@ -45,14 +45,12 @@ for sid in range(1, N_SCENARIOS + 1):
     pert_1 = build_wind_perturbation(
         scenario_id=sid, nodes=nodes, base_dist=base_dist,
         coords=coords, wind=wind, alpha=WIND_ALPHA,
-        min_factor=WIND_MIN_FACTOR, max_factor=WIND_MAX_FACTOR,
         n_samples=1,
     )
     # Nuovo metodo: 5 punti lungo l'arco
     pert_5 = build_wind_perturbation(
         scenario_id=sid, nodes=nodes, base_dist=base_dist,
         coords=coords, wind=wind, alpha=WIND_ALPHA,
-        min_factor=WIND_MIN_FACTOR, max_factor=WIND_MAX_FACTOR,
         n_samples=5,
     )
 
